@@ -1,0 +1,212 @@
+{
+    "struct_alat": 5.43,
+    "struct_symbols": [
+        "Si",
+        "Si"
+    ],
+    "struct_cell": [
+        [
+            0.0,
+            2.715,
+            2.715
+        ],
+        [
+            2.715,
+            0.0,
+            2.715
+        ],
+        [
+            2.715,
+            2.715,
+            0.0
+        ]
+    ],
+    "struct_numbers": [
+        14,
+        14
+    ],
+    "struct_positions": [
+        [
+            0.0004967141530112327,
+            -0.00013826430117118465,
+            0.0006476885381006925
+        ],
+        [
+            1.3590230298564079,
+            1.3572658466252765,
+            1.3572658630430507
+        ]
+    ],
+    "struct_supercell": [
+        1,
+        1,
+        1
+    ],
+    "struct_kpoints": [
+        1,
+        1,
+        1
+    ],
+    "sched_bash_prefix": "SBATCH",
+    "sched_exec": "srun",
+    "sched_launch": "sbatch",
+    "sched_account": "m3571",
+    "sched_constraint": "cpu",
+    "sched_qos": "debug",
+    "sched_wait_flag": "--wait",
+    "scf_ecutwfc": 20.0,
+    "scf_job_nodes": 4,
+    "scf_job_tasks": 512,
+    "scf_job_time": "00:30:00",
+    "wfn_bands": 50,
+    "wfn_parabands": 201,
+    "wfn_job_nodes": 4,
+    "wfn_job_tasks": 512,
+    "wfn_job_time": "01:30:00",
+    "wfn_job_parabands_nodes": 4,
+    "wfn_job_parabands_tasks": 512,
+    "wfn_job_parabands_time": "01:30:00",
+    "wfnq_bands": 10,
+    "wfnq_job_nodes": 4,
+    "wfnq_job_tasks": 512,
+    "wfnq_job_time": "01:30:00",
+    "wfn_fi_bands": 10,
+    "wfn_fi_ecut": 10.0,
+    "wfn_fi_job_nodes": 4,
+    "wfn_fi_job_tasks": 512,
+    "wfn_fi_job_time": "05:30:00",
+    "dfpt_cutoff": 12.0,
+    "dfpt_job_nodes": 4,
+    "dfpt_job_tasks": 512,
+    "dfpt_job_time": "05:30:00",
+    "elph_job_nodes": 4,
+    "elph_job_tasks": 512,
+    "elph_job_time": "01:30:00",
+    "elband_kpts": "2 2 2",
+    "elband_job_nodes": 4,
+    "elband_job_tasks": 512,
+    "elband_job_time": "01:30:00",
+    "elband_ndiv": 3,
+    "elband_nkpts_per_div": 10,
+    "elband_ends": {
+        "1L": [
+            0.5,
+            0.5,
+            0.5
+        ],
+        "2G": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "3X": [
+            0.5,
+            0.5,
+            0.0
+        ],
+        "4G": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "fold2bloch_sc": [
+        2,
+        2,
+        2
+    ],
+    "fold2bloch_job_nodes": 1,
+    "fold2bloch_job_tasks": 128,
+    "fold2bloch_job_time": "01:30:00",
+    "wannier_kpts": [
+        2,
+        2,
+        2
+    ],
+    "wannier_bands": [
+        2,
+        7
+    ],
+    "wannier_job_nodes": 1,
+    "wannier_job_tasks": 128,
+    "wannier_job_time": "01:30:00",
+    "phband_kpts": [
+        4,
+        4,
+        4
+    ],
+    "phband_job_nodes": 4,
+    "phband_job_tasks": 512,
+    "phband_job_time": "05:30:00",
+    "phband_job_anaddb_nodes": 1,
+    "phband_job_anaddb_tasks": 128,
+    "phband_job_anaddb_time": "01:30:00",
+    "phband_ndiv": 3,
+    "phband_nkpts_per_div": 10,
+    "phband_ends": {
+        "1L": [
+            0.5,
+            0.5,
+            0.5
+        ],
+        "2G": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "3X": [
+            0.5,
+            0.5,
+            0.0
+        ],
+        "4G": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "eps_bands": 200,
+    "eps_cutoff": 5.0,
+    "eps_job_nodes": 4,
+    "eps_job_tasks": 512,
+    "eps_job_time": "01:30:00",
+    "sig_bands": [
+        3,
+        6
+    ],
+    "sig_job_nodes": 4,
+    "sig_job_tasks": 512,
+    "sig_job_time": "01:30:00",
+    "abs_coarse_bands": [
+        2,
+        2
+    ],
+    "abs_fine_bands": [
+        2,
+        2
+    ],
+    "abs_job_nodes": 4,
+    "abs_job_tasks": 512,
+    "abs_job_time": "01:30:00",
+    "plotxct_state": 1,
+    "plotxct_hole_position": [
+        0.5,
+        0.5,
+        0.5
+    ],
+    "plotxct_job_nodes": 4,
+    "plotxct_job_tasks": 512,
+    "plotxct_job_time": "01:30:00",
+    "esf_job_nodes": 1,
+    "esf_job_tasks": 1,
+    "esf_job_time": "00:30:00",
+    "step_alpha": 0.001,
+    "step_job_nodes": 1,
+    "step_job_tasks": 1,
+    "step_job_time": "00:30:00",
+    "update_job_nodes": 1,
+    "update_job_tasks": 1,
+    "update_job_time": "00:30:00",
+    "esd_niter": 10,
+    "esd_iter": 0
+}
