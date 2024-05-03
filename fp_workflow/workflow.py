@@ -151,14 +151,14 @@ def create_input_dict():
     )
     
     epsilon = EpsilonInput(
-        wfn_input=wfnq,
+        wfn_input=wfn,
         bands=200,
         cutoff=10.0,
         job_proc_desc=JobProcDesc()
     )
     
     sigma = SigmaInput(
-        wfn_input=wfnq,
+        wfn_input=wfn,
         bands=200,
         band_min=1,
         band_max=30,
@@ -265,17 +265,17 @@ def run_workflow(input):
     
     list_of_steps = [
         Scf(input=input),
-        # Dfpt(input=input),
-        # Wfn(input=input),
-        # Wfnq(input=input),
-        # Wfnfi(input=input),
-        # Epw(input=input),
-        # Wfnqfi(input=input),
-        # Epsilon(input=input),
-        # Sigma(input=input),
-        # Kernel(input=input),
-        # Absorption(input=input),
-        # PlotXct(input=input),
+        Dfpt(input=input),
+        Wfn(input=input),
+        Wfnq(input=input),
+        Wfnfi(input=input),
+        Epw(input=input),
+        Wfnqfi(input=input),
+        Epsilon(input=input),
+        Sigma(input=input),
+        Kernel(input=input),
+        Absorption(input=input),
+        PlotXct(input=input),
         # Esf(input=input),
         # Step(input=input),
         # SaveStep(input=input),
@@ -548,15 +548,16 @@ class WfnGeneralInput:
         
         return output 
    
-    def get_kgrid_eps_string(self):
+    def get_kgrid_eps_string(self, qshift):
         output = ''
         output += 'begin qpoints\n'
         
         # qshift.
-        output += f'{self.qshift[0]:15.10f} {self.qshift[1]:15.10f} {self.qshift[2]:15.10f} 1.0 1\n' 
+        output += f'{qshift[0]:15.10f} {qshift[1]:15.10f} {qshift[2]:15.10f} 1.0 1\n' 
         
         # qgrid. 
-        for row in self.kgrid:
+        for row_idx, row in enumerate(self.kgrid):
+            if row_idx==0: continue 
             output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f} 1.0 0\n'
         
         output += 'end\n'
@@ -605,8 +606,8 @@ class EpsilonInput:
         self.cutoff = cutoff
         self.job_proc_desc: JobProcDesc = job_proc_desc
         
-    def get_qgrid_str(self):
-        return self.wfn_input.get_kgrid_eps_string()
+    def get_qgrid_str(self, qshift):
+        return self.wfn_input.get_kgrid_eps_string(qshift=qshift)
         
 class SigmaInput:
     def __init__(
@@ -673,7 +674,7 @@ class PlotxctInput:
         return output 
     
     def get_supercell_size_str(self):
-        output = f'{self.supercell_size[0]} {self.supercell_size[1]} {self.supercell_size[2]}'
+        output = f'{int(self.supercell_size[0])} {int(self.supercell_size[1])} {int(self.supercell_size[2])}'
         
         return output 
 
@@ -1413,7 +1414,7 @@ class Epsilon:
         write_string_to_file(
             'epsilon.inp',
             f'''# Qpoints 
-{self.input.epsilon.get_qgrid_str()}
+{self.input.epsilon.get_qgrid_str(self.input.wfnq.qshift)}
 
 # Bands
 number_bands {self.input.epsilon.bands}
@@ -1532,7 +1533,7 @@ use_symmetries_coarse_grid
 
 # Bands 
 number_val_bands {self.input.absorption.val_bands_coarse}
-number_cond_bands {self.input.absorption.val_bands_fine}
+number_cond_bands {self.input.absorption.cond_bands_coarse}
 #spinor
 
 # Options
@@ -1609,8 +1610,8 @@ write_eigenvectors 10
 {self.input.scheduler.jobheader}
 
 ln -sf WFN_parabands.h5 WFN_co.h5 
-ln -sf WFN_parabands.h5 WFN_fi.h5 
-ln -sf WFNq.h5 WFNq_fi.h5 
+ln -sf WFN_fi.h5 WFN_fi.h5 
+ln -sf WFNq_fi.h5 WFNq_fi.h5 
 ln -sf eqp1.dat eqp_co.dat 
 {self.input.scheduler.parallelprefix}absorption.cplx.x &> absorption.inp.out 
             ''',
@@ -1653,13 +1654,13 @@ class PlotXct:
         write_string_to_file(
             'plotxct.inp',
             f'''# Cell parameters.
-hole_position {self.input.plotxct.hole_position}
-supercell_size {self.input.plotxct.supercell_size}
+hole_position {self.input.plotxct.get_hole_position_str()}
+supercell_size {self.input.plotxct.get_supercell_size_str()}
 
 # Q-points. 
 # q_shift
-use_symmetries_fine_grid
-use_symmetries_shifted_grid
+no_symmetries_fine_grid
+no_symmetries_shifted_grid
 
 # Bands and state. 
 plot_spin 1
