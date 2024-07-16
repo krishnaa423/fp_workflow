@@ -1,0 +1,19 @@
+services:
+  fp-mamba-mpich-linux-amd64:
+    image: krishnaa42342/mamba:mpich
+    container_name: mamba
+    network_mode: "host"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              count: all
+              driver: nvidia
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true

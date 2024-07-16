@@ -10,5 +10,4 @@
 #region: Classes.
 #endregion
 
-from .kpath import *
-from .kpts import *
+from .strings import *
