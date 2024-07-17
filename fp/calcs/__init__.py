@@ -25,6 +25,7 @@ from .kpdos import *
 from .pdos import *
 from .phbands import *
 from .phdos import *
+from .phmodes import *
 from .pol import *
 from .relax import *
 from .scf import *

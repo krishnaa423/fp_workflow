@@ -1,6 +1,6 @@
 #region: Modules.
 import numpy as np 
-from fp.schedulers.scheduler import *
+from fp.schedulers import *
 #endregion
 
 #region: Variables.

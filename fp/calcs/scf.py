@@ -32,6 +32,8 @@ ibrav=0
 ntyp={self.input.atoms.get_ntyp()}
 nat={self.input.atoms.get_nat()}
 ecutwfc={self.input.scf.ecutwfc}
+!noncolin=.true.
+!lspinorb=.true. 
 /
 
 &ELECTRONS
@@ -86,4 +88,5 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
         os.system('rm -rf bandpath.json')
         os.system('rm -rf kgrid.inp kgrid.log kgrid.out')
         os.system('rm -rf *.xsf')
+        os.system('rm -rf ONCVPSP')
 #endregion

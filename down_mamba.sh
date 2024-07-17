@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker compose down fp-mamba-mpich-linux-amd64
+docker compose down mamba-mpich-linux-amd64

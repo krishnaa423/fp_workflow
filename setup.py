@@ -25,8 +25,8 @@ setup(
     #         "your_command=your_module:main_function",
     #     ],
     # },
-#     include_package_data=True,
-#     package_data={
-#         "": ["data/*.dat", "data/*.txt"],
-#     },
+    include_package_data=True,
+    package_data={
+        "": ["pseudos/ONCVPSP/sg15/*.upf"],
+    },
 )

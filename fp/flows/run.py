@@ -2,14 +2,14 @@
 import os 
 import subprocess
 import time 
-from fp.inputs.input_main import Input
+from fp.inputs.input_main import *
 #endregion
 
 #region: Variables.
 #endregion
 
 #region: Functions.
-def run_and_wait_command(script, input, total_time):
+def run_and_wait_command(script, input: Input, total_time):
     '''
     Run each script and write out some logging info. 
     '''

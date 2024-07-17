@@ -1,0 +1,11 @@
+&INPUT
+asr='crystal'
+flfrc='struct.fc'
+flfrq='struct.phdos.freq'
+flvec='struct.phdos.modes'
+dos=.true.
+fldos='struct.phdos'
+nk1=2
+nk2=2
+nk3=2
+/

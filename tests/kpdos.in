@@ -1,0 +1,6 @@
+&PROJWFC
+outdir='./tmp'
+prefix='struct'
+kresolveddos=.true.
+filpdos='struct_kpdos.dat'
+/

@@ -1,0 +1,1121 @@
+
+     Program PHONON v.7.2 starts on 17Jul2024 at  5: 9:53 
+
+     This program is part of the open-source Quantum ESPRESSO suite
+     for quantum simulation of materials; please cite
+         "P. Giannozzi et al., J. Phys.:Condens. Matter 21 395502 (2009);
+         "P. Giannozzi et al., J. Phys.:Condens. Matter 29 465901 (2017);
+         "P. Giannozzi et al., J. Chem. Phys. 152 154105 (2020);
+          URL http://www.quantum-espresso.org", 
+     in publications or presentations arising from this work. More details at
+     http://www.quantum-espresso.org/quote
+
+     Parallel version (MPI), running on     1 processors
+
+     MPI processes distributed on     1 nodes
+     28074 MiB available memory on the printing compute node when the environment starts
+ 
+     Waiting for input...
+     Reading input from standard input
+      Title line not specified: using 'default'.
+
+     Reading xml data from directory:
+
+     ./tmp/struct.save/
+ 
+     Subspace diagonalization in iterative solution of the eigenvalue problem:
+     a serial algorithm will be used
+
+
+     IMPORTANT: XC functional enforced from input :
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+     Any further DFT definition will be discarded
+     Please, verify this is what you really want
+
+ 
+     G-vector sticks info
+     --------------------
+     sticks:   dense  smooth     PW     G-vecs:    dense   smooth      PW
+     Sum         295     295     91                 3287     3287     609
+ 
+     Using Slab Decomposition
+ 
+     Reading collected, re-writing distributed wavefunctions in ./tmp/
+
+
+     Dynamical matrices for ( 2, 2, 2)  uniform grid of q-points
+     (   3 q-points):
+       N         xq(1)         xq(2)         xq(3) 
+       1   0.000000000   0.000000000   0.000000000
+       2  -0.353553391   0.353553391  -0.353553391
+       3   0.000000000   0.000000000  -0.707106781
+
+     Saving dvscf to file. Distribute only q points, not irreducible represetations.
+
+     Calculation of q =    0.0000000   0.0000000   0.0000000
+
+     GPU acceleration is ACTIVE.
+
+
+     default                                                                    
+
+     bravais-lattice index     =            0
+     lattice parameter (alat)  =       7.2558  a.u.
+     unit-cell volume          =     270.1072 (a.u.)^3
+     number of atoms/cell      =            2
+     number of atomic types    =            1
+     kinetic-energy cut-off    =      20.0000  Ry
+     charge density cut-off    =      80.0000  Ry
+     convergence threshold     =      1.0E-16
+     beta                      =       0.7000
+     number of iterations used =            4
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+
+
+     celldm(1)=    7.25577  celldm(2)=    0.00000  celldm(3)=    0.00000
+     celldm(4)=    0.00000  celldm(5)=    0.00000  celldm(6)=    0.00000
+
+     crystal axes: (cart. coord. in units of alat)
+               a(1) = (  0.7071  0.7071  0.0000 )  
+               a(2) = (  0.0000  0.7071  0.7071 )  
+               a(3) = (  0.7071  0.0000  0.7071 )  
+
+     reciprocal axes: (cart. coord. in units 2 pi/alat)
+               b(1) = (  0.7071  0.7071 -0.7071 )  
+               b(2) = ( -0.7071  0.7071  0.7071 )  
+               b(3) = (  0.7071 -0.7071  0.7071 )  
+
+
+     Atoms inside the unit cell: 
+
+     Cartesian axes
+
+     site n.  atom      mass           positions (alat units)
+        1     Si  28.0850   tau(    1) = (    0.00000    0.00000    0.00000  )
+        2     Si  28.0850   tau(    2) = (    0.35355    0.35355    0.35355  )
+
+     Computing dynamical matrix for 
+                    q = (   0.0000000   0.0000000   0.0000000 )
+ 
+     49 Sym.Ops. (with q -> -q+G )
+
+
+     G cutoff =  106.6836  (   3287 G-vectors)     FFT grid: ( 24, 24, 24)
+     number of k points=     3
+
+     PseudoPot. # 1 for Si read from file:
+     ./ONCVPSP/sg15/Si_ONCV_PBE_sr.upf
+     MD5 check sum: 8553c464762ac42b85b1eed164b4d029
+     Pseudo is Norm-conserving, Zval =  4.0
+     Generated using ONCVPSP code by D. R. Hamann
+     Using radial grid of 1510 points,  4 beta functions with: 
+                l(1) =   0
+                l(2) =   0
+                l(3) =   1
+                l(4) =   1
+
+     Mode symmetry, O_h (m-3m)  point group:
+
+
+     Electric field:
+     Dielectric constant
+     Born effective charges in two ways 
+
+
+     Atomic displacements:
+     There are    2 irreducible representations
+
+     Representation     1      3 modes -  To be done
+
+     Representation     2      3 modes -  To be done
+
+
+
+     Alpha used in Ewald sum =   0.8000
+     PHONON       :      0.43s CPU      0.48s WALL
+
+
+     Electric Fields Calculation
+
+      iter #   1 total cpu time :     1.4 secs   av.it.:   6.6
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  2.510E-06
+
+      iter #   2 total cpu time :     1.8 secs   av.it.:   9.0
+      thresh= 1.584E-04 alpha_mix =  0.700 |ddv_scf|^2 =  3.496E-07
+
+      iter #   3 total cpu time :     2.2 secs   av.it.:   9.2
+      thresh= 5.912E-05 alpha_mix =  0.700 |ddv_scf|^2 =  3.574E-08
+
+      iter #   4 total cpu time :     2.6 secs   av.it.:   9.4
+      thresh= 1.890E-05 alpha_mix =  0.700 |ddv_scf|^2 =  2.130E-10
+
+      iter #   5 total cpu time :     3.0 secs   av.it.:   9.9
+      thresh= 1.459E-06 alpha_mix =  0.700 |ddv_scf|^2 =  3.773E-13
+
+      iter #   6 total cpu time :     3.5 secs   av.it.:   9.7
+      thresh= 6.143E-08 alpha_mix =  0.700 |ddv_scf|^2 =  1.127E-14
+
+      iter #   7 total cpu time :     3.9 secs   av.it.:   9.3
+      thresh= 1.062E-08 alpha_mix =  0.700 |ddv_scf|^2 =  4.860E-17
+
+     End of electric fields calculation
+
+          Dielectric constant in cartesian axis 
+
+          (      57.763207327       0.000000000      -0.000000000 )
+          (       0.000000000      57.763207327      -0.000000000 )
+          (      -0.000000000      -0.000000000      57.763207327 )
+
+          Effective charges (d Force / dE) in cartesian axis without acoustic sum rule applied (asr)
+
+           atom      1   Si Mean Z*:       -5.41905
+      Ex  (       -5.41905       -0.00000       -0.00000 )
+      Ey  (       -0.00000       -5.41905       -0.00000 )
+      Ez  (       -0.00000       -0.00000       -5.41905 )
+           atom      2   Si Mean Z*:       -5.41905
+      Ex  (       -5.41905       -0.00000       -0.00000 )
+      Ey  (       -0.00000       -5.41905       -0.00000 )
+      Ez  (       -0.00000       -0.00000       -5.41905 )
+
+          Effective charges Sum: Mean:      -10.83810
+            -10.83810       -0.00000       -0.00000
+             -0.00000      -10.83810       -0.00000
+             -0.00000       -0.00000      -10.83810
+
+          Effective charges (d Force / dE) in cartesian axis with asr applied: 
+           atom      1   Si Mean Z*:       -0.00000
+      E*x (       -0.00000       -0.00000        0.00000 )
+      E*y (       -0.00000       -0.00000        0.00000 )
+      E*z (        0.00000        0.00000        0.00000 )
+           atom      2   Si Mean Z*:        0.00000
+      E*x (        0.00000        0.00000       -0.00000 )
+      E*y (        0.00000        0.00000       -0.00000 )
+      E*z (       -0.00000        0.00000        0.00000 )
+
+
+     Representation #   1 modes #   1   2   3
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :     4.2 secs   av.it.:   4.7
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  9.318E-08
+
+      iter #   2 total cpu time :     4.5 secs   av.it.:   8.2
+      thresh= 3.053E-05 alpha_mix =  0.700 |ddv_scf|^2 =  1.383E-09
+
+      iter #   3 total cpu time :     4.9 secs   av.it.:   8.1
+      thresh= 3.719E-06 alpha_mix =  0.700 |ddv_scf|^2 =  1.259E-10
+
+      iter #   4 total cpu time :     5.3 secs   av.it.:   7.6
+      thresh= 1.122E-06 alpha_mix =  0.700 |ddv_scf|^2 =  5.855E-14
+
+      iter #   5 total cpu time :     5.7 secs   av.it.:   8.8
+      thresh= 2.420E-08 alpha_mix =  0.700 |ddv_scf|^2 =  1.112E-15
+
+      iter #   6 total cpu time :     6.0 secs   av.it.:   7.7
+      thresh= 3.334E-09 alpha_mix =  0.700 |ddv_scf|^2 =  1.272E-17
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+
+
+     Representation #   2 modes #   4   5   6
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :     6.3 secs   av.it.:   5.6
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  9.933E-08
+
+      iter #   2 total cpu time :     6.7 secs   av.it.:   9.7
+      thresh= 3.152E-05 alpha_mix =  0.700 |ddv_scf|^2 =  9.136E-09
+
+      iter #   3 total cpu time :     7.2 secs   av.it.:   9.8
+      thresh= 9.558E-06 alpha_mix =  0.700 |ddv_scf|^2 =  2.239E-10
+
+      iter #   4 total cpu time :     7.6 secs   av.it.:   9.1
+      thresh= 1.496E-06 alpha_mix =  0.700 |ddv_scf|^2 =  2.326E-13
+
+      iter #   5 total cpu time :     8.0 secs   av.it.:   9.9
+      thresh= 4.822E-08 alpha_mix =  0.700 |ddv_scf|^2 =  7.713E-15
+
+      iter #   6 total cpu time :     8.5 secs   av.it.:   9.1
+      thresh= 8.782E-09 alpha_mix =  0.700 |ddv_scf|^2 =  2.334E-16
+
+      iter #   7 total cpu time :     8.9 secs   av.it.:   9.9
+      thresh= 1.528E-09 alpha_mix =  0.700 |ddv_scf|^2 =  2.611E-19
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+ 
+     Number of q in the star =    1
+     List of q in the star:
+          1   0.000000000   0.000000000   0.000000000
+
+          Dielectric constant in cartesian axis 
+
+          (      57.763207327       0.000000000      -0.000000000 )
+          (       0.000000000      57.763207327      -0.000000000 )
+          (      -0.000000000      -0.000000000      57.763207327 )
+
+          Effective charges (d Force / dE) in cartesian axis without acoustic sum rule applied (asr)
+
+           atom      1   Si Mean Z*:       -5.41905
+      Ex  (       -5.41905       -0.00000       -0.00000 )
+      Ey  (       -0.00000       -5.41905       -0.00000 )
+      Ez  (       -0.00000       -0.00000       -5.41905 )
+           atom      2   Si Mean Z*:       -5.41905
+      Ex  (       -5.41905       -0.00000       -0.00000 )
+      Ey  (       -0.00000       -5.41905       -0.00000 )
+      Ez  (       -0.00000       -0.00000       -5.41905 )
+
+          Effective charges Sum: Mean:      -10.83810
+            -10.83810       -0.00000       -0.00000
+             -0.00000      -10.83810       -0.00000
+             -0.00000       -0.00000      -10.83810
+
+          Effective charges (d Force / dE) in cartesian axis with asr applied: 
+           atom      1   Si Mean Z*:       -0.00000
+      E*x (       -0.00000       -0.00000        0.00000 )
+      E*y (       -0.00000       -0.00000        0.00000 )
+      E*z (        0.00000        0.00000        0.00000 )
+           atom      2   Si Mean Z*:        0.00000
+      E*x (        0.00000        0.00000       -0.00000 )
+      E*y (        0.00000        0.00000       -0.00000 )
+      E*z (       -0.00000        0.00000        0.00000 )
+
+          Effective charges (d P / du) in cartesian axis 
+
+           atom      1   Si 
+      Px  (       -5.41892       -0.00000       -0.00000 )
+      Py  (       -0.00000       -5.41892        0.00000 )
+      Pz  (       -0.00000        0.00000       -5.41892 )
+           atom      2   Si 
+      Px  (       -5.41892        0.00000        0.00000 )
+      Py  (        0.00000       -5.41892        0.00000 )
+      Pz  (        0.00000        0.00000       -5.41892 )
+
+     Diagonalizing the dynamical matrix
+
+     q = (    0.000000000   0.000000000   0.000000000 ) 
+
+ **************************************************************************
+     freq (    1) =       0.357736 [THz] =      11.932802 [cm-1]
+     freq (    2) =       0.357736 [THz] =      11.932802 [cm-1]
+     freq (    3) =       0.357736 [THz] =      11.932802 [cm-1]
+     freq (    4) =      17.519899 [THz] =     584.400933 [cm-1]
+     freq (    5) =      17.519899 [THz] =     584.400933 [cm-1]
+     freq (    6) =      17.519899 [THz] =     584.400933 [cm-1]
+ **************************************************************************
+
+     Mode symmetry, O_h (m-3m)  point group:
+
+     freq (   1-   3) =         11.9  [cm-1]   --> T_1u G_15  G_4- I  
+     freq (   4-   6) =        584.4  [cm-1]   --> T_2g G_25' G_5+ R  
+
+     Calculation of q =   -0.3535534   0.3535534  -0.3535534
+ 
+     G-vector sticks info
+     --------------------
+     sticks:   dense  smooth     PW     G-vecs:    dense   smooth      PW
+     Sum         295     295    109                 3287     3287     749
+ 
+     Using Slab Decomposition
+ 
+
+     Title: 
+     default                                                                    
+
+
+     bravais-lattice index     =            0
+     lattice parameter (alat)  =       7.2558  a.u.
+     unit-cell volume          =     270.1072 (a.u.)^3
+     number of atoms/cell      =            2
+     number of atomic types    =            1
+     number of electrons       =         8.00
+     number of Kohn-Sham states=            4
+     kinetic-energy cutoff     =      20.0000  Ry
+     charge density cutoff     =      80.0000  Ry
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+
+     GPU acceleration is ACTIVE.
+
+
+     celldm(1)=   7.255773  celldm(2)=   0.000000  celldm(3)=   0.000000
+     celldm(4)=   0.000000  celldm(5)=   0.000000  celldm(6)=   0.000000
+
+     crystal axes: (cart. coord. in units of alat)
+               a(1) = (   0.707107   0.707107   0.000000 )  
+               a(2) = (   0.000000   0.707107   0.707107 )  
+               a(3) = (   0.707107   0.000000   0.707107 )  
+
+     reciprocal axes: (cart. coord. in units 2 pi/alat)
+               b(1) = (  0.707107  0.707107 -0.707107 )  
+               b(2) = ( -0.707107  0.707107  0.707107 )  
+               b(3) = (  0.707107 -0.707107  0.707107 )  
+
+
+     PseudoPot. # 1 for Si read from file:
+     ./ONCVPSP/sg15/Si_ONCV_PBE_sr.upf
+     MD5 check sum: 8553c464762ac42b85b1eed164b4d029
+     Pseudo is Norm-conserving, Zval =  4.0
+     Generated using ONCVPSP code by D. R. Hamann
+     Using radial grid of 1510 points,  4 beta functions with: 
+                l(1) =   0
+                l(2) =   0
+                l(3) =   1
+                l(4) =   1
+
+     atomic species   valence    mass     pseudopotential
+        Si             4.00    28.08500     Si( 1.00)
+
+     48 Sym. Ops., with inversion, found
+
+
+
+   Cartesian axes
+
+     site n.     atom                  positions (alat units)
+         1           Si  tau(   1) = (   0.0000000   0.0000000   0.0000000  )
+         2           Si  tau(   2) = (   0.3535534   0.3535534   0.3535534  )
+
+     number of k points=     8
+                       cart. coord. in units 2pi/alat
+        k(    1) = (   0.0000000   0.0000000   0.0000000), wk =   0.2500000
+        k(    2) = (  -0.3535534   0.3535534  -0.3535534), wk =   0.0000000
+        k(    3) = (  -0.3535534   0.3535534  -0.3535534), wk =   0.2500000
+        k(    4) = (  -0.7071068   0.7071068  -0.7071068), wk =   0.0000000
+        k(    5) = (   0.0000000   0.0000000  -0.7071068), wk =   0.7500000
+        k(    6) = (  -0.3535534   0.3535534  -1.0606602), wk =   0.0000000
+        k(    7) = (   0.3535534  -0.3535534  -0.3535534), wk =   0.7500000
+        k(    8) = (   0.0000000  -0.0000000  -0.7071068), wk =   0.0000000
+
+     Dense  grid:     3287 G-vectors     FFT dimensions: (  24,  24,  24)
+
+     Estimated max dynamical RAM per process >       1.91 MB
+
+     The potential is recalculated from file :
+     ./tmp/_ph0/struct.q_2/struct.save/charge-density
+
+     Starting wfcs are    8 atomic wfcs
+
+     Band Structure Calculation
+     Davidson diagonalization with overlap
+
+     ethr =  1.25E-10,  avg # of iterations =  9.8
+
+     total cpu time spent up to now is        0.4 secs
+
+     End of band structure calculation
+
+          k = 0.0000 0.0000 0.0000 (   411 PWs)   bands (ev):
+
+    -5.4902   6.5505   6.5505   6.5505
+
+          k =-0.3536 0.3536-0.3536 (   410 PWs)   bands (ev):
+
+    -3.1381  -0.5092   5.3114   5.3114
+
+          k =-0.3536 0.3536-0.3536 (   410 PWs)   bands (ev):
+
+    -3.1381  -0.5092   5.3114   5.3114
+
+          k =-0.7071 0.7071-0.7071 (   411 PWs)   bands (ev):
+
+    -5.4902   6.5505   6.5505   6.5505
+
+          k = 0.0000 0.0000-0.7071 (   412 PWs)   bands (ev):
+
+    -1.3223  -1.3223   3.6177   3.6177
+
+          k =-0.3536 0.3536-1.0607 (   410 PWs)   bands (ev):
+
+    -3.1381  -0.5092   5.3114   5.3114
+
+          k = 0.3536-0.3536-0.3536 (   410 PWs)   bands (ev):
+
+    -3.1381  -0.5092   5.3114   5.3114
+
+          k = 0.0000-0.0000-0.7071 (   412 PWs)   bands (ev):
+
+    -1.3223  -1.3223   3.6177   3.6177
+
+     highest occupied level (ev):     6.5505
+
+     Writing config to output data dir ./tmp/_ph0/struct.q_2/struct.save/
+
+     default                                                                    
+
+     bravais-lattice index     =            0
+     lattice parameter (alat)  =       7.2558  a.u.
+     unit-cell volume          =     270.1072 (a.u.)^3
+     number of atoms/cell      =            2
+     number of atomic types    =            1
+     kinetic-energy cut-off    =      20.0000  Ry
+     charge density cut-off    =      80.0000  Ry
+     convergence threshold     =      1.0E-16
+     beta                      =       0.7000
+     number of iterations used =            4
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+
+
+     celldm(1)=    7.25577  celldm(2)=    0.00000  celldm(3)=    0.00000
+     celldm(4)=    0.00000  celldm(5)=    0.00000  celldm(6)=    0.00000
+
+     crystal axes: (cart. coord. in units of alat)
+               a(1) = (  0.7071  0.7071  0.0000 )  
+               a(2) = (  0.0000  0.7071  0.7071 )  
+               a(3) = (  0.7071  0.0000  0.7071 )  
+
+     reciprocal axes: (cart. coord. in units 2 pi/alat)
+               b(1) = (  0.7071  0.7071 -0.7071 )  
+               b(2) = ( -0.7071  0.7071  0.7071 )  
+               b(3) = (  0.7071 -0.7071  0.7071 )  
+
+
+     Atoms inside the unit cell: 
+
+     Cartesian axes
+
+     site n.  atom      mass           positions (alat units)
+        1     Si  28.0850   tau(    1) = (    0.00000    0.00000    0.00000  )
+        2     Si  28.0850   tau(    2) = (    0.35355    0.35355    0.35355  )
+
+     Computing dynamical matrix for 
+                    q = (  -0.3535534   0.3535534  -0.3535534 )
+ 
+     13 Sym.Ops. (with q -> -q+G )
+
+
+     G cutoff =  106.6836  (   3287 G-vectors)     FFT grid: ( 24, 24, 24)
+     number of k points=     8
+
+     PseudoPot. # 1 for Si read from file:
+     ./ONCVPSP/sg15/Si_ONCV_PBE_sr.upf
+     MD5 check sum: 8553c464762ac42b85b1eed164b4d029
+     Pseudo is Norm-conserving, Zval =  4.0
+     Generated using ONCVPSP code by D. R. Hamann
+     Using radial grid of 1510 points,  4 beta functions with: 
+                l(1) =   0
+                l(2) =   0
+                l(3) =   1
+                l(4) =   1
+
+
+     Atomic displacements:
+     There are    4 irreducible representations
+
+     Representation     1      1 modes -  To be done
+
+     Representation     2      1 modes -  To be done
+
+     Representation     3      2 modes -  To be done
+
+     Representation     4      2 modes -  To be done
+
+
+
+     Alpha used in Ewald sum =   0.8000
+     PHONON       :      7.77s CPU      9.43s WALL
+
+
+
+     Representation #   1 mode #   1
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :     9.5 secs   av.it.:   4.8
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  1.103E-05
+
+      iter #   2 total cpu time :     9.7 secs   av.it.:   7.3
+      thresh= 3.321E-04 alpha_mix =  0.700 |ddv_scf|^2 =  6.539E-06
+
+      iter #   3 total cpu time :     9.8 secs   av.it.:   6.8
+      thresh= 2.557E-04 alpha_mix =  0.700 |ddv_scf|^2 =  8.147E-09
+
+      iter #   4 total cpu time :    10.0 secs   av.it.:   7.0
+      thresh= 9.026E-06 alpha_mix =  0.700 |ddv_scf|^2 =  2.408E-10
+
+      iter #   5 total cpu time :    10.1 secs   av.it.:   7.0
+      thresh= 1.552E-06 alpha_mix =  0.700 |ddv_scf|^2 =  3.820E-13
+
+      iter #   6 total cpu time :    10.3 secs   av.it.:   7.3
+      thresh= 6.181E-08 alpha_mix =  0.700 |ddv_scf|^2 =  7.782E-15
+
+      iter #   7 total cpu time :    10.4 secs   av.it.:   7.3
+      thresh= 8.822E-09 alpha_mix =  0.700 |ddv_scf|^2 =  3.115E-16
+
+      iter #   8 total cpu time :    10.6 secs   av.it.:   7.3
+      thresh= 1.765E-09 alpha_mix =  0.700 |ddv_scf|^2 =  3.002E-18
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+
+
+     Representation #   2 mode #   2
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :    10.7 secs   av.it.:   6.0
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  3.140E-04
+
+      iter #   2 total cpu time :    10.9 secs   av.it.:   8.0
+      thresh= 1.772E-03 alpha_mix =  0.700 |ddv_scf|^2 =  1.517E-03
+
+      iter #   3 total cpu time :    11.0 secs   av.it.:   7.0
+      thresh= 3.895E-03 alpha_mix =  0.700 |ddv_scf|^2 =  2.097E-08
+
+      iter #   4 total cpu time :    11.2 secs   av.it.:   8.3
+      thresh= 1.448E-05 alpha_mix =  0.700 |ddv_scf|^2 =  2.449E-09
+
+      iter #   5 total cpu time :    11.4 secs   av.it.:   8.3
+      thresh= 4.948E-06 alpha_mix =  0.700 |ddv_scf|^2 =  2.421E-10
+
+      iter #   6 total cpu time :    11.6 secs   av.it.:   8.0
+      thresh= 1.556E-06 alpha_mix =  0.700 |ddv_scf|^2 =  3.901E-13
+
+      iter #   7 total cpu time :    11.7 secs   av.it.:   8.3
+      thresh= 6.246E-08 alpha_mix =  0.700 |ddv_scf|^2 =  1.280E-14
+
+      iter #   8 total cpu time :    11.9 secs   av.it.:   8.0
+      thresh= 1.131E-08 alpha_mix =  0.700 |ddv_scf|^2 =  3.934E-15
+
+      iter #   9 total cpu time :    12.1 secs   av.it.:   7.3
+      thresh= 6.272E-09 alpha_mix =  0.700 |ddv_scf|^2 =  1.607E-17
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+
+
+     Representation #   3 modes #   3   4
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :    12.3 secs   av.it.:   5.0
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  9.223E-07
+
+      iter #   2 total cpu time :    12.7 secs   av.it.:   8.3
+      thresh= 9.604E-05 alpha_mix =  0.700 |ddv_scf|^2 =  1.523E-07
+
+      iter #   3 total cpu time :    13.0 secs   av.it.:   8.3
+      thresh= 3.902E-05 alpha_mix =  0.700 |ddv_scf|^2 =  5.799E-10
+
+      iter #   4 total cpu time :    13.3 secs   av.it.:   8.0
+      thresh= 2.408E-06 alpha_mix =  0.700 |ddv_scf|^2 =  1.181E-12
+
+      iter #   5 total cpu time :    13.6 secs   av.it.:   8.3
+      thresh= 1.087E-07 alpha_mix =  0.700 |ddv_scf|^2 =  1.189E-14
+
+      iter #   6 total cpu time :    14.0 secs   av.it.:   7.9
+      thresh= 1.091E-08 alpha_mix =  0.700 |ddv_scf|^2 =  8.681E-16
+
+      iter #   7 total cpu time :    14.3 secs   av.it.:   7.6
+      thresh= 2.946E-09 alpha_mix =  0.700 |ddv_scf|^2 =  2.215E-18
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+
+
+     Representation #   4 modes #   5   6
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :    14.5 secs   av.it.:   4.9
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  1.156E-07
+
+      iter #   2 total cpu time :    14.9 secs   av.it.:   9.3
+      thresh= 3.401E-05 alpha_mix =  0.700 |ddv_scf|^2 =  8.386E-09
+
+      iter #   3 total cpu time :    15.2 secs   av.it.:   9.0
+      thresh= 9.158E-06 alpha_mix =  0.700 |ddv_scf|^2 =  4.542E-10
+
+      iter #   4 total cpu time :    15.6 secs   av.it.:   8.4
+      thresh= 2.131E-06 alpha_mix =  0.700 |ddv_scf|^2 =  5.764E-13
+
+      iter #   5 total cpu time :    15.9 secs   av.it.:   9.0
+      thresh= 7.592E-08 alpha_mix =  0.700 |ddv_scf|^2 =  3.485E-14
+
+      iter #   6 total cpu time :    16.3 secs   av.it.:   9.0
+      thresh= 1.867E-08 alpha_mix =  0.700 |ddv_scf|^2 =  2.982E-16
+
+      iter #   7 total cpu time :    16.6 secs   av.it.:   9.5
+      thresh= 1.727E-09 alpha_mix =  0.700 |ddv_scf|^2 =  9.661E-18
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+ 
+     Number of q in the star =    4
+     List of q in the star:
+          1  -0.353553391   0.353553391  -0.353553391
+          2   0.353553391  -0.353553391  -0.353553391
+          3  -0.353553391  -0.353553391   0.353553391
+          4   0.353553391   0.353553391   0.353553391
+
+     Diagonalizing the dynamical matrix
+
+     q = (   -0.353553391   0.353553391  -0.353553391 ) 
+
+ **************************************************************************
+     freq (    1) =      -1.954804 [THz] =     -65.205234 [cm-1]
+     freq (    2) =      -1.954804 [THz] =     -65.205234 [cm-1]
+     freq (    3) =      11.044856 [THz] =     368.416739 [cm-1]
+     freq (    4) =      12.564843 [THz] =     419.118042 [cm-1]
+     freq (    5) =      14.349426 [THz] =     478.645315 [cm-1]
+     freq (    6) =      14.349426 [THz] =     478.645315 [cm-1]
+ **************************************************************************
+
+     Calculation of q =    0.0000000   0.0000000  -0.7071068
+ 
+     G-vector sticks info
+     --------------------
+     sticks:   dense  smooth     PW     G-vecs:    dense   smooth      PW
+     Sum         295     295    121                 3287     3287     869
+ 
+     Using Slab Decomposition
+ 
+
+     Title: 
+     default                                                                    
+
+
+     bravais-lattice index     =            0
+     lattice parameter (alat)  =       7.2558  a.u.
+     unit-cell volume          =     270.1072 (a.u.)^3
+     number of atoms/cell      =            2
+     number of atomic types    =            1
+     number of electrons       =         8.00
+     number of Kohn-Sham states=            4
+     kinetic-energy cutoff     =      20.0000  Ry
+     charge density cutoff     =      80.0000  Ry
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+
+     GPU acceleration is ACTIVE.
+
+
+     celldm(1)=   7.255773  celldm(2)=   0.000000  celldm(3)=   0.000000
+     celldm(4)=   0.000000  celldm(5)=   0.000000  celldm(6)=   0.000000
+
+     crystal axes: (cart. coord. in units of alat)
+               a(1) = (   0.707107   0.707107   0.000000 )  
+               a(2) = (   0.000000   0.707107   0.707107 )  
+               a(3) = (   0.707107   0.000000   0.707107 )  
+
+     reciprocal axes: (cart. coord. in units 2 pi/alat)
+               b(1) = (  0.707107  0.707107 -0.707107 )  
+               b(2) = ( -0.707107  0.707107  0.707107 )  
+               b(3) = (  0.707107 -0.707107  0.707107 )  
+
+
+     PseudoPot. # 1 for Si read from file:
+     ./ONCVPSP/sg15/Si_ONCV_PBE_sr.upf
+     MD5 check sum: 8553c464762ac42b85b1eed164b4d029
+     Pseudo is Norm-conserving, Zval =  4.0
+     Generated using ONCVPSP code by D. R. Hamann
+     Using radial grid of 1510 points,  4 beta functions with: 
+                l(1) =   0
+                l(2) =   0
+                l(3) =   1
+                l(4) =   1
+
+     atomic species   valence    mass     pseudopotential
+        Si             4.00    28.08500     Si( 1.00)
+
+     48 Sym. Ops., with inversion, found
+
+
+
+   Cartesian axes
+
+     site n.     atom                  positions (alat units)
+         1           Si  tau(   1) = (   0.0000000   0.0000000   0.0000000  )
+         2           Si  tau(   2) = (   0.3535534   0.3535534   0.3535534  )
+
+     number of k points=     8
+                       cart. coord. in units 2pi/alat
+        k(    1) = (   0.0000000   0.0000000   0.0000000), wk =   0.2500000
+        k(    2) = (   0.0000000   0.0000000  -0.7071068), wk =   0.0000000
+        k(    3) = (  -0.3535534   0.3535534  -0.3535534), wk =   1.0000000
+        k(    4) = (  -0.3535534   0.3535534  -1.0606602), wk =   0.0000000
+        k(    5) = (   0.0000000   0.0000000  -0.7071068), wk =   0.2500000
+        k(    6) = (   0.0000000   0.0000000  -1.4142136), wk =   0.0000000
+        k(    7) = (   0.0000000  -0.7071068  -0.0000000), wk =   0.5000000
+        k(    8) = (   0.0000000  -0.7071068  -0.7071068), wk =   0.0000000
+
+     Dense  grid:     3287 G-vectors     FFT dimensions: (  24,  24,  24)
+
+     Estimated max dynamical RAM per process >       1.91 MB
+
+     The potential is recalculated from file :
+     ./tmp/_ph0/struct.q_3/struct.save/charge-density
+
+     Starting wfcs are    8 atomic wfcs
+
+     Band Structure Calculation
+     Davidson diagonalization with overlap
+
+     ethr =  1.25E-10,  avg # of iterations =  9.5
+
+     total cpu time spent up to now is        0.7 secs
+
+     End of band structure calculation
+
+          k = 0.0000 0.0000 0.0000 (   411 PWs)   bands (ev):
+
+    -5.4902   6.5505   6.5505   6.5505
+
+          k = 0.0000 0.0000-0.7071 (   412 PWs)   bands (ev):
+
+    -1.3223  -1.3223   3.6177   3.6177
+
+          k =-0.3536 0.3536-0.3536 (   410 PWs)   bands (ev):
+
+    -3.1381  -0.5092   5.3114   5.3114
+
+          k =-0.3536 0.3536-1.0607 (   410 PWs)   bands (ev):
+
+    -3.1381  -0.5092   5.3114   5.3114
+
+          k = 0.0000 0.0000-0.7071 (   412 PWs)   bands (ev):
+
+    -1.3223  -1.3223   3.6177   3.6177
+
+          k = 0.0000 0.0000-1.4142 (   411 PWs)   bands (ev):
+
+    -5.4902   6.5505   6.5505   6.5505
+
+          k = 0.0000-0.7071-0.0000 (   412 PWs)   bands (ev):
+
+    -1.3223  -1.3223   3.6177   3.6177
+
+          k = 0.0000-0.7071-0.7071 (   412 PWs)   bands (ev):
+
+    -1.3223  -1.3223   3.6177   3.6177
+
+     highest occupied level (ev):     6.5505
+
+     Writing config to output data dir ./tmp/_ph0/struct.q_3/struct.save/
+
+     default                                                                    
+
+     bravais-lattice index     =            0
+     lattice parameter (alat)  =       7.2558  a.u.
+     unit-cell volume          =     270.1072 (a.u.)^3
+     number of atoms/cell      =            2
+     number of atomic types    =            1
+     kinetic-energy cut-off    =      20.0000  Ry
+     charge density cut-off    =      80.0000  Ry
+     convergence threshold     =      1.0E-16
+     beta                      =       0.7000
+     number of iterations used =            4
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+
+
+     celldm(1)=    7.25577  celldm(2)=    0.00000  celldm(3)=    0.00000
+     celldm(4)=    0.00000  celldm(5)=    0.00000  celldm(6)=    0.00000
+
+     crystal axes: (cart. coord. in units of alat)
+               a(1) = (  0.7071  0.7071  0.0000 )  
+               a(2) = (  0.0000  0.7071  0.7071 )  
+               a(3) = (  0.7071  0.0000  0.7071 )  
+
+     reciprocal axes: (cart. coord. in units 2 pi/alat)
+               b(1) = (  0.7071  0.7071 -0.7071 )  
+               b(2) = ( -0.7071  0.7071  0.7071 )  
+               b(3) = (  0.7071 -0.7071  0.7071 )  
+
+
+     Atoms inside the unit cell: 
+
+     Cartesian axes
+
+     site n.  atom      mass           positions (alat units)
+        1     Si  28.0850   tau(    1) = (    0.00000    0.00000    0.00000  )
+        2     Si  28.0850   tau(    2) = (    0.35355    0.35355    0.35355  )
+
+     Computing dynamical matrix for 
+                    q = (   0.0000000   0.0000000  -0.7071068 )
+ 
+     17 Sym.Ops. (with q -> -q+G )
+
+
+     G cutoff =  106.6836  (   3287 G-vectors)     FFT grid: ( 24, 24, 24)
+     number of k points=     8
+
+     PseudoPot. # 1 for Si read from file:
+     ./ONCVPSP/sg15/Si_ONCV_PBE_sr.upf
+     MD5 check sum: 8553c464762ac42b85b1eed164b4d029
+     Pseudo is Norm-conserving, Zval =  4.0
+     Generated using ONCVPSP code by D. R. Hamann
+     Using radial grid of 1510 points,  4 beta functions with: 
+                l(1) =   0
+                l(2) =   0
+                l(3) =   1
+                l(4) =   1
+
+
+     Atomic displacements:
+     There are    3 irreducible representations
+
+     Representation     1      2 modes -  To be done
+
+     Representation     2      2 modes -  To be done
+
+     Representation     3      2 modes -  To be done
+
+
+
+     Alpha used in Ewald sum =   0.8000
+     PHONON       :     14.27s CPU     17.15s WALL
+
+
+
+     Representation #   1 modes #   1   2
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :    17.4 secs   av.it.:   4.8
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  2.897E-08
+
+      iter #   2 total cpu time :    17.7 secs   av.it.:   8.8
+      thresh= 1.702E-05 alpha_mix =  0.700 |ddv_scf|^2 =  2.473E-09
+
+      iter #   3 total cpu time :    18.0 secs   av.it.:   8.3
+      thresh= 4.973E-06 alpha_mix =  0.700 |ddv_scf|^2 =  4.955E-11
+
+      iter #   4 total cpu time :    18.3 secs   av.it.:   8.3
+      thresh= 7.039E-07 alpha_mix =  0.700 |ddv_scf|^2 =  2.673E-13
+
+      iter #   5 total cpu time :    18.6 secs   av.it.:   8.9
+      thresh= 5.170E-08 alpha_mix =  0.700 |ddv_scf|^2 =  3.661E-15
+
+      iter #   6 total cpu time :    19.0 secs   av.it.:   8.6
+      thresh= 6.050E-09 alpha_mix =  0.700 |ddv_scf|^2 =  8.752E-18
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+
+
+     Representation #   2 modes #   3   4
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :    19.3 secs   av.it.:   6.5
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  1.480E-05
+
+      iter #   2 total cpu time :    19.6 secs   av.it.:   9.3
+      thresh= 3.848E-04 alpha_mix =  0.700 |ddv_scf|^2 =  2.895E-05
+
+      iter #   3 total cpu time :    19.9 secs   av.it.:   8.8
+      thresh= 5.380E-04 alpha_mix =  0.700 |ddv_scf|^2 =  1.554E-09
+
+      iter #   4 total cpu time :    20.3 secs   av.it.:   9.0
+      thresh= 3.943E-06 alpha_mix =  0.700 |ddv_scf|^2 =  2.762E-10
+
+      iter #   5 total cpu time :    20.6 secs   av.it.:   9.0
+      thresh= 1.662E-06 alpha_mix =  0.700 |ddv_scf|^2 =  7.697E-12
+
+      iter #   6 total cpu time :    21.0 secs   av.it.:   9.0
+      thresh= 2.774E-07 alpha_mix =  0.700 |ddv_scf|^2 =  3.485E-14
+
+      iter #   7 total cpu time :    21.3 secs   av.it.:   9.0
+      thresh= 1.867E-08 alpha_mix =  0.700 |ddv_scf|^2 =  8.462E-16
+
+      iter #   8 total cpu time :    21.6 secs   av.it.:   8.8
+      thresh= 2.909E-09 alpha_mix =  0.700 |ddv_scf|^2 =  3.353E-17
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+
+
+     Representation #   3 modes #   5   6
+
+     Self-consistent Calculation
+
+      iter #   1 total cpu time :    21.9 secs   av.it.:   6.0
+      thresh= 1.000E-02 alpha_mix =  0.700 |ddv_scf|^2 =  3.461E-06
+
+      iter #   2 total cpu time :    22.3 secs   av.it.:   9.0
+      thresh= 1.861E-04 alpha_mix =  0.700 |ddv_scf|^2 =  1.998E-06
+
+      iter #   3 total cpu time :    22.6 secs   av.it.:   8.5
+      thresh= 1.414E-04 alpha_mix =  0.700 |ddv_scf|^2 =  8.087E-10
+
+      iter #   4 total cpu time :    22.9 secs   av.it.:   8.0
+      thresh= 2.844E-06 alpha_mix =  0.700 |ddv_scf|^2 =  1.834E-12
+
+      iter #   5 total cpu time :    23.3 secs   av.it.:   8.3
+      thresh= 1.354E-07 alpha_mix =  0.700 |ddv_scf|^2 =  1.727E-14
+
+      iter #   6 total cpu time :    23.6 secs   av.it.:   8.6
+      thresh= 1.314E-08 alpha_mix =  0.700 |ddv_scf|^2 =  4.608E-16
+
+      iter #   7 total cpu time :    23.9 secs   av.it.:   8.5
+      thresh= 2.147E-09 alpha_mix =  0.700 |ddv_scf|^2 =  3.522E-18
+
+     End of self-consistent calculation
+
+     Convergence has been achieved 
+ 
+     Number of q in the star =    3
+     List of q in the star:
+          1  -0.000000000   0.000000000  -0.707106781
+          2   0.000000000  -0.707106781  -0.000000000
+          3  -0.707106781   0.000000000  -0.000000000
+
+     Diagonalizing the dynamical matrix
+
+     q = (    0.000000000   0.000000000  -0.707106781 ) 
+
+ **************************************************************************
+     freq (    1) =      -4.338752 [THz] =    -144.725185 [cm-1]
+     freq (    2) =      -4.338752 [THz] =    -144.725185 [cm-1]
+     freq (    3) =      11.082713 [THz] =     369.679522 [cm-1]
+     freq (    4) =      11.082713 [THz] =     369.679522 [cm-1]
+     freq (    5) =      12.647576 [THz] =     421.877731 [cm-1]
+     freq (    6) =      12.647576 [THz] =     421.877731 [cm-1]
+ **************************************************************************
+ 
+     init_run     :      0.02s CPU      0.04s WALL (       2 calls)
+     electrons    :      1.06s CPU      0.68s WALL (       2 calls)
+
+     Called by init_run:
+     wfcinit      :      0.00s CPU      0.01s WALL (       2 calls)
+                                        0.01s GPU  (       2 calls)
+     potinit      :      0.01s CPU      0.02s WALL (       2 calls)
+     hinit0       :      0.00s CPU      0.01s WALL (       2 calls)
+
+     Called by electrons:
+     c_bands      :      1.06s CPU      0.68s WALL (       2 calls)
+     v_of_rho     :      0.02s CPU      0.04s WALL (       3 calls)
+
+     Called by c_bands:
+     init_us_2    :      0.10s CPU      0.12s WALL (     392 calls)
+     init_us_2:cp :      0.00s CPU      0.00s WALL (      54 calls)
+     init_us_2:gp :      0.08s CPU      0.09s WALL (     338 calls)
+     cegterg      :      0.50s CPU      0.55s WALL (      16 calls)
+
+     Called by *egterg:
+     cdiaghg      :      0.14s CPU      0.14s WALL (     170 calls)
+                                        0.14s GPU  (     154 calls)
+     h_psi        :      5.84s CPU      6.86s WALL (    5360 calls)
+                                        6.70s GPU  (    5344 calls)
+     g_psi        :      0.00s CPU      0.00s WALL (     154 calls)
+                                        0.00s GPU  (     154 calls)
+
+     Called by h_psi:
+     h_psi:calbec :      0.33s CPU      1.86s WALL (    5360 calls)
+                                        1.77s GPU  (    5344 calls)
+     vloc_psi     :      2.70s CPU      3.33s WALL (    5360 calls)
+                                        3.18s GPU  (    5344 calls)
+     add_vuspsi   :      0.87s CPU      1.10s WALL (    5360 calls)
+                                        1.02s GPU  (    5344 calls)
+
+     General routines
+     calbec       :      0.37s CPU      0.33s WALL (   10917 calls)
+     fft          :      0.27s CPU      0.29s WALL (    1659 calls)
+                                        0.00s GPU  (      39 calls)
+     ffts         :      0.01s CPU      0.01s WALL (     138 calls)
+                                        0.00s GPU  (      84 calls)
+     fftw         :      0.34s CPU      1.19s WALL (   19464 calls)
+                                        0.90s GPU  (   19464 calls)
+     davcio       :      0.10s CPU      1.66s WALL (    2931 calls)
+ 
+     Parallel routines
+ 
+     PHONON       :     19.72s CPU     24.00s WALL
+
+     INITIALIZATION: 
+     phq_setup    :      0.01s CPU      0.08s WALL (       3 calls)
+     phq_init     :      0.14s CPU      0.17s WALL (       3 calls)
+ 
+     phq_init     :      0.14s CPU      0.17s WALL (       3 calls)
+     init_vloc    :      0.00s CPU      0.00s WALL (       3 calls)
+     init_us_1    :      0.00s CPU      0.01s WALL (       3 calls)
+     init_us_2    :      0.10s CPU      0.12s WALL (     392 calls)
+ 
+     DYNAMICAL MATRIX:
+     dynmat0      :      0.06s CPU      0.08s WALL (       3 calls)
+     dynmat_us    :      0.06s CPU      0.06s WALL (       3 calls)
+     d2ionq       :      0.00s CPU      0.00s WALL (       3 calls)
+     phqscf       :     14.97s CPU     19.07s WALL (       3 calls)
+     dynmatrix    :      0.38s CPU      0.06s WALL (       3 calls)
+ 
+     phqscf       :     14.97s CPU     19.07s WALL (       3 calls)
+     solve_linter :     14.85s CPU     18.74s WALL (       9 calls)
+     sth_kernel   :     15.19s CPU     18.75s WALL (      72 calls)
+     h_prec       :      0.00s CPU      0.00s WALL (     277 calls)
+     apply_dpot_b :      0.46s CPU      0.56s WALL (     453 calls)
+     ortho        :      0.28s CPU      0.33s WALL (     537 calls)
+     cgsolve      :     14.26s CPU     16.99s WALL (     537 calls)
+     incdrhoscf   :      0.46s CPU      0.56s WALL (     528 calls)
+                                        0.55s GPU  (     528 calls)
+     dv_of_drho   :      0.28s CPU      0.31s WALL (     147 calls)
+     mix_pot      :      0.93s CPU      0.97s WALL (      72 calls)
+     drhodv       :      0.11s CPU      0.16s WALL (       9 calls)
+     psymdvscf    :      0.43s CPU      0.46s WALL (      65 calls)
+ 
+     dvqpsi_us    :      0.11s CPU      0.13s WALL (      84 calls)
+                                        0.12s GPU  (      84 calls)
+     dvqpsi_us_on :      0.02s CPU      0.02s WALL (      84 calls)
+ 
+     add_vuspsi   :      0.87s CPU      1.10s WALL (    5360 calls)
+                                        1.02s GPU  (    5344 calls)
+ 
+ 
+      General routines
+     calbec       :      0.37s CPU      0.33s WALL (   10917 calls)
+     fft          :      0.27s CPU      0.29s WALL (    1659 calls)
+                                        0.00s GPU  (      39 calls)
+     ffts         :      0.01s CPU      0.01s WALL (     138 calls)
+                                        0.00s GPU  (      84 calls)
+     fftw         :      0.34s CPU      1.19s WALL (   19464 calls)
+                                        0.90s GPU  (   19464 calls)
+     davcio       :      0.10s CPU      1.66s WALL (    2931 calls)
+     write_rec    :      0.13s CPU      0.89s WALL (      81 calls)
+ 
+      Additional routines
+     ch_psi       :     11.10s CPU     13.23s WALL (    5174 calls)
+     last         :      5.05s CPU      6.01s WALL (    5174 calls)
+     Hesh         :      0.11s CPU      0.13s WALL (    5174 calls)
+     ch_psi_all_k :      4.80s CPU      5.81s WALL (    5174 calls)
+                                        5.74s GPU  (    5174 calls)
+     ch_psi_calbe :      0.11s CPU      1.66s WALL (    5174 calls)
+                                        1.58s GPU  (    5174 calls)
+     h_psi_bgrp   :      5.97s CPU      6.99s WALL (    5360 calls)
+                                        6.83s GPU  (    5344 calls)
+     h_psi        :      5.84s CPU      6.86s WALL (    5360 calls)
+                                        6.70s GPU  (    5344 calls)
+     h_psi:pot    :      5.55s CPU      6.49s WALL (    5360 calls)
+                                        6.32s GPU  (    5344 calls)
+     h_psi:calbec :      0.33s CPU      1.86s WALL (    5360 calls)
+                                        1.77s GPU  (    5344 calls)
+     s_psi_bgrp   :      0.09s CPU      0.30s WALL (   10885 calls)
+                                        0.14s GPU  (   10885 calls)
+ 
+ 
+     PHONON       :     19.72s CPU     24.00s WALL
+
+ 
+   This run was terminated on:   5:10:17  17Jul2024            
+
+=------------------------------------------------------------------------------=
+   JOB DONE.
+=------------------------------------------------------------------------------=
+Warning: ieee_invalid is signaling
+Warning: ieee_divide_by_zero is signaling
+Warning: ieee_underflow is signaling
+Warning: ieee_inexact is signaling
+FORTRAN STOP
