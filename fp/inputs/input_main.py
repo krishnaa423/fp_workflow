@@ -12,6 +12,8 @@ from fp.inputs.kpdos import *
 from fp.inputs.wannier import *
 from fp.inputs.wfngeneral import *
 from fp.inputs.epw import *
+from fp.inputs.epsilon import *
+from fp.inputs.sigma import *
 
 from fp.schedulers import *
 import pickle
@@ -42,8 +44,10 @@ class Input:
         wfn: WfnGeneralInput,
         epw: EpwInput,
         wfnq: WfnGeneralInput,
-        # wfnfi: WfnGeneralInput,
-        # wfnqfi: WfnGeneralInput,
+        wfnfi: WfnGeneralInput,
+        wfnqfi: WfnGeneralInput,
+        epsilon: EpsilonInput,
+        sigma: SigmaInput,
     ):
         self.scheduler: Scheduler = scheduler
         self.atoms: AtomsInput = atoms 
@@ -62,11 +66,11 @@ class Input:
         self.wfn: WfnGeneralInput = wfn
         self.epw: EpwInput = epw
         self.wfnq: WfnGeneralInput = wfnq
-        # self.wfnfi: WfnGeneralInput = wfnfi
-        # self.wfnqfi: WfnGeneralInput = wfnqfi
+        self.wfnfi: WfnGeneralInput = wfnfi
+        self.wfnqfi: WfnGeneralInput = wfnqfi
 
-        # self.epsilon: EpsilonInput = epsilon
-        # self.sigma: SigmaInput = sigma
+        self.epsilon: EpsilonInput = epsilon
+        self.sigma: SigmaInput = sigma
         # self.kernel: KernelInput = kernel
         # self.absorption: AbsorptionInput = absorption
         # self.plotxct: PlotxctInput = plotxct

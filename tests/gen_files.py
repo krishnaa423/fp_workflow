@@ -133,6 +133,43 @@ def main():
         job_pw2bgw_desc=job_desc_node,
     )
 
+    wfnfi = WfnGeneralInput(
+        atoms=atoms_input,
+        kdim=(2, 2, 2),
+        qshift=(0.0, 0.0, 0.000),
+        is_reduced=False,
+        bands=14,
+        job_wfn_desc=job_desc_node,
+        job_pw2bgw_desc=job_desc_node,
+    )
+
+    wfnqfi = WfnGeneralInput(
+        atoms=atoms_input,
+        kdim=(2, 2, 2),
+        qshift=(0.0, 0.0, 0.001),
+        is_reduced=False,
+        bands=14,
+        job_wfn_desc=job_desc_node,
+        job_pw2bgw_desc=job_desc_node,
+    )
+
+    epsilon = EpsilonInput(
+        bands=200,
+        cutoff=10.0,
+        wfn_link='WFN_parabands.h5',
+        wfnq_link='WFNq_coo.h5',
+        job_desc=job_desc_node,
+    )
+
+    sigma = SigmaInput(
+        bands=200,
+        band_min=1,
+        band_max=14,
+        cutoff=10.0,
+        wfn_inner_link='WFN_parabands.h5',
+        job_desc=job_desc_node,
+    )
+
     input = Input(
         scheduler=WSL(),
         atoms=atoms_input,
@@ -149,6 +186,10 @@ def main():
         wfn=wfn,
         epw=epw,
         wfnq=wfnq,
+        wfnfi=wfnfi,
+        wfnqfi=wfnqfi,
+        epsilon=epsilon,
+        sigma=sigma,
     )
 
     # Flow.
@@ -171,8 +212,8 @@ def main():
             Wfnq(input=input),
             # Wfnfi(input=input),
             # Wfnqfi(input=input),
-            # Epsilon(input=input),
-            # Sigma(input=input),
+            Epsilon(input=input),
+            Sigma(input=input),
             # Inteqp(input=input),
             # Kernel(input=input),
             # Absorption(input=input),

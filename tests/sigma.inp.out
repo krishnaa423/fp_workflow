@@ -1,0 +1,855 @@
+
+ BerkeleyGW version 4.0+git v4.0-1-g1cb27c7 by lzlwell <lzlwell@berkeley.edu> at 2024-06-30 15:14:21 -0500
+ Sigma code, Complex version, run on 17-Jul-2024 at 21:48:26 +0000
+
+                                                                 ..o.          
+                                                                .oxxo.         
+                                                               .oxxxxo...      
+                                                               oxxxxxxo.       
+                                                              .oxxxxxxx.       
+                                                              .ooooooxxo..     
+                                                              .oooooooxo..     
+                                                              .oooooxxo...     
+                                                       .........oxooo......    
+                                                 ............................  
+                                             ................................. 
+                                          .................................... 
+           .          ..oo. ....  .................................oooxxxxxxxo.
+     .............oxxxx@ox@@@x@x.....................o...........ooooooooooxx. 
+    .o.........oox@x.oo........xxx@@............ooxxxxo..........ooooxxxxxoxo  
+    .x........x@xxo...............o@xxo........oxxx@@@xoooooooooooooooxxxo...  
+    .o......ox@@o..................oox@o.....ooxxx@xoooxxxxxxxoooooooooooo.... 
+    o..ooooo@@xoooo....ooo...........x@o.....ooxxxxo   .oxxxxxxxxxxooooooo.... 
+    . .oooo@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@....ooooox.     .oxx@@@@@xxoo........ 
+      .ooooxxxxxxxooooooxooooooooooooooxo...oooooxx.        ..ox@xxxoo.........
+      .ooooooxxxx@xoooooooooooooxxoooooooooooxxxxx.            .oxxooooooooxxo.
+     .oooooxxxxx@@@xxxxxxxxxxxxxxxxxxxxxxxxoxxxxo.                .oxxxxxxxxo. 
+   ....oooxxxxx@@@xo..oxxx@@@@@@xxxxoxxoooooooxx.                  .oxxxoo..   
+  .....ooxxxx@@xo.       ........    .ooooooooxxo                              
+  ..oooxxxx@@@o                       .oooooooxoo.                             
+  ....oxooxxxxx.                       .ooo..oooo.                             
+  .....o.ooxxxxxo.                     .oooooooxo.                             
+ ......ooooxxxxxxo.                     .ooooooxoo..                           
+........ooxxxxxxxo..                     .o....oxoo...                         
+.......ooooxxxxxxxo.                     ........oooo.                         
+.ooooooo..ooxxxxoooo.                    .........ooo...                       
+..oxo...ooooxxxoooo..                    .ooo......oooo...                     
+  .ooooo....o.                            .oxxxoo....ooo....                   
+    .oooooo...                              ...ooooo...ooo..                   
+       ...                                     .oo.......                      
+                                               ....ooo...                      
+                      __              __                                       
+ ______              [  |            [  |                 ._____  _          _ 
+|_   _               | |  _          | |                /  ___ | |        | |
+  | |_) | .---.  _. _.| | / |  .---.  | | .---.  _    _ / /    _|   /  / / 
+  |  __'./ /__\[ /`_| '' <  / /__\ | |/ /__\|   | | |   _____  /  / /  
+ _| |__| | __. | |   | |`  | ___. | || ___.  / /  .___| |    /  /   
+|_______/ .__./[_]  [__|  _] .__./[___].__./    /   .____./    /  /    
+                                                  / /                          
+                                                 /_/                           
+ --------------------------------------------------------------------------------
+ Please cite the main BerkeleyGW paper when using results from this calculation:
+
+ Jack Deslippe, Georgy Samsonidze, David A. Strubbe, Manish Jain, Marvin L.
+ Cohen, and Steven G. Louie, "BerkeleyGW: A Massively Parallel Computer Package
+ for the Calculation of the Quasiparticle and Optical Properties of Materials
+ and Nanostructures," Comput. Phys. Commun. 183, 1269 (2012)
+
+ Aditionally, PLEASE CITE ALL PAPERS REPORTED AT THE END OF THIS CALCULATION.
+ --------------------------------------------------------------------------------
+
+ Running MPI version (parallel)
+ Running with 1 MPI task(s)
+ Using OpenMP. Number of threads per MPI task: 16
+ Number of threads used for sorting routines: 1
+
+ Compilation flags:
+ - Compiler: NVHPC
+ - Para. flags: MPI, OMP
+ - Math  flags: USESCALAPACK, UNPACKED, USEFFTW3, HDF5
+ - Debug flags: 
+
+ Running with verbosity level 1 (default).
+
+
+ NOTE: `screened_coulomb_cutoff` and `bare_coulomb_cutoff` are now optional flags.
+
+ Using the Generalized Plasmon Pole model
+
+ We are not communicating
+
+ Computing CH as a partial sum over empty bands
+
+ Running with semiconductor screening
+
+ We are using no truncation
+ Cutoff for Monte-Carlo average of Coulomb potential: 1.000E+012 Ry
+
+ Computing exchange-correlation matrix elements from VXC file
+
+ Treating W within the Hybertsen-Louie Generalized Plasmon Pole model
+ 
+ Memory available: 30317.0 MB per PE
+ 
+ Read from eps0mat.h5:
+ - Number of G-vectors in the charge-density grid: 3287
+ - Max. number of G-vectors for dielectric matrices: 137
+ - Cutoff of the dielectric matrix (Ry): 10.000
+ - Number of imaginary frequencies: 0
+ - Total number of frequencies: 1
+ - Frequency dependence: 0
+ - Number of q-points: 1
+ - Q grid: 2 2 2
+ 
+ Read from epsmat.h5:
+ - Number of G-vectors in the charge-density grid: 3287
+ - Max. number of G-vectors for dielectric matrices: 150
+ - Cutoff of the dielectric matrix: 10.000
+ - Number of imaginary frequencies: 0
+ - Total number of frequencies: 1
+ - Frequency dependence: 0
+ - Number of q-points: 7
+ - Q grid: 2 2 2
+ 
+ Reading header of WFN_inner.h5
+ Highest occupied band (unshifted grid) = 4
+ Valence max    (unshifted grid) = 6.550504 eV
+ Conduction min (unshifted grid) = 7.144342 eV
+ Middle energy  (unshifted grid) = 6.847423 eV
+ Fermi  energy  (unshifted grid) = 6.847423 eV
+
+ 
+ Calculation parameters:
+ - Cutoff of the bare Coulomb interaction (Ry): 20.00
+ - Cutoff of the screened Coulomb interaction (Ry): 10.00
+ - Number of G-vectors up to the bare int. cutoff: 411
+ - Number of G-vectors up to the screened int. cutoff: 137
+ - Total number of bands in the calculation: 200
+ - Number of fully occupied valence bands: 4
+ - Number of partially occ. conduction bands: 0
+ 
+ Memory required for execution: 17.1 MB per PE
+ Memory required for vcoul: 114.4 MB per PE
+ 
+WARNING: Selected number of bands for CH sum (number_bands) breaks degenerate subspace. Run degeneracy_check.x for allowable numbers.
+ 
+ Number of electrons per unit cell (from ifmax) = 8.000000
+ Number of electrons per unit cell (from occupations) = 8.000000
+ Plasma Frequency = 1.220146 Ry
+
+ Q-grid symmetries are not being used.
+WARNING: Inversion symmetry is present only with a fractional translation.
+Apply the translation so inversion is about the origin, to be able to use the real version.
+WARNING: Inversion symmetry is present only with a fractional translation.
+Apply the translation so inversion is about the origin, to be able to use the real version.
+ 
+ Parallelization report:
+ - Using 1 processor(s), 1 pool(s), 1 processor(s) per pool.
+ - Each pool is computing 14 diagonal sigma matrix element(s).
+ - Each pool is computing 0 off-diagonal sigma matrix element(s).
+ - Each processor is holding 200 band(s).
+ 
+ 
+ Started reading wavefunctions (WFN_inner) with 1600 state(s) at 21:48:26.
+ Reading band block from WFN_inner.h5
+ Reading using H5FD_MPIO_COLLECTIVE.
+ Using communication style:  1
+ 
+ [ 21:48:26 |   0% ] state    1 / 1600.
+ [ 21:48:26 |   0% ] state    3 / 1600, remaining: 0 s.
+ [ 21:48:26 |  10% ] state  160 / 1600, remaining: 0 s.
+ [ 21:48:26 |  20% ] state  320 / 1600, remaining: 0 s.
+ [ 21:48:26 |  30% ] state  480 / 1600, remaining: 0 s.
+ [ 21:48:26 |  40% ] state  640 / 1600, remaining: 0 s.
+ [ 21:48:26 |  50% ] state  800 / 1600, remaining: 0 s.
+ [ 21:48:26 |  60% ] state  960 / 1600, remaining: 0 s.
+ [ 21:48:26 |  70% ] state 1120 / 1600, remaining: 0 s.
+ [ 21:48:26 |  80% ] state 1280 / 1600, remaining: 0 s.
+ [ 21:48:26 |  90% ] state 1440 / 1600, remaining: 0 s.
+ [ 21:48:26 | 100% ] state 1600 / 1600, remaining: 0 s.
+ Finished reading wavefunctions (WFN_inner) at 21:48:26.
+ Elapsed time: 0 s.
+ 
+
+ Scissors parameters:
+ - Valence:    es =   0.0000 eV, e0 =   0.0000 eV, edel =   0.0000
+ - Conduction: es =   0.0000 eV, e0 =   0.0000 eV, edel =   0.0000
+
+ Scissors parameters (outer):
+ - Valence:    es =   0.0000 eV, e0 =   0.0000 eV, edel =   0.0000
+ - Conduction: es =   0.0000 eV, e0 =   0.0000 eV, edel =   0.0000
+
+
+ Data for sum rule:
+ - rho(0,1) = 8.000000 electrons
+ - wp = 16.600934 eV
+
+ Number of bands to compute diagonal self-energy matrix elements: 14
+ Bands:
+ - 1
+ - 2
+ - 3
+ - 4
+ - 5
+ - 6
+ - 7
+ - 8
+ - 9
+ - 10
+ - 11
+ - 12
+ - 13
+ - 14
+ Number of off-diagonal bands to compute self-energy matrix elements: 0
+ 
+ GPU acceleration is : ENABLED
+ 
+ Algorithms used:
+ - mtxel     : OPENACC_ALGO
+ - sigma_gpp : OPENACC_ALGO
+
+ Total number of frequencies in the dielectric matrix: 1
+ Number of imag. frequencies in the dielectric matrix: 0
+
+ 
+ Started reading eps0mat.h5 with 1 q-point(s) at 21:48:26.
+ [ 21:48:26 |   0% ] q-point 1 / 1.
+ Finished reading eps0mat.h5 at 21:48:26.
+ Elapsed time: 0 s.
+ 
+ 
+ Started reading epsmat.h5 with 7 q-point(s) at 21:48:26.
+ [ 21:48:26 |   0% ] q-point 1 / 7.
+ [ 21:48:26 |  14% ] q-point 2 / 7.
+ [ 21:48:26 |  29% ] q-point 3 / 7, remaining: 0 s.
+ [ 21:48:26 |  43% ] q-point 4 / 7, remaining: 0 s.
+ [ 21:48:26 |  57% ] q-point 5 / 7, remaining: 0 s.
+ [ 21:48:26 |  71% ] q-point 6 / 7, remaining: 0 s.
+ [ 21:48:26 |  86% ] q-point 7 / 7, remaining: 0 s.
+ Finished reading epsmat.h5 at 21:48:26.
+ Elapsed time: 0 s.
+ 
+ Number of k-points in WFN_inner: 8
+ Number of k-points in the full BZ of WFN_inner: 8
+ 
+================================================================================
+ 21:48:26   Dealing with k =  0.000000  0.000000  0.000000                 1 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:26.
+ [ 21:48:27 |   0% ] block   1 / 112.
+ [ 21:48:28 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:28 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:28 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:29 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:29 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:30 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:30 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:30 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:31 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:31 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:32 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:32.
+ Elapsed time: 6 s.
+ 
+ Unsymmetrized values for ik =   1 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -5.490   -5.490  -10.435  -17.024   13.202   -7.675    5.528  -11.496
+     2    6.551    6.551  -11.400  -13.936   10.045   -8.813    1.232  -12.703
+     3    6.551    6.551  -11.400  -13.936   10.052   -8.819    1.233  -12.703
+     4    6.551    6.551  -11.400  -13.936   10.046   -8.813    1.233  -12.704
+     5    8.990    8.990   -9.947   -5.087    3.538   -8.581   -5.043  -10.130
+     6    8.990    8.990   -9.947   -5.087    3.559   -8.601   -5.043  -10.130
+     7    8.990    8.990   -9.947   -5.088    3.524   -8.566   -5.042  -10.130
+     8    9.889    9.889  -10.875   -5.097    3.973   -9.918   -5.945  -11.042
+     9   14.193   14.193  -10.029   -4.270    3.269   -8.875   -5.606   -9.876
+    10   14.193   14.193  -10.029   -4.270    3.269   -8.875   -5.606   -9.876
+    11   14.476   14.476   -7.310   -2.356    1.669   -7.570   -5.901   -8.257
+    12   17.655   17.655   -8.019   -2.057    1.826   -8.548   -6.722   -8.779
+    13   17.655   17.655   -8.019   -2.057    1.827   -8.548   -6.721   -8.778
+    14   17.655   17.655   -8.019   -2.057    1.828   -8.549   -6.721   -8.778
+
+ Symmetrized values from band-averaging:
+
+       k =  0.000000  0.000000  0.000000 ik =   1 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -5.490   -5.490  -10.435  -17.024    5.528   -6.552   -6.183    0.653
+     2    6.551    6.551  -11.400  -13.936    1.233    5.247    5.544    0.773
+     3    6.551    6.551  -11.400  -13.936    1.233    5.247    5.544    0.773
+     4    6.551    6.551  -11.400  -13.936    1.233    5.247    5.544    0.773
+     5    8.990    8.990   -9.947   -5.087   -5.043    8.808    8.851    0.763
+     6    8.990    8.990   -9.947   -5.087   -5.043    8.808    8.851    0.763
+     7    8.990    8.990   -9.947   -5.087   -5.043    8.808    8.851    0.763
+     8    9.889    9.889  -10.875   -5.097   -5.945    9.722    9.763    0.754
+     9   14.193   14.193  -10.029   -4.270   -5.606   14.346   14.309    0.756
+    10   14.193   14.193  -10.029   -4.270   -5.606   14.346   14.309    0.756
+    11   14.476   14.476   -7.310   -2.356   -5.901   13.528   13.767    0.748
+    12   17.655   17.655   -8.019   -2.057   -6.721   16.895   17.104    0.725
+    13   17.655   17.655   -8.019   -2.057   -6.721   16.895   17.104    0.725
+    14   17.655   17.655   -8.019   -2.057   -6.721   16.895   17.104    0.725
+ 
+================================================================================
+ 21:48:32   Dealing with k = -0.000000 -0.000000  0.500000                 2 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:32.
+ [ 21:48:32 |   0% ] block   1 / 112.
+ [ 21:48:32 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:32 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:33 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:33 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:33 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:34 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:34 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:35 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:35 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:35 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:36 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:36.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   2 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -3.138   -3.138  -10.868  -16.485   12.462   -8.020    4.442  -12.043
+     2   -0.509   -0.509  -10.129  -14.187   10.609   -7.819    2.790  -11.397
+     3    5.311    5.311  -11.103  -13.776   10.068   -8.675    1.393  -12.384
+     4    5.311    5.311  -11.103  -13.777   10.069   -8.676    1.392  -12.384
+     5    8.037    8.037  -10.005   -5.199    3.575   -8.651   -5.077  -10.275
+     6    9.767    9.767   -9.536   -4.578    3.269   -8.393   -5.125   -9.703
+     7    9.767    9.767   -9.536   -4.578    3.264   -8.388   -5.124   -9.703
+     8   14.176   14.176   -7.327   -2.085    1.296   -7.403   -6.107   -8.192
+     9   17.105   17.105  -10.187   -3.918    3.014   -9.462   -6.448  -10.367
+    10   17.105   17.105  -10.187   -3.918    3.013   -9.462   -6.449  -10.367
+    11   17.828   17.828   -9.906   -3.541    3.068   -9.783   -6.716  -10.257
+    12   17.828   17.828   -9.906   -3.542    3.066   -9.782   -6.716  -10.258
+    13   17.943   17.943   -9.548   -3.731    3.310   -9.773   -6.463  -10.195
+    14   19.528   19.528  -10.211   -3.429    3.642  -11.091   -7.450  -10.878
+
+ Symmetrized values from band-averaging:
+
+       k = -0.000000 -0.000000  0.500000 ik =   2 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -3.138   -3.138  -10.868  -16.485    4.442   -4.313   -3.967    0.705
+     2   -0.509   -0.509  -10.129  -14.187    2.790   -1.777   -1.457    0.747
+     3    5.311    5.311  -11.103  -13.776    1.393    4.030    4.326    0.769
+     4    5.311    5.311  -11.103  -13.776    1.393    4.030    4.326    0.769
+     5    8.037    8.037  -10.005   -5.199   -5.077    7.767    7.830    0.767
+     6    9.767    9.767   -9.536   -4.578   -5.124    9.600    9.638    0.768
+     7    9.767    9.767   -9.536   -4.578   -5.124    9.600    9.638    0.768
+     8   14.176   14.176   -7.327   -2.085   -6.107   13.312   13.526    0.752
+     9   17.105   17.105  -10.187   -3.918   -6.449   16.925   16.972    0.738
+    10   17.105   17.105  -10.187   -3.918   -6.449   16.925   16.972    0.738
+    11   17.828   17.828   -9.906   -3.542   -6.716   17.476   17.569    0.734
+    12   17.828   17.828   -9.906   -3.542   -6.716   17.476   17.569    0.734
+    13   17.943   17.943   -9.548   -3.731   -6.463   17.296   17.461    0.745
+    14   19.528   19.528  -10.211   -3.429   -7.450   18.862   19.073    0.683
+ 
+================================================================================
+ 21:48:36   Dealing with k =  0.000000  0.500000 -0.000000                 3 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:36.
+ [ 21:48:36 |   0% ] block   1 / 112.
+ [ 21:48:36 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:36 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:37 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:37 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:38 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:38 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:38 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:39 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:39 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:40 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:40 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:40.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   3 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -3.138   -3.138  -10.868  -16.485   12.462   -8.020    4.442  -12.043
+     2   -0.509   -0.509  -10.129  -14.188   10.609   -7.819    2.790  -11.397
+     3    5.311    5.311  -11.103  -13.776   10.069   -8.677    1.392  -12.384
+     4    5.311    5.311  -11.103  -13.776   10.068   -8.675    1.393  -12.384
+     5    8.037    8.037  -10.005   -5.199    3.575   -8.651   -5.077  -10.275
+     6    9.767    9.767   -9.536   -4.578    3.272   -8.397   -5.125   -9.703
+     7    9.767    9.767   -9.536   -4.579    3.261   -8.385   -5.124   -9.703
+     8   14.176   14.176   -7.327   -2.085    1.295   -7.403   -6.107   -8.192
+     9   17.105   17.105  -10.187   -3.918    3.013   -9.462   -6.449  -10.367
+    10   17.105   17.105  -10.187   -3.919    3.013   -9.462   -6.448  -10.367
+    11   17.828   17.828   -9.906   -3.542    3.065   -9.781   -6.716  -10.258
+    12   17.828   17.828   -9.906   -3.542    3.068   -9.784   -6.716  -10.257
+    13   17.943   17.943   -9.548   -3.731    3.310   -9.773   -6.463  -10.195
+    14   19.528   19.528  -10.211   -3.429    3.659  -11.109   -7.450  -10.879
+
+ Symmetrized values from band-averaging:
+
+       k =  0.000000  0.500000 -0.000000 ik =   3 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -3.138   -3.138  -10.868  -16.485    4.442   -4.313   -3.967    0.705
+     2   -0.509   -0.509  -10.129  -14.188    2.790   -1.778   -1.457    0.747
+     3    5.311    5.311  -11.103  -13.776    1.393    4.030    4.326    0.769
+     4    5.311    5.311  -11.103  -13.776    1.393    4.030    4.326    0.769
+     5    8.037    8.037  -10.005   -5.199   -5.077    7.767    7.830    0.767
+     6    9.767    9.767   -9.536   -4.579   -5.124    9.600    9.638    0.768
+     7    9.767    9.767   -9.536   -4.579   -5.124    9.600    9.638    0.768
+     8   14.176   14.176   -7.327   -2.085   -6.107   13.312   13.526    0.752
+     9   17.105   17.105  -10.187   -3.918   -6.449   16.925   16.972    0.738
+    10   17.105   17.105  -10.187   -3.918   -6.449   16.925   16.972    0.738
+    11   17.828   17.828   -9.906   -3.542   -6.716   17.476   17.569    0.734
+    12   17.828   17.828   -9.906   -3.542   -6.716   17.476   17.569    0.734
+    13   17.943   17.943   -9.548   -3.731   -6.463   17.297   17.461    0.745
+    14   19.528   19.528  -10.211   -3.429   -7.450   18.861   19.073    0.683
+ 
+================================================================================
+ 21:48:40   Dealing with k =  0.000000  0.500000  0.500000                 4 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:40.
+ [ 21:48:40 |   0% ] block   1 / 112.
+ [ 21:48:40 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:41 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:41 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:41 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:42 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:42 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:43 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:43 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:44 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:44 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:44 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:44.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   4 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -1.322   -1.322  -10.861  -15.595   11.626   -8.136    3.490  -12.105
+     2   -1.322   -1.322  -10.861  -15.602   11.629   -8.136    3.493  -12.109
+     3    3.618    3.618  -10.576  -13.525    9.981   -8.299    1.682  -11.842
+     4    3.618    3.618  -10.576  -13.525    9.982   -8.299    1.682  -11.842
+     5    7.144    7.144   -8.771   -4.364    2.887   -7.676   -4.789   -9.152
+     6    7.144    7.144   -8.771   -4.363    2.887   -7.676   -4.789   -9.152
+     7   16.613   16.613  -10.483   -3.864    3.139  -10.187   -7.048  -10.912
+     8   16.613   16.613  -10.483   -3.864    3.125  -10.174   -7.049  -10.913
+     9   17.626   17.626  -10.558   -4.452    3.457   -9.733   -6.275  -10.728
+    10   17.626   17.626  -10.558   -4.452    3.458   -9.733   -6.275  -10.728
+    11   19.052   19.052  -10.129   -3.504    3.203   -9.949   -6.746  -10.250
+    12   19.052   19.052  -10.129   -3.503    3.193   -9.939   -6.746  -10.249
+    13   19.602   19.602  -10.173   -3.646    3.909  -11.033   -7.125  -10.770
+    14   19.602   19.602  -10.173   -3.643    3.907  -11.030   -7.122  -10.765
+
+ Symmetrized values from band-averaging:
+
+       k =  0.000000  0.500000  0.500000 ik =   4 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -1.322   -1.322  -10.861  -15.599    3.492   -2.569   -2.233    0.731
+     2   -1.322   -1.322  -10.861  -15.599    3.492   -2.569   -2.233    0.731
+     3    3.618    3.618  -10.576  -13.525    1.682    2.352    2.649    0.765
+     4    3.618    3.618  -10.576  -13.525    1.682    2.352    2.649    0.765
+     5    7.144    7.144   -8.771   -4.363   -4.789    6.763    6.849    0.775
+     6    7.144    7.144   -8.771   -4.363   -4.789    6.763    6.849    0.775
+     7   16.613   16.613  -10.483   -3.864   -7.049   16.184   16.310    0.705
+     8   16.613   16.613  -10.483   -3.864   -7.049   16.184   16.310    0.705
+     9   17.626   17.626  -10.558   -4.452   -6.275   17.457   17.501    0.738
+    10   17.626   17.626  -10.558   -4.452   -6.275   17.457   17.501    0.738
+    11   19.052   19.052  -10.129   -3.503   -6.746   18.931   18.963    0.730
+    12   19.052   19.052  -10.129   -3.503   -6.746   18.931   18.963    0.730
+    13   19.602   19.602  -10.173   -3.644   -7.123   19.008   19.188    0.697
+    14   19.602   19.602  -10.173   -3.644   -7.123   19.008   19.188    0.697
+ 
+================================================================================
+ 21:48:44   Dealing with k =  0.500000  0.000000  0.000000                 5 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:44.
+ [ 21:48:44 |   0% ] block   1 / 112.
+ [ 21:48:45 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:45 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:45 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:46 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:46 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:47 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:47 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:47 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:48 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:48 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:49 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:49.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   5 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -3.138   -3.138  -10.868  -16.485   12.462   -8.020    4.442  -12.043
+     2   -0.509   -0.509  -10.129  -14.188   10.609   -7.819    2.790  -11.397
+     3    5.311    5.311  -11.103  -13.776   10.069   -8.676    1.392  -12.384
+     4    5.311    5.311  -11.103  -13.776   10.068   -8.676    1.393  -12.384
+     5    8.037    8.037  -10.005   -5.198    3.575   -8.652   -5.077  -10.275
+     6    9.767    9.767   -9.536   -4.578    3.265   -8.390   -5.125   -9.703
+     7    9.767    9.767   -9.536   -4.578    3.267   -8.392   -5.125   -9.703
+     8   14.176   14.176   -7.327   -2.085    1.297   -7.404   -6.107   -8.192
+     9   17.105   17.105  -10.187   -3.918    3.013   -9.462   -6.449  -10.367
+    10   17.105   17.105  -10.187   -3.918    3.013   -9.462   -6.449  -10.367
+    11   17.828   17.828   -9.906   -3.542    3.069   -9.785   -6.716  -10.258
+    12   17.828   17.828   -9.906   -3.542    3.063   -9.779   -6.716  -10.258
+    13   17.943   17.943   -9.548   -3.731    3.310   -9.773   -6.463  -10.195
+    14   19.528   19.528  -10.211   -3.429    3.659  -11.108   -7.450  -10.879
+
+ Symmetrized values from band-averaging:
+
+       k =  0.500000  0.000000  0.000000 ik =   5 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -3.138   -3.138  -10.868  -16.485    4.442   -4.313   -3.967    0.705
+     2   -0.509   -0.509  -10.129  -14.188    2.790   -1.778   -1.457    0.747
+     3    5.311    5.311  -11.103  -13.776    1.393    4.030    4.326    0.769
+     4    5.311    5.311  -11.103  -13.776    1.393    4.030    4.326    0.769
+     5    8.037    8.037  -10.005   -5.198   -5.077    7.767    7.830    0.767
+     6    9.767    9.767   -9.536   -4.578   -5.125    9.600    9.639    0.768
+     7    9.767    9.767   -9.536   -4.578   -5.125    9.600    9.639    0.768
+     8   14.176   14.176   -7.327   -2.085   -6.107   13.312   13.526    0.752
+     9   17.105   17.105  -10.187   -3.918   -6.449   16.925   16.972    0.738
+    10   17.105   17.105  -10.187   -3.918   -6.449   16.925   16.972    0.738
+    11   17.828   17.828   -9.906   -3.542   -6.716   17.475   17.569    0.734
+    12   17.828   17.828   -9.906   -3.542   -6.716   17.475   17.569    0.734
+    13   17.943   17.943   -9.548   -3.731   -6.463   17.297   17.462    0.745
+    14   19.528   19.528  -10.211   -3.429   -7.450   18.861   19.073    0.683
+ 
+================================================================================
+ 21:48:49   Dealing with k =  0.500000  0.000000  0.500000                 6 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:49.
+ [ 21:48:49 |   0% ] block   1 / 112.
+ [ 21:48:49 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:49 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:50 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:50 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:50 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:51 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:51 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:52 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:52 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:52 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:53 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:53.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   6 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -1.322   -1.322  -10.861  -15.596   11.626   -8.136    3.490  -12.106
+     2   -1.322   -1.322  -10.861  -15.601   11.629   -8.136    3.493  -12.108
+     3    3.618    3.618  -10.576  -13.524    9.981   -8.298    1.682  -11.842
+     4    3.618    3.618  -10.576  -13.525    9.982   -8.299    1.682  -11.842
+     5    7.144    7.144   -8.771   -4.363    2.887   -7.676   -4.789   -9.152
+     6    7.144    7.144   -8.771   -4.363    2.887   -7.676   -4.789   -9.152
+     7   16.613   16.613  -10.483   -3.864    3.130  -10.179   -7.049  -10.912
+     8   16.613   16.613  -10.483   -3.864    3.133  -10.182   -7.048  -10.912
+     9   17.626   17.626  -10.558   -4.453    3.456   -9.731   -6.275  -10.728
+    10   17.626   17.626  -10.558   -4.453    3.457   -9.733   -6.276  -10.728
+    11   19.052   19.052  -10.129   -3.503    3.200   -9.946   -6.746  -10.249
+    12   19.052   19.052  -10.129   -3.504    3.201   -9.947   -6.746  -10.250
+    13   19.602   19.602  -10.173   -3.644    3.908  -11.033   -7.125  -10.769
+    14   19.602   19.602  -10.173   -3.644    3.906  -11.028   -7.122  -10.766
+
+ Symmetrized values from band-averaging:
+
+       k =  0.500000  0.000000  0.500000 ik =   6 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -1.322   -1.322  -10.861  -15.599    3.492   -2.569   -2.233    0.731
+     2   -1.322   -1.322  -10.861  -15.599    3.492   -2.569   -2.233    0.731
+     3    3.618    3.618  -10.576  -13.524    1.682    2.352    2.649    0.765
+     4    3.618    3.618  -10.576  -13.524    1.682    2.352    2.649    0.765
+     5    7.144    7.144   -8.771   -4.363   -4.789    6.764    6.849    0.775
+     6    7.144    7.144   -8.771   -4.363   -4.789    6.764    6.849    0.775
+     7   16.613   16.613  -10.483   -3.864   -7.049   16.184   16.310    0.705
+     8   16.613   16.613  -10.483   -3.864   -7.049   16.184   16.310    0.705
+     9   17.626   17.626  -10.558   -4.453   -6.275   17.457   17.501    0.738
+    10   17.626   17.626  -10.558   -4.453   -6.275   17.457   17.501    0.738
+    11   19.052   19.052  -10.129   -3.503   -6.746   18.931   18.964    0.730
+    12   19.052   19.052  -10.129   -3.503   -6.746   18.931   18.964    0.730
+    13   19.602   19.602  -10.173   -3.644   -7.123   19.008   19.188    0.697
+    14   19.602   19.602  -10.173   -3.644   -7.123   19.008   19.188    0.697
+ 
+================================================================================
+ 21:48:53   Dealing with k =  0.500000  0.500000  0.000000                 7 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:53.
+ [ 21:48:53 |   0% ] block   1 / 112.
+ [ 21:48:53 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:53 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:54 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:54 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:55 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:55 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:48:56 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:48:56 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:48:56 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:48:57 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:48:57 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:48:57.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   7 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -1.322   -1.322  -10.861  -15.598   11.627   -8.136    3.491  -12.107
+     2   -1.322   -1.322  -10.861  -15.599   11.628   -8.136    3.492  -12.107
+     3    3.618    3.618  -10.576  -13.525    9.981   -8.299    1.682  -11.842
+     4    3.618    3.618  -10.576  -13.525    9.981   -8.299    1.682  -11.842
+     5    7.144    7.144   -8.771   -4.363    2.888   -7.676   -4.789   -9.152
+     6    7.144    7.144   -8.771   -4.363    2.886   -7.676   -4.790   -9.152
+     7   16.613   16.613  -10.483   -3.864    3.127  -10.176   -7.049  -10.913
+     8   16.613   16.613  -10.483   -3.864    3.136  -10.184   -7.048  -10.912
+     9   17.626   17.626  -10.558   -4.453    3.455   -9.730   -6.275  -10.727
+    10   17.626   17.626  -10.558   -4.452    3.458   -9.734   -6.276  -10.729
+    11   19.052   19.052  -10.129   -3.503    3.207   -9.953   -6.746  -10.250
+    12   19.052   19.052  -10.129   -3.503    3.193   -9.939   -6.746  -10.249
+    13   19.602   19.602  -10.173   -3.644    3.909  -11.032   -7.123  -10.767
+    14   19.602   19.602  -10.173   -3.644    3.906  -11.030   -7.124  -10.768
+
+ Symmetrized values from band-averaging:
+
+       k =  0.500000  0.500000  0.000000 ik =   7 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -1.322   -1.322  -10.861  -15.599    3.492   -2.569   -2.233    0.731
+     2   -1.322   -1.322  -10.861  -15.599    3.492   -2.569   -2.233    0.731
+     3    3.618    3.618  -10.576  -13.525    1.682    2.352    2.649    0.765
+     4    3.618    3.618  -10.576  -13.525    1.682    2.352    2.649    0.765
+     5    7.144    7.144   -8.771   -4.363   -4.789    6.764    6.849    0.775
+     6    7.144    7.144   -8.771   -4.363   -4.789    6.764    6.849    0.775
+     7   16.613   16.613  -10.483   -3.864   -7.049   16.184   16.310    0.705
+     8   16.613   16.613  -10.483   -3.864   -7.049   16.184   16.310    0.705
+     9   17.626   17.626  -10.558   -4.453   -6.275   17.457   17.501    0.738
+    10   17.626   17.626  -10.558   -4.453   -6.275   17.457   17.501    0.738
+    11   19.052   19.052  -10.129   -3.503   -6.746   18.931   18.963    0.730
+    12   19.052   19.052  -10.129   -3.503   -6.746   18.931   18.963    0.730
+    13   19.602   19.602  -10.173   -3.644   -7.123   19.008   19.188    0.697
+    14   19.602   19.602  -10.173   -3.644   -7.123   19.008   19.188    0.697
+ 
+================================================================================
+ 21:48:57   Dealing with k =  0.500000  0.500000  0.500000                 8 / 8
+================================================================================
+
+ Number of q-points in the irreducible BZ(k) (nrq): 8
+
+ Using GPU support via OpenACC/OMP-Target implementation
+ Band block size in MTXEL:    20
+ 
+ Started calculating Sigma with 112 block(s) at 21:48:57.
+ [ 21:48:57 |   0% ] block   1 / 112.
+ [ 21:48:57 |   2% ] block   3 / 112, remaining: 4 s.
+ [ 21:48:58 |  10% ] block  12 / 112, remaining: 4 s.
+ [ 21:48:58 |  20% ] block  23 / 112, remaining: 3 s.
+ [ 21:48:59 |  29% ] block  34 / 112, remaining: 3 s.
+ [ 21:48:59 |  39% ] block  45 / 112, remaining: 3 s.
+ [ 21:48:59 |  49% ] block  56 / 112, remaining: 2 s.
+ [ 21:49:00 |  60% ] block  68 / 112, remaining: 2 s.
+ [ 21:49:00 |  70% ] block  79 / 112, remaining: 1 s.
+ [ 21:49:01 |  79% ] block  90 / 112, remaining: 1 s.
+ [ 21:49:01 |  89% ] block 101 / 112, remaining: 0 s.
+ [ 21:49:01 |  99% ] block 112 / 112, remaining: 0 s.
+ Finished calculating Sigma at 21:49:02.
+ Elapsed time: 4 s.
+ 
+ Unsymmetrized values for ik =   8 spin = 1
+ 
+     n      Emf       Eo      Vxc        X     SX-X       CH      Cor      Sig
+     1   -3.138   -3.138  -10.868  -16.485   12.461   -8.020    4.441  -12.045
+     2   -0.509   -0.509  -10.129  -14.187   10.608   -7.818    2.791  -11.397
+     3    5.311    5.311  -11.103  -13.776   10.069   -8.677    1.392  -12.384
+     4    5.311    5.311  -11.103  -13.777   10.069   -8.677    1.393  -12.384
+     5    8.037    8.037  -10.005   -5.199    3.577   -8.653   -5.076  -10.274
+     6    9.767    9.767   -9.536   -4.579    3.281   -8.405   -5.124   -9.703
+     7    9.767    9.767   -9.536   -4.579    3.282   -8.406   -5.124   -9.703
+     8   14.176   14.176   -7.327   -2.085    1.300   -7.407   -6.107   -8.192
+     9   17.105   17.105  -10.187   -3.918    3.015   -9.463   -6.448  -10.366
+    10   17.105   17.105  -10.187   -3.918    3.015   -9.463   -6.448  -10.366
+    11   17.828   17.828   -9.906   -3.541    3.044   -9.761   -6.717  -10.258
+    12   17.828   17.828   -9.906   -3.541    3.044   -9.761   -6.717  -10.258
+    13   17.943   17.943   -9.548   -3.731    3.304   -9.771   -6.467  -10.198
+    14   19.528   19.528  -10.211   -3.428    3.655  -11.103   -7.448  -10.877
+
+ Symmetrized values from band-averaging:
+
+       k =  0.500000  0.500000  0.500000 ik =   8 spin = 1
+
+     n      Emf       Eo      Vxc        X      Cor     Eqp0     Eqp1      Znk
+     1   -3.138   -3.138  -10.868  -16.485    4.441   -4.315   -3.968    0.705
+     2   -0.509   -0.509  -10.129  -14.187    2.791   -1.777   -1.457    0.747
+     3    5.311    5.311  -11.103  -13.777    1.392    4.030    4.326    0.769
+     4    5.311    5.311  -11.103  -13.777    1.392    4.030    4.326    0.769
+     5    8.037    8.037  -10.005   -5.199   -5.076    7.768    7.831    0.767
+     6    9.767    9.767   -9.536   -4.579   -5.124    9.600    9.639    0.768
+     7    9.767    9.767   -9.536   -4.579   -5.124    9.600    9.639    0.768
+     8   14.176   14.176   -7.327   -2.085   -6.107   13.311   13.526    0.752
+     9   17.105   17.105  -10.187   -3.918   -6.448   16.926   16.973    0.738
+    10   17.105   17.105  -10.187   -3.918   -6.448   16.926   16.973    0.738
+    11   17.828   17.828   -9.906   -3.541   -6.717   17.475   17.569    0.734
+    12   17.828   17.828   -9.906   -3.541   -6.717   17.475   17.569    0.734
+    13   17.943   17.943   -9.548   -3.731   -6.467   17.293   17.459    0.744
+    14   19.528   19.528  -10.211   -3.428   -7.448   18.863   19.073    0.684
+
+================================================================================
+
+    n = band index.
+  Emf = "inner" mean-field energy eigenvalue used to construct Sigma(E),
+        read from WFN_inner.
+   Eo = "outer" mean-field energy eigenvalue where we center the evaluation
+        frequency grid {E} of Sigma(E). Defaults to Emf, unless
+        you use WFN_outer and eqp_outer.dat / scissors_outer.
+  Vxc = exchange-correlation pot., calculated from VXC or read from vxc.dat.
+  KIH = Kinetic energy + Ionic potential + Hartree, read from kih.dat.
+    X = bare exchange.
+   SX = screened exchange contrib. to Sigma(E) at energy E=Eo
+   CH = Coulomb hole contrib. to Sigma(E) at energy E=Eo
+  Cor = SX-X + CH = correlation portion of Sigma(E) at energy E=Eo.
+  Sig = X + Cor = self energy, Sigma(E), at energy E=Eo.
+ Eqp0 = on-shell QP energy = Emf - Vxc + Sig(Eo)
+        Eqp0 is *not* the recommended quantity to use for QP properties.
+ Eqp1 = off-shell solution to the linearized  Dyson`s equation
+      = Eqp0 + (dSig/dE) / (1 - dSig/dE) * (Eqp0 - Eo),
+        or a full linear interpolation if more freq. points where computed.
+        Eqp1 is the recommended quantity to use for QP properties.
+  Znk = quasiparticle renormalization factor
+
+ Notes on the finite_difference_form from sigma.inp file:
+   none    : -2 => dSig/dE = 0 (skip the expansion)
+   backward: -1 => dSig/dE = (Sig(Eo) - Sig(Eo-dE)) / dE
+   central :  0 => dSig/dE = (Sig(Eo+dE) - Sig(Eo-dE)) / (2*dE)
+   forward :  1 => dSig/dE = (Sig(Eo+dE) - Sig(Eo)) / dE
+   default :  2 => forward for diagonal and none for off-diagonal
+   dE is finite_difference_spacing from Sigma.inp file.
+   We are using the form #2 with dE = 1.000 eV.
+
+ General notes:
+ - All energies are reported here in eV.
+ - Both Emf and Vxc contain the average pot. Vxc0, so Vxc0 doesn`t affect Sigma.
+ - Eqp1 and Eqp0 are Eqs. (36-37) from Hybertsen & Louie PRB 34 5390.
+ - We recommend you use Eqp1 for QP properties of materials.
+
+================================================================================
+
+
+WARNING: |Eqp0 - Eo| > finite_difference_spacing. Linear extrapolation for eqp1
+may be inaccurate. You should test the validity of eqp1 by rerunning the
+calculation with the self energy evaluated at the eqp0 energies. For that,
+use the eqp_outer.dat file, created with eqp.py script and point WFN_outer to
+WFN_inner, if you were not already using WFN_outer.
+
+
+********************************************************************************
+*                                                                              *
+* Your calculation employed methods and algorithms published in peer-reviewed  *
+* papers. Please, cite the following references to give proper credit to their *
+*          authors and help support future development of BerkeleyGW.          *
+*                                                                              *
+********************************************************************************
+
+ J. Deslippe, G. Samsonidze, D. A. Strubbe, M. Jain, M. L. Cohen, and S. G.
+ Louie, BerkeleyGW: A Massively Parallel Computer Package for the Calculation
+ of the Quasiparticle and Optical Properties of Materials and Nanostructures,
+ Computer Physics Communications 183, 1269 (2012).
+
+ M. S. Hybertsen and S. G. Louie, Electron Correlation in Semiconductors and
+ Insulators: Band Gaps and Quasiparticle Energies, Phys. Rev. B 34, 5390
+ (1986).
+
+ M. D. Ben, C. Yang, Z. Li, F. H. da Jornada, S. G. Louie, and J. Deslippe,
+ Accelerating Large-Scale Excited-State GW Calculations on Leadership HPC
+ Systems, SC20: International Conference for High Performance Computing,
+ Networking, Storage and Analysis (2020).
+
+********************************************************************************
+
+ 
+ Timing information
+ 
+                                CPU time (s)          WALL time (s)       Number
+ Routine                       min        max        min        max     of calls
+ -------------------------  ---------  ---------  ---------  ---------  --------
+ - Epscopy Comm                  0.01       0.01       0.01       0.01         8
+ - Input I/O                     0.00       0.00       0.01       0.01         4
+ - Input Comm                    0.00       0.00       0.00       0.00         4
+ - FFT Zero                      0.00       0.00       0.01       0.01       120
+ - FFT Put                       0.00       0.00       0.00       0.00       120
+ - FFT Plan                      0.12       0.12       0.13       0.13       120
+ - FFT Exec                      0.01       0.01       0.01       0.01       120
+ - I/O TOTAL                     0.42       0.42       0.43       0.43         8
+ - INPUT                         0.14       0.14       0.14       0.14         1
+ - EPSCOPY                       0.32       0.32       0.32       0.32         1
+ - FULLBZ                        0.00       0.00       0.00       0.00         2
+ - VXC                           0.17       0.17       0.18       0.18        16
+ - SUBGRP                        0.00       0.00       0.00       0.00         8
+ - IRRBZ                         0.00       0.00       0.00       0.00         8
+ - GMAP                          0.00       0.00       0.00       0.00        64
+ - GENWF                         0.04       0.04       0.03       0.03        64
+ - MTXEL                        24.81      24.81      24.81      24.81       896
+ - MTXEL_COR TOT                 8.99       8.99       9.00       9.00       896
+ - VCOUL                         1.21       1.21       1.22       1.22        64
+ - EPSREAD                       0.00       0.00       0.01       0.01        64
+ - INPUT_OUTER                   0.00       0.00       0.00       0.00         1
+ - MTXEL COMM                    0.00       0.00       0.00       0.00        64
+ - BARE X                        0.03       0.03       0.03       0.03       904
+ - WF COMM                       0.00       0.00       0.00       0.00         8
+ - INPUT (READ)                  0.01       0.01       0.00       0.00      1609
+ - INPUT (WRITE)                 0.01       0.01       0.01       0.01      1608
+ - SUB-TRANSF TOT                0.00       0.00       0.00       0.00       896
+ - M.COR INIT                    0.03       0.03       0.03       0.03       896
+ - M.COR EPSINIT                 1.02       1.02       1.01       1.01       896
+ - M.COR COMM                    0.10       0.10       0.11       0.11       896
+ - M.COR PP PREP                 0.62       0.62       0.72       0.72    127134
+ - M.COR SX+CH                   6.58       6.58       6.56       6.56       896
+ - READ NEPS                     0.02       0.02       0.02       0.02         1
+ - EPSCOPY IO                    0.26       0.26       0.25       0.25         8
+ - EQP LOOP TOTAL               35.13      35.13      35.13      35.13         8
+ - TOTAL                        36.00      36.00      36.00      36.00         1
+ 
+ Job Done
+ 

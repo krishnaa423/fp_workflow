@@ -1,0 +1,7 @@
+input_wfn_file WFN_coo
+output_wfn_file WFN_parabands.h5 
+
+vsc_file VSC 
+vkb_file VKB 
+
+number_bands 201
