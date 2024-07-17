@@ -82,5 +82,9 @@ f'''#!/bin/bash
         os.system('rm -rf struct.dyn*')
         os.system('rm -rf struct.fc')
         os.system('rm -rf struct.freq')
-        os.system('rm -rf struct.modes')
+        os.system('rm -rf struct.freq.gp')
+        os.system('rm -rf struct.phdos')
+        os.system('rm -rf struct.phdos.freq')
+        os.system('rm -rf struct.phdos.freq.gp')
+        os.system('rm -rf struct.phdos.modes')
 #endregion

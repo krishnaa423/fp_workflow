@@ -90,6 +90,49 @@ def main():
         job_desc = job_desc_node,
     )
 
+    wannier = WannierInput(
+        atoms=atoms_input,
+        kdim=(2, 2, 2),
+        num_bands=14,
+        num_wann=14,
+        job_wfnwan_desc=job_desc_node,
+        job_pw2wan_desc=job_desc_node,
+        job_wan_desc=job_desc_node,
+    )
+
+    wfn = WfnGeneralInput(
+        atoms=atoms_input,
+        kdim=(2, 2, 2),
+        qshift=(0.0, 0.0, 0.0),
+        is_reduced=False,
+        bands=14,
+        job_wfn_desc=job_desc_node,
+        job_pw2bgw_desc=job_desc_node,
+        job_parabands_desc=job_desc_node,
+        parabands_bands=201,
+    )
+
+    epw = EpwInput(
+        kgrid_coarse=(2, 2, 2),
+        qgrid_coarse=(2, 2, 2),
+        kgrid_fine=(2, 2, 2),
+        qgrid_fine=(2, 2, 2),
+        bands=14,
+        exec_loc='$SCRATCH/q-e-cpu/bin/epw.x',
+        job_desc=job_desc_node,
+        skipped_bands=None,     # The input bands are 1 to 14, which are fine.
+    )
+
+    wfnq = WfnGeneralInput(
+        atoms=atoms_input,
+        kdim=(2, 2, 2),
+        qshift=(0.0, 0.0, 0.001),
+        is_reduced=False,
+        bands=14,
+        job_wfn_desc=job_desc_node,
+        job_pw2bgw_desc=job_desc_node,
+    )
+
     input = Input(
         scheduler=WSL(),
         atoms=atoms_input,
@@ -102,25 +145,32 @@ def main():
         dos=dos,
         dftelbands=dftelbands,
         kpdos=kpdos,
+        wannier=wannier,
+        wfn=wfn,
+        epw=epw,
+        wfnq=wfnq,
     )
 
     # Flow.
     flow = FlowManage(
         list_of_steps=[
-            Relax(input=input),
+            # Relax(input=input),
             Scf(input=input),
-            Dfpt(input=input),
-            Phbands(input=input),
-            Phdos(input=input),
-            Phmodes(input=input),
-            Dos(input=input),
-            Pdos(input=input),
-            Dftelbands(input=input),
-            Kpdos(input=input),
+            # Dfpt(input=input),
+            # Phbands(input=input),
+            # Phdos(input=input),
+            # Phmodes(input=input),
+            # Dos(input=input),
+            # Pdos(input=input),
+            # Dftelbands(input=input),
+            # Kpdos(input=input),
             # Wannier(input=input),
             # Wfngeneral(input=input),
+            Wfn(input=input),
             # Epw(input=input),
-            # Wfngeneral(input=input),
+            Wfnq(input=input),
+            # Wfnfi(input=input),
+            # Wfnqfi(input=input),
             # Epsilon(input=input),
             # Sigma(input=input),
             # Inteqp(input=input),

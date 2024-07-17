@@ -22,7 +22,7 @@ class AtomsInput:
         return len(np.unique(self.atoms.get_atomic_numbers()))
     
     def get_nat(self):
-        return self.atoms.get_number_of_atoms()
+        return len(self.atoms)
 
     def get_scf_cell(self):
         output = ''

@@ -1,5 +1,0 @@
-&PROJWFC
-outdir='./tmp'
-prefix='struct'
-filpdos='struct_pdos.dat'
-/
