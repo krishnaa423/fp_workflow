@@ -3,6 +3,7 @@ from fp.flows import *
 from fp.flows.flow_manage import *
 from fp.inputs import *
 from fp.schedulers import *
+import fp.schedulers as schedulers
 from fp.calcs import *
 from fp.calcs.dryrun import *
 from fp.structure import *
@@ -11,6 +12,7 @@ from ase.io import write, read
 import numpy as np 
 from ase.build import make_supercell
 from fp.io import *
+import yaml 
 #endregion
 
 #region: Variables.
@@ -25,15 +27,15 @@ class FullGridFlow:
         self,
         scheduler: Scheduler=None,
         
-        single_task_desc: JobProcDesc=None,
-        single_node_desc: JobProcDesc=None,
-        para_desc: JobProcDesc=None,
-        big_para_desc: JobProcDesc=None,
-        para_k_desc: JobProcDesc=None,
-        big_para_k_desc: JobProcDesc=None,
-        para_epwk_desc: JobProcDesc=None,
+        single_task_desc: dict=dict(),
+        single_node_desc: dict=dict(),
+        para_desc: dict=dict(),
+        big_para_desc: dict=dict(),
+        para_k_desc: dict=dict(),
+        big_para_k_desc: dict=dict(),
+        para_epwk_desc: dict=dict(),
         
-        atoms: Atoms=None,
+        atoms: str=None,
         sc_grid: np.ndarray=None,
         use_esd_atoms_if_needed: bool = None,
         
@@ -87,15 +89,15 @@ class FullGridFlow:
         '''
         self.scheduler: Scheduler=scheduler
         
-        self.single_task_desc: JobProcDesc=single_task_desc
-        self.single_node_desc: JobProcDesc=single_node_desc
-        self.para_desc: JobProcDesc=para_desc
-        self.big_para_desc: JobProcDesc=big_para_desc
-        self.para_k_desc: JobProcDesc=para_k_desc
-        self.big_para_k_desc: JobProcDesc=big_para_k_desc
-        self.para_epwk_desc: JobProcDesc=para_epwk_desc
+        self.single_task_desc: JobProcDesc=JobProcDesc(**single_task_desc)
+        self.single_node_desc: JobProcDesc=JobProcDesc(**single_node_desc)
+        self.para_desc: JobProcDesc=JobProcDesc(**para_desc)
+        self.big_para_desc: JobProcDesc=JobProcDesc(**big_para_desc)
+        self.para_k_desc: JobProcDesc=JobProcDesc(**para_k_desc)
+        self.big_para_k_desc: JobProcDesc=JobProcDesc(**big_para_k_desc)
+        self.para_epwk_desc: JobProcDesc=JobProcDesc(**para_epwk_desc)
         
-        self.atoms: Atoms=atoms
+        self.atoms: str=atoms
         self.sc_grid: np.ndarray=np.array(sc_grid)
         self.use_esd_atoms_if_needed: bool = use_esd_atoms_if_needed
         
@@ -145,15 +147,32 @@ class FullGridFlow:
         self.plotxct_state: int = plotxct_state
     
     @staticmethod
-    def from_yml():
+    def from_yml(filename):
         '''
         Generate a fullgrid flow object from a yml file.
         '''
-        pass 
+        # Open and read the YAML file
+        with open(filename, 'r') as file:
+            data: dict = yaml.safe_load(file)
 
+        fullgridflow: FullGridFlow = FullGridFlow()
+        for key, value in data.items():
+            # Debugging.
+            # print(f'key: {key}, value: {value}')
+
+            if key=='scheduler':
+                sched_cls = getattr(schedulers, value)
+                setattr(fullgridflow, key, sched_cls())
+            elif key in ['single_task_desc', 'single_node_desc', 'big_para_desc', 'para_k_desc', 'big_para_k_desc', 'para_epwk_desc']:
+                setattr(fullgridflow, key, JobProcDesc(value))
+            else:
+                setattr(fullgridflow, key, value)
+
+        return fullgridflow
+         
     def create_atoms(self):
         # Make atoms. 
-        self.uc_atoms = self.atoms 
+        self.uc_atoms = read(self.atoms) 
         self.sc_atoms = make_supercell(self.uc_atoms, np.diag(self.sc_grid))
 
         # Replace with ESD atoms if needed. 

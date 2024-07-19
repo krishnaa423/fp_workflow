@@ -1,0 +1,108 @@
+scheduler: WSL
+
+single_task_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+single_node_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+big_para_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+para_k_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+big_para_k_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+para_epwk_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+
+atoms: "uc_atoms.xsf"
+sc_grid:
+  - 2
+  - 2
+  - 2
+use_esd_atoms_if_needed: true
+
+path_string: "LGKWLKG"
+path_npoints: 100
+
+relax_type: 0
+
+scf_kgrid:
+  - 2
+  - 2
+  - 2
+scf_cutoff: 20.0
+
+dfpt_qgrid:
+  - 2
+  - 2
+  - 2
+dfpt_conv_threshold: "1.0d-16"
+dfpt_phmode: 1
+
+dos_kdim:
+  - 2
+  - 2
+  - 2
+dftelbands_cond: 10
+wannier_kdim: 
+  - 2
+  - 2
+  - 2
+wannier_bands_cond: 10
+
+wfn_qe_cond: 10
+wfn_qe_kdim:
+  - 2
+  - 2
+  - 2
+wfn_qe_sym: false
+wfn_para_cond: 201
+
+qshift: 
+  - 0.0
+  - 0.0
+  - 0.001
+wfnq_qe_kdim:
+  - 2
+  - 2
+  - 2
+wfnq_qe_cond: 10
+wfnq_qe_sym: false 
+
+epssig_bands_cond: 200
+epssig_cutoff: 10.0
+
+sig_band_val: 4
+sig_band_cond: 10
+
+inteqp_band_val: 4
+
+abs_val_bands: 4
+abs_cond_bands: 10
+abs_nevec: 10
+
+bseq_Qdim: 
+  - 2
+  - 2
+  - 2
+
+plotxct_hole:
+  - 0.25
+  - 0.25
+  - 0.25
+plotxct_sc:
+  - 2
+  - 2
+  - 2
+plotxct_state: 1
