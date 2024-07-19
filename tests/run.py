@@ -1,5 +1,6 @@
 #region: Modules.
 from fp.flows import *
+from fp.io import *
 #endregion
 
 #region: Variables.
@@ -7,7 +8,7 @@ from fp.flows import *
 
 #region: Functions.
 def main():
-    flow: FlowManage = FlowManage.load_flow('./flowmanage.pkl')
+    flow: FlowManage = load_obj('flowmanage.pkl')
     flow.run()
 #endregion
 

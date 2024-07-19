@@ -21,7 +21,7 @@ class RelaxInput:
         self, 
         max_val: int,
         job_desc,
-        relax_type: RelaxType = RelaxType.GS_RELAX,
+        relax_type: int = RelaxType.GS_RELAX,
     ):
         self.job_desc: JobProcDesc = job_desc
         self.max_val: int = max_val

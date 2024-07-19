@@ -20,7 +20,6 @@ from fp.inputs.abs import *
 from fp.inputs.bse_q import *
 
 from fp.schedulers import *
-import pickle
 #endregion
 
 #region: Variables.
@@ -92,13 +91,4 @@ class Input:
 
         # self.pol: PolInput = pol
         # self.xctpol: XctpolInput = xctpol
-
-    def save_input(self, filename='input.pkl'):
-        with open(filename, 'wb') as f: pickle.dump(self, f)
-
-    @staticmethod
-    def load_input(filename='input.pkl'):
-        with open(filename, 'rb') as f: output = pickle.load(f)
-
-        return output 
 #endregion

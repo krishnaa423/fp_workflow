@@ -18,6 +18,7 @@ setup(
     # install_requires=[
     #     "numpy>=1.26.4",
     #     "ase>=3.23.0",
+    #     "dill",
     #     "h5py",
     #     "petsc4py",
     # ],
