@@ -1,3 +1,4 @@
 #!/bin/bash
 
-twine upload dist/* dist/*.tar.gz
+python3 setup.py sdist bdist_wheel
+twine upload dist/*.whl dist/*.tar.gz
