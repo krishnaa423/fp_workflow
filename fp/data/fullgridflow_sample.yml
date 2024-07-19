@@ -1,10 +1,15 @@
-scheduler: WSL
-
+scheduler: 
+  WSL:
+    is_interactive: true
 single_task_desc:
   nodes: 1
   ntasks: 1
   time: "00:45"
 single_node_desc:
+  nodes: 1
+  ntasks: 1
+  time: "00:45"
+para_desc:
   nodes: 1
   ntasks: 1
   time: "00:45"
@@ -27,9 +32,9 @@ para_epwk_desc:
 
 atoms: "uc_atoms.xsf"
 sc_grid:
-  - 2
-  - 2
-  - 2
+  - 1
+  - 1
+  - 1
 use_esd_atoms_if_needed: true
 
 path_string: "LGKWLKG"
@@ -49,6 +54,7 @@ dfpt_qgrid:
   - 2
 dfpt_conv_threshold: "1.0d-16"
 dfpt_phmode: 1
+# dfpt_njobs: 1
 
 dos_kdim:
   - 2

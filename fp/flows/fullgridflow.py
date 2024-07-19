@@ -50,6 +50,7 @@ class FullGridFlow:
         dfpt_qgrid=None,
         dfpt_conv_threshold:str=None,
         dfpt_phmode: int=None,
+        dfpt_njobs: int = None,
 
         dos_kdim = None ,
         dftelbands_cond: int = None,
@@ -112,6 +113,7 @@ class FullGridFlow:
         self.dfpt_qgrid=dfpt_qgrid
         self.dfpt_conv_threshold:str=dfpt_conv_threshold
         self.dfpt_phmode: int=dfpt_phmode
+        self.dfpt_njobs: int = dfpt_njobs
 
         self.dos_kdim = dos_kdim 
         self.dftelbands_cond: int = dftelbands_cond
@@ -157,14 +159,15 @@ class FullGridFlow:
 
         fullgridflow: FullGridFlow = FullGridFlow()
         for key, value in data.items():
-            # Debugging.
-            # print(f'key: {key}, value: {value}')
+            assert hasattr(fullgridflow, key), f'FullGridFlow class does not have attribute: {key}.'
 
-            if key=='scheduler':
-                sched_cls = getattr(schedulers, value)
-                setattr(fullgridflow, key, sched_cls())
-            elif key in ['single_task_desc', 'single_node_desc', 'big_para_desc', 'para_k_desc', 'big_para_k_desc', 'para_epwk_desc']:
-                setattr(fullgridflow, key, JobProcDesc(value))
+            if key=='scheduler':        # Create the scheduler class. 
+                first_key, first_value = next(iter(value.items()))
+                sched_cls = getattr(schedulers, first_key)
+                setattr(fullgridflow, key, sched_cls(**first_value))
+            elif '_desc' in key:        # Ones with job descriptions. 
+                job_desc = JobProcDesc(**value)
+                setattr(fullgridflow, key, job_desc)
             else:
                 setattr(fullgridflow, key, value)
 
@@ -224,6 +227,7 @@ class FullGridFlow:
             qgrid=self.dfpt_qgrid,
             conv_threshold=self.dfpt_conv_threshold,
             job_desc=self.para_k_desc,
+            njobs=self.dfpt_njobs,
         )
 
         self.phbands = PhbandsInput(

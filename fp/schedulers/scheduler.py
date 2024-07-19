@@ -19,7 +19,7 @@ class JobProcDesc:
     ):
         self.nodes: int = nodes
         self.ntasks: int = ntasks
-        self.time: int = time
+        self.time: str = time
         self.nk: int = nk
         self.ni: int = ni
 

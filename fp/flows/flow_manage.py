@@ -27,7 +27,7 @@ class FlowManage:
         sr_fr_str = 'fr' if is_fr else 'sr'
 
         pkg_dir = resource_filename('fp', '')
-        pseudo_dir = pkg_dir + '/pseudos/ONCVPSP/sg15'
+        pseudo_dir = pkg_dir + '/data/pseudos/ONCVPSP/sg15'
 
         os.system('mkdir -p ./ONCVPSP')
         os.system('mkdir -p ./ONCVPSP/sg15')
@@ -76,9 +76,6 @@ class FlowManage:
     def save_job_results(self, folder):       
         for step in self.list_of_steps:
             step.save(folder)
-
-    def save_flow(self, filename='flowmanage.pkl'):
-        with open(filename, 'wb') as f: pickle.dump(self, f)
 
     def get_job_all_script(
             self, 
