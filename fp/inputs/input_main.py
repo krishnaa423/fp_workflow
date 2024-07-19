@@ -14,6 +14,10 @@ from fp.inputs.wfngeneral import *
 from fp.inputs.epw import *
 from fp.inputs.epsilon import *
 from fp.inputs.sigma import *
+from fp.inputs.inteqp import *
+from fp.inputs.kernel import *
+from fp.inputs.abs import *
+from fp.inputs.bse_q import *
 
 from fp.schedulers import *
 import pickle
@@ -48,6 +52,11 @@ class Input:
         wfnqfi: WfnGeneralInput,
         epsilon: EpsilonInput,
         sigma: SigmaInput,
+        inteqp: InteqpInput,
+        kernel: KernelInput,
+        absorption: AbsorptionInput,
+        plotxct: PlotxctInput,
+        bseq: BseqInput,
     ):
         self.scheduler: Scheduler = scheduler
         self.atoms: AtomsInput = atoms 
@@ -71,10 +80,11 @@ class Input:
 
         self.epsilon: EpsilonInput = epsilon
         self.sigma: SigmaInput = sigma
-        # self.kernel: KernelInput = kernel
-        # self.absorption: AbsorptionInput = absorption
-        # self.plotxct: PlotxctInput = plotxct
-        # self.bseq: BseQInput = bseq
+        self.inteqp: InteqpInput = inteqp
+        self.kernel: KernelInput = kernel
+        self.absorption: AbsorptionInput = absorption
+        self.plotxct: PlotxctInput = plotxct
+        self.bseq: BseqInput = bseq
         # self.xctph: XctphInput = xctph
 
         # self.esf: EsfInput = esf
@@ -83,6 +93,12 @@ class Input:
         # self.pol: PolInput = pol
         # self.xctpol: XctpolInput = xctpol
 
-    def save(self, filename='input.pkl'):
+    def save_input(self, filename='input.pkl'):
         with open(filename, 'wb') as f: pickle.dump(self, f)
+
+    @staticmethod
+    def load_input(filename='input.pkl'):
+        with open(filename, 'rb') as f: output = pickle.load(f)
+
+        return output 
 #endregion

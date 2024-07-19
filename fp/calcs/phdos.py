@@ -55,6 +55,11 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_mpi_prefix(self.input.phbands.job_desc)}matdyn.x < matdyn_dos.in &> matdyn_dos.in.out 
 '''
 
+        self.jobs = [
+            'job_q2r_dos.sh',
+            'job_matdyn_dos.sh',
+        ]
+
     def create(self):
         write_str_2_f('q2r_dos.in', self.input_q2r_dos)
         write_str_2_f('job_q2r_dos.sh', self.job_q2r_dos)
@@ -68,7 +73,19 @@ f'''#!/bin/bash
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'q2r_dos.in*',
+            'job_q2r_dos.sh',
+            'matdyn_dos.in*',
+            'job_matdyn_dos.sh',
+            'struct.dyn*',
+            'struct.fc',
+            'struct.freq*',
+            'struct.phdos*',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf q2r_dos.in')

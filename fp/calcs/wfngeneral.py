@@ -119,6 +119,12 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_mpi_prefix(self.input.wfn.job_parabands_desc)}parabands.cplx.x &> parabands.inp.out 
 '''
 
+        self.jobs = [
+            'job_wfn.sh',
+            'job_wfn_pw2bgw.sh',
+            'job_parabands.sh',
+        ]
+
     def create(self):
         write_str_2_f(f'wfn.in', self.input_wfn)
         write_str_2_f(f'job_wfn.sh', self.job_wfn)
@@ -135,7 +141,21 @@ f'''#!/bin/bash
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'wfn.in*',
+            'WFN_coo*',
+            'WFN_parabands.h5',
+            'job_wfn*',
+            'parabands.inp*',
+            'job_parabands.sh',
+            'RHO',
+            'VXC',
+            'VSC',
+            'VKB',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf wfn.in')
@@ -236,6 +256,11 @@ cp ./tmp/WFNq_coo ./
 wfn2hdf.x BIN WFNq_coo WFNq_coo.h5 
 '''
 
+        self.jobs = [
+            'job_wfnq.sh',
+            'job_wfnq_pw2bgw.sh',
+        ]
+
     def create(self):
         write_str_2_f(f'wfnq.in', self.input_wfnq)
         write_str_2_f(f'job_wfnq.sh', self.job_wfnq)
@@ -249,7 +274,14 @@ wfn2hdf.x BIN WFNq_coo WFNq_coo.h5
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'wfnq.in*',
+            'WFNq_coo*',
+            'job_wfnq*',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf wfnq.in')
@@ -343,6 +375,11 @@ cp ./tmp/WFN_fii ./
 wfn2hdf.x BIN WFN_fii WFN_fii.h5 
 '''
 
+        self.jobs = [
+            'job_wfnfi.sh',
+            'job_wfnfi_pw2bgw.sh',
+        ]
+
     def create(self):
         write_str_2_f(f'wfnfi.in', self.input_wfnfi)
         write_str_2_f(f'job_wfnfi.sh', self.job_wfnfi)
@@ -356,7 +393,15 @@ wfn2hdf.x BIN WFN_fii WFN_fii.h5
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'wfnfi.in*',
+            'WFN_fii*',
+            'job_wfnfi*',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
+
 
     def remove(self):
         os.system('rm -rf wfnfi.in')
@@ -450,6 +495,11 @@ cp ./tmp/WFNq_fii ./
 wfn2hdf.x BIN WFNq_fii WFNq_fii.h5 
 '''
 
+        self.jobs = [
+            'job_wfnqfi.sh',
+            'job_wfnqfi_pw2bgw.sh',
+        ]
+
     def create(self):
         write_str_2_f(f'wfnqfi.in', self.input_wfnqfi)
         write_str_2_f(f'job_wfnqfi.sh', self.job_wfnqfi)
@@ -463,7 +513,14 @@ wfn2hdf.x BIN WFNq_fii WFNq_fii.h5
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'wfnqfi.in*',
+            'WFNq_fii*',
+            'job_wfnqfi*',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf wfnqfi.in')

@@ -66,6 +66,9 @@ f'''#!/bin/bash
 cp ./tmp/struct_elph* ./
 '''
         
+        self.jobs = [
+            'job_epw.sh',
+        ]
 
     def create(self):
         write_str_2_f('epw.in', self.input_epw)
@@ -77,7 +80,14 @@ cp ./tmp/struct_elph* ./
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'epw.in*',
+            'struct_elph*',
+            'job_epw.sh',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf epw.in')

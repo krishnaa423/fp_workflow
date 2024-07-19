@@ -92,6 +92,10 @@ cp ./tmp/WFN_dftelbands ./
 wfn2hdf.x BIN WFN_dftelbands WFN_dftelbands.h5
 '''
         
+        self.jobs = [
+            'job_dftelbands.sh',
+            'job_dftelbands_pw2bgw.sh',
+        ]
 
     def create(self):
         write_str_2_f('dftelbands.in', self.input_dftelbands)
@@ -106,7 +110,17 @@ wfn2hdf.x BIN WFN_dftelbands WFN_dftelbands.h5
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'dftelbands.in*',
+            'job_dftelbands.sh',
+            'dftelbands_pw2bgw.in*',
+            'job_dftelbands_pw2bgw.sh',
+            'WFN_dftelbands',
+            'WFN_dftelbands.h5',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf dftelbands.in')

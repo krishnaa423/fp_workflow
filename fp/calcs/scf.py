@@ -2,6 +2,7 @@
 from fp.inputs.input_main import Input
 from fp.io.strings import *
 from fp.flows.run import *
+import os 
 #endregion
 
 #region: Variables.
@@ -64,6 +65,10 @@ f'''#!/bin/bash
 cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
 '''
     
+        self.jobs = [
+            'job_scf.sh',
+        ]
+
     def create(self):
         write_str_2_f('scf.in', self.input_scf)
         write_str_2_f('job_scf.sh', self.job_scf)
@@ -74,7 +79,17 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'scf.in',
+            'job_scf.sh',
+            'tmp',
+            'scf.xml',
+            '*.pkl',
+            '*.xsf',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf scf.in')

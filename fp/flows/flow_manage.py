@@ -2,6 +2,9 @@
 from ase import Atoms 
 from pkg_resources import resource_filename
 import os 
+import pickle
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
 #endregion
 
 #region: Variables.
@@ -46,21 +49,89 @@ class FlowManage:
         for step in self.list_of_steps:
             step.create()
 
-    def run(self, total_time=0.0):
+    def run(self, total_time=0.0, start_job=None, stop_job=None):
+        assert len(self.list_of_steps)>=1 , 'List of steps must have atleast one element.'
+        
         total_time: float = total_time
 
+        job_list = []
         for step in self.list_of_steps:
-            total_time = step.run(total_time)
+            for job in step.jobs:
+                job_list.append(job)
+
+        print(f'job_list: {job_list}\n\n\n', flush=True)
+
+        start_idx = job_list.index(start_job) if start_job else 0
+        stop_idx = job_list.index(stop_job)+1 if stop_job else len(job_list)
+
+        print(f'start_idx: {start_idx}, start_job: {job_list[start_idx]}\n\n\n', flush=True)
+        print(f'stop_idx: {stop_idx-1}, stop_job: {job_list[stop_idx-1]}\n\n\n', flush=True)
+
+        total_time = 0.0
+        for job in job_list[start_idx:stop_idx]:
+            total_time = run_and_wait_command(f'./{job}', self.list_of_steps[0].input, total_time)
 
         # Write the total workflow run time. 
         print(f'Done whole worflow in {total_time:15.10f} seconds.\n\n', flush=True)
 
-    def save(self, folder):       
+    def save_job_results(self, folder):       
         for step in self.list_of_steps:
             step.save(folder)
 
-    def remove(self):
+    def save_flow(self, filename='flowmanage.pkl'):
+        with open(filename, 'wb') as f: pickle.dump(self, f)
+
+    def get_job_all_script(
+            self, 
+            start_job, 
+            stop_job, 
+            save_folder_flag=False, 
+            save_folder=None, 
+            flowfile='flowmanage.pkl'
+        ):
+        assert len(self.list_of_steps)>=1, 'There should be atleast one job step.'
+
+        output = \
+f'''#!/usr/bin/env python3
+
+from fp.flows import FlowManage
+import os
+
+start_job='{start_job}'
+stop_job='{stop_job}'
+save_flag={'True' if save_folder_flag else 'False'} 
+save_folder='{save_folder if save_folder else ''}'
+
+flow: FlowManage = FlowManage.load_flow('{flowfile}')
+flow.run(total_time=0, start_job=start_job, stop_job=stop_job)
+if save_flag: os.system('mkdir -p %s' % (save_folder) ); flow.save_job_results(folder=save_folder)
+'''
+
+        return output 
+
+    def create_job_all_script(self, filename, start_job, stop_job, save_folder_flag=False, save_folder=None, flowfile='flowmanage.pkl'):
+        write_str_2_f(
+            filename, 
+            self.get_job_all_script(
+                start_job, 
+                stop_job, 
+                save_folder_flag, 
+                save_folder, 
+                flowfile
+            )
+        )
+
+    @staticmethod
+    def load_flow(filename='flowmanage.pkl'):
+        with open(filename, 'rb') as f: output = pickle.load(f)
+
+        return output 
+
+    def remove(self, pkl_too=False):
         for step in self.list_of_steps:
             step.remove()
-         
+
+        if pkl_too:
+            os.system('rm -rf *.pkl')
+                     
 #endregion

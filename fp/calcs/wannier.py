@@ -122,6 +122,13 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.input.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} wan  &> wan.win.out 
 '''
         
+        self.jobs = [
+            'job_wfnwan.sh',
+            'job_wanpp.sh',
+            'job_pw2wan.sh',
+            'job_wan.sh',
+        ]
+
     def create(self):
         write_str_2_f('wfnwan.in', self.input_wfnwan)
         write_str_2_f('job_wfnwan.sh', self.job_wfnwan)
@@ -140,7 +147,17 @@ f'''#!/bin/bash
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'wan*',
+            'wfnwan.in*',
+            'job_wfnwan.sh',
+            'job_wanpp.sh',
+            'job_pw2wan.sh',
+            'job_wan.sh',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf wan*')

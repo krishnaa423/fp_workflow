@@ -44,6 +44,10 @@ ln -sf {self.input.epsilon.wfnq_link} ./WFNq.h5
 {self.input.scheduler.get_sched_mpi_prefix(self.input.epsilon.job_desc)}epsilon.cplx.x &> epsilon.inp.out 
 '''
 
+        self.jobs = [
+            'job_epsilon.sh',
+        ]
+
     def create(self):
         write_str_2_f('epsilon.inp', self.input_epsilon)
         write_str_2_f('job_epsilon.sh', self.job_epsilon)
@@ -54,7 +58,17 @@ ln -sf {self.input.epsilon.wfnq_link} ./WFNq.h5
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'epsilon.inp*',
+            'job_epsilon.sh',
+            'epsmat.h5',
+            'eps0mat.h5',
+            'epsilon.log',
+            'chi_converge.dat',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf epsilon.inp')

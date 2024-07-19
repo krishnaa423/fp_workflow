@@ -1,7 +1,7 @@
 #region: Modules.
-import os 
 import subprocess
 import time 
+import os 
 from fp.inputs.input_main import *
 #endregion
 
@@ -29,8 +29,6 @@ def run_and_wait_command(script, input: Input, total_time):
         os._exit(ps_result.returncode)
 
     return total_time
-
-
 #endregion
 
 #region: Classes.

@@ -20,6 +20,7 @@ from .epsilon import *
 from .epw import *
 from .esd import *
 from .esf import *
+from .inteqp import *
 from .kernel import *
 from .kpdos import *
 from .pdos import *

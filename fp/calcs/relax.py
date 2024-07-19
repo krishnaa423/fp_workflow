@@ -1,7 +1,8 @@
 #region: Modules.
 from fp.inputs.input_main import Input
 from fp.io.strings import *
-from fp.flows.run import *
+import os 
+from fp.flows import *
 #endregion
 
 #region: Variables.
@@ -68,6 +69,10 @@ f'''#!/bin/bash
 cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
 '''
     
+        self.jobs = [
+            'job_relax.sh',
+        ]
+
     def create(self):
         write_str_2_f('relax.in', self.input_relax)
         write_str_2_f('job_relax.sh', self.job_relax)
@@ -78,7 +83,15 @@ cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'relax.in',
+            'job_relax.sh',
+            'relax.in.out',
+            'relax.xml',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf relax.in')

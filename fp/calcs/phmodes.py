@@ -33,7 +33,10 @@ f'''#!/bin/bash
 
 {self.input.scheduler.get_sched_mpi_prefix(self.input.phmodes.job_desc)}dynmat.x < dynmat.in &> dynmat.in.out 
 '''
-        
+        self.jobs = [
+            'job_dynmat.sh',
+        ]
+
     def create(self):
         write_str_2_f('dynmat.in', self.input_dynmat)
         write_str_2_f('job_dynmat.sh', self.job_dynmat)
@@ -44,7 +47,15 @@ f'''#!/bin/bash
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'dynmat.in*',
+            'job_dynmat.sh',
+            'struct.dyn*',
+            'struct_phmodes.axsf',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf dynmat.in')

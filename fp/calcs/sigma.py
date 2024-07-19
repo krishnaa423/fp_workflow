@@ -50,6 +50,9 @@ ln -sf {self.input.sigma.wfn_inner_link} ./WFN_inner.h5
 {self.input.scheduler.get_sched_mpi_prefix(self.input.sigma.job_desc)}sigma.cplx.x &> sigma.inp.out
 '''
         
+        self.jobs = [
+            'job_sigma.sh',
+        ]
 
     def create(self):
         write_str_2_f('sigma.inp', self.input_sigma)
@@ -61,7 +64,17 @@ ln -sf {self.input.sigma.wfn_inner_link} ./WFN_inner.h5
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'sigma.inp*',
+            'job_sigma.sh',
+            'eqp0.dat',
+            'eqp1.dat',
+            'sigma_hp.log',
+            'ch_converge.dat',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf sigma.inp')
@@ -73,4 +86,7 @@ ln -sf {self.input.sigma.wfn_inner_link} ./WFN_inner.h5
         os.system('rm -rf sigma_hp.log')
         os.system('rm -rf ch_converge.dat')
         os.system('rm -rf sigma.inp.out')
+        os.system('rm -rf dtmat')
+        os.system('rm -rf vxc.dat')
+        os.system('rm -rf x.dat')
 #endregion

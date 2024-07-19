@@ -34,6 +34,9 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_mpi_prefix(self.input.kpdos.job_desc)}projwfc.x -pd .true. < kpdos.in &> kpdos.in.out 
 '''
         
+        self.jobs = [
+            'job_kpdos.sh',
+        ]
 
     def create(self):
         write_str_2_f('kpdos.in', self.input_kpdos)
@@ -45,7 +48,14 @@ f'''#!/bin/bash
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'kpdos.in*',
+            'job_kpdos.sh',
+            'struct_kpdos.dat*',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf kpdos.in')

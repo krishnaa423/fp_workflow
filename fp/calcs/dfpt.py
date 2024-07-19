@@ -19,6 +19,10 @@ class Dfpt:
     ):
         self.input: Input = input
     
+        self.jobs = [
+            'job_dfpt.sh',
+        ]
+
     def copy_createsave_file(self):
         pkg_dir = resource_filename('fp', '')
         src_path = pkg_dir + '/calcs/create_save.py'
@@ -165,7 +169,16 @@ recover=.true.
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'dfpt*.in',
+            'dfpt*.in.out',
+            'job_dfpt.sh',
+            'save',
+            'struct.dyn*',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf dfpt_start.in')

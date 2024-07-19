@@ -81,7 +81,10 @@ f'''#!/bin/bash
 
 {self.input.scheduler.get_sched_mpi_prefix(self.input.dos.job_desc)}dos.x -pd .true. < dos.in &> dos.in.out 
 '''
-        
+        self.jobs = [
+            'job_wfndos.sh',
+            'job_dos.sh'
+        ]
 
     def create(self):
         write_str_2_f('wfndos.in', self.input_wfndos)
@@ -96,7 +99,16 @@ f'''#!/bin/bash
         return total_time
 
     def save(self, folder):
-        pass 
+        inodes = [
+            'wfndos.in*',
+            'dos.in*',
+            'struct_dos.dat',
+            'job_dos.sh',
+            'job_wfndos.sh',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
         os.system('rm -rf wfndos.in')

@@ -19,6 +19,7 @@ from .epsilon import *
 from .epw import *
 from .esd import *
 from .input_main import *
+from .inteqp import *
 from .kernel import *
 from .kpdos import *
 from .phbands import *
