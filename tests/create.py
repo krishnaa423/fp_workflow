@@ -59,7 +59,7 @@ def main():
             Absorption,
             Plotxct,
             Bseq,
-            # Esf(input=input),
+            Esf,
             # Esd(input=input),
             # XctPh(input=input),
             # Pol(input=input),
@@ -71,7 +71,7 @@ def main():
     flowmanage.create_job_all_script(
         filename='job_all.sh',
         start_job='job_relax.sh',
-        stop_job='job_bseq.sh',
+        stop_job='job_esf.sh',
         save_folder_flag=True,
         save_folder='./test_save_folder/',
         flowfile_to_read='flowmanage.pkl'

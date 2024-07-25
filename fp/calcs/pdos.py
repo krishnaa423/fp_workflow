@@ -62,4 +62,5 @@ f'''#!/bin/bash
         
         os.system('rm -rf struct_pdos.dat*')
         os.system('rm -rf pdos.in.out')
+
 #endregion

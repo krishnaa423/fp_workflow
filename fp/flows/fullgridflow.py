@@ -408,6 +408,10 @@ class FullGridFlow:
             job_desc=self.para_desc,
         )
 
+        self.esf = EsfInput(
+            job_desc=self.single_task_desc,
+        )
+
         self.input: Input = Input(
             scheduler=self.scheduler,
             atoms=self.atoms_input,
@@ -433,6 +437,7 @@ class FullGridFlow:
             absorption=self.absorption,
             plotxct=self.plotxct,
             bseq=self.bseq,
+            esf=self.esf,
         )
         if save: save_obj(self.input, 'input.pkl')
 
