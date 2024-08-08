@@ -1,26 +1,12 @@
 services:
-  mamba-mpich-linux-amd64:
-    image: krishnaa42342/mamba:mpich
-    container_name: mamba
-    network_mode: "host"
-    volumes:
-      - "./:/scratch"
-      - "/tmp/.X11-unix:/tmp/.X11-unix"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: ["gpu"]
-              count: all
-              driver: nvidia
-    environment:
-      DISPLAY: $DISPLAY
-    stdin_open: true
-    tty: true
   fp-nvhpc-cc86-linux-amd64:
     image: krishnaa42342/fp:nvhpc_cc86
-    container_name: fp-nvhpc
-    network_mode: "host"
+    container_name: fp-nvhpc-cc86
+    # network_mode: "host"
+    # networks:
+    #   - wsl_network
+    # ports:
+    #   - "8888:8888"
     volumes:
       - "./:/scratch"
       - "/tmp/.X11-unix:/tmp/.X11-unix"
@@ -35,4 +21,110 @@ services:
       DISPLAY: $DISPLAY
     stdin_open: true
     tty: true
-  
+  fp-nvhpc-cc70-linux-ppc64le:
+    image: krishnaa42342/fp:nvhpc_cc70
+    container_name: fp-nvhpc-cc70
+    # network_mode: "host"
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              count: all
+              driver: nvidia
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true
+  fp-intelhpc-linux-amd64:
+    image: krishnaa42342/fp:intelhpc
+    container_name: fp-intelhpc
+    # network_mode: "host"
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              count: all
+              driver: nvidia
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true
+  fp-mpich-gpu-cc86-linux-amd64:
+    image: krishnaa42342/fp:mpich_gpu_cc86
+    container_name: fp-mpich-gpu-cc86
+    # network_mode: "host"
+    # networks:
+    #   - wsl_network
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              count: all
+              driver: nvidia
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true
+  fp-mpich-cpu-linux-amd64:
+    image: krishnaa42342/fp:mpich_cpu
+    container_name: fp-mpich-cpu
+    # network_mode: "host"
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              count: all
+              driver: nvidia
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true
+  fp-openmpi-cpu-linux-amd64:
+    image: krishnaa42342/fp:openmpi_cpu
+    container_name: fp-openmpi-cpu
+    # network_mode: "host"
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              count: all
+              driver: nvidia
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true
+
+
+# networks:
+#   wsl_network:
+#     driver: bridge

@@ -1,0 +1,20 @@
+# Cell parameters.
+hole_position    0.2500000000    0.2500000000    0.2500000000
+supercell_size 2 2 2
+
+# Q-points. 
+# q_shift
+no_symmetries_fine_grid
+no_symmetries_shifted_grid
+
+# Bands and state. 
+plot_spin 1
+plot_state 1
+#spinor
+#electron_spin 1
+#hole_spin 2
+
+# Output. 
+
+# IO
+use_wfn_hdf5

@@ -38,9 +38,10 @@ class FullGridFlow:
         atoms: str=None,
         sc_grid: np.ndarray=None,
         use_esd_atoms_if_needed: bool = None,
+        skip_pseudo_generation: bool = None,
         
-        path_string: str=None,
-        path_npoints: int=None,
+        path_special_points: str=None,
+        path_segment_npoints: int=None,
         
         relax_type = None,
 
@@ -61,58 +62,83 @@ class FullGridFlow:
         wfn_qe_kdim = None ,
         wfn_qe_sym = None,
         wfn_para_cond = None,
+
+        epw_exec_loc: str = None,
         
         qshift = None,
         wfnq_qe_cond: int  = None,
         wfnq_qe_kdim = None,
         wfnq_qe_sym = None, 
+
+        wfnfi_qe_cond: int  = None,
+        wfnfi_qe_kdim = None,
+        wfnfi_qe_sym = None, 
+
+        wfnqfi_qe_cond: int  = None,
+        wfnqfi_qe_kdim = None,
+        wfnqfi_qe_sym = None, 
         
         epssig_bands_cond: int = None,
         epssig_cutoff: float  = None,
+        epssig_wfnlink: str = None,
+        epssig_wfnqlink: str = None,
         
         sig_band_val: int = None,
         sig_band_cond: int = None,
         
         inteqp_band_val: int = None,
+        inteqp_wfn_co_link: str = None,
+        inteqp_wfn_fi_link: str = None,
         
         abs_val_bands: int = None,
         abs_cond_bands: int = None,
         abs_nevec: int = None,
+        abs_wfn_co_link: str = None,
+        abs_wfnq_co_link: str = None,
+        abs_wfn_fi_link: str = None,
+        abs_wfnq_fi_link: str = None,
 
         bseq_Qdim = None,
         
         plotxct_hole = None,
         plotxct_sc = None,
         plotxct_state: int = None,
+
+        esd_fmax: float = None,
+        esd_max_steps: int = None,
+
+        xctpol_max_error: float = None,
+        xctpol_max_steps: int = None,
     ):
         '''
         Simplifies flow manage. 
         '''
-        self.scheduler: Scheduler=scheduler
+        self.scheduler: Scheduler = scheduler
         
-        self.single_task_desc: JobProcDesc=JobProcDesc(**single_task_desc)
-        self.single_node_desc: JobProcDesc=JobProcDesc(**single_node_desc)
-        self.para_desc: JobProcDesc=JobProcDesc(**para_desc)
-        self.big_para_desc: JobProcDesc=JobProcDesc(**big_para_desc)
-        self.para_k_desc: JobProcDesc=JobProcDesc(**para_k_desc)
-        self.big_para_k_desc: JobProcDesc=JobProcDesc(**big_para_k_desc)
-        self.para_epwk_desc: JobProcDesc=JobProcDesc(**para_epwk_desc)
+        self.single_task_desc: JobProcDesc = JobProcDesc(**single_task_desc)
+        self.single_node_desc: JobProcDesc = JobProcDesc(**single_node_desc)
+        self.para_desc: JobProcDesc = JobProcDesc(**para_desc)
+        self.big_para_desc: JobProcDesc = JobProcDesc(**big_para_desc)
+        self.para_k_desc: JobProcDesc = JobProcDesc(**para_k_desc)
+        self.big_para_k_desc: JobProcDesc = JobProcDesc(**big_para_k_desc)
+        self.para_epwk_desc: JobProcDesc = JobProcDesc(**para_epwk_desc)
         
-        self.atoms: str=atoms
-        self.sc_grid: np.ndarray=np.array(sc_grid)
+        self.atoms: str = atoms
+        self.sc_grid: np.ndarray = np.array(sc_grid)
         self.use_esd_atoms_if_needed: bool = use_esd_atoms_if_needed
+        self.skip_pseudo_generation: bool = skip_pseudo_generation
         
-        self.path_string: str=path_string
-        self.path_npoints: int=path_npoints
+        self.path_special_points: list = path_special_points
+        self.path_segment_npoints: int = path_segment_npoints
         
         self.relax_type = relax_type
 
-        self.scf_kgrid=scf_kgrid
-        self.scf_cutoff=scf_cutoff
+        self.scf_kgrid = scf_kgrid
+        self.scf_cutoff = scf_cutoff
 
-        self.dfpt_qgrid=dfpt_qgrid
-        self.dfpt_conv_threshold:str=dfpt_conv_threshold
-        self.dfpt_phmode: int=dfpt_phmode
+        self.dfpt_qgrid = dfpt_qgrid
+        self.dfpt_conv_threshold:str = dfpt_conv_threshold
+        self.dfpt_phmode: int = dfpt_phmode
         self.dfpt_njobs: int = dfpt_njobs
 
         self.dos_kdim = dos_kdim 
@@ -124,29 +150,57 @@ class FullGridFlow:
         self.wfn_qe_kdim = wfn_qe_kdim 
         self.wfn_qe_sym = wfn_qe_sym
         self.wfn_para_cond = wfn_para_cond
+
+        self.epw_exec_loc: str = epw_exec_loc
         
         self.qshift = qshift
         self.wfnq_qe_cond: int  = wfnq_qe_cond
         self.wfnq_qe_kdim = wfnq_qe_kdim
         self.wfnq_qe_sym = wfnq_qe_sym
+
+        self.wfnfi_qe_cond: int  = wfnfi_qe_cond
+        self.wfnfi_qe_kdim = wfnfi_qe_kdim
+        self.wfnfi_qe_sym = wfnfi_qe_sym
+
+        self.wfnqfi_qe_cond: int  = wfnqfi_qe_cond
+        self.wfnqfi_qe_kdim = wfnqfi_qe_kdim
+        self.wfnqfi_qe_sym = wfnqfi_qe_sym
         
         self.epssig_bands_cond: int = epssig_bands_cond
         self.epssig_cutoff: float  = epssig_cutoff
+        self.epssig_wfnlink: str = epssig_wfnlink
+        self.epssig_wfnqlink: str = epssig_wfnqlink
     
         self.sig_band_val: int = sig_band_val
         self.sig_band_cond: int = sig_band_cond
         
         self.inteqp_band_val: int = inteqp_band_val
+        self.inteqp_wfn_co_link: str = inteqp_wfn_co_link
+        self.inteqp_wfn_fi_link: str = inteqp_wfn_fi_link
         
         self.abs_val_bands: int = abs_val_bands
         self.abs_cond_bands: int = abs_cond_bands
         self.abs_nevec: int = abs_nevec
+        self.abs_wfn_co_link: str = abs_wfn_co_link
+        self.abs_wfnq_co_link: str = abs_wfnq_co_link
+        self.abs_wfn_fi_link: str = abs_wfn_fi_link
+        self.abs_wfnq_fi_link: str = abs_wfnq_fi_link
 
         self.bseq_Qdim = bseq_Qdim
         
         self.plotxct_hole = plotxct_hole
         self.plotxct_sc = plotxct_sc
         self.plotxct_state: int = plotxct_state
+
+        self.esd_fmax: float = esd_fmax
+        self.esd_max_steps: int = esd_max_steps
+
+        self.xctpol_max_error: float = xctpol_max_error
+        self.xctpol_max_steps: int = xctpol_max_steps
+
+        # During run. 
+        self.max_val: int = None 
+        self.input: Input = None 
     
     @staticmethod
     def from_yml(filename):
@@ -203,11 +257,11 @@ class FullGridFlow:
     def create_kpath(self):
         self.kpath_obj = KPath(
             atoms=self.uc_atoms,
-            path_string=self.path_string,
-            npoints=100,
+            path_special_points=self.path_special_points,
+            path_segment_npoints=self.path_segment_npoints,
         )
         save_obj(self.kpath_obj, 'bandpath.pkl')
-        self.Kpath, self.Gpath = self.kpath_obj.get_sc_path(self.sc_grid)
+        # self.Kpath, self.Gpath = self.kpath_obj.get_sc_path(self.sc_grid)
 
     def create_calcs_input(self, save=True):
         self.relax = RelaxInput(
@@ -231,7 +285,7 @@ class FullGridFlow:
         )
 
         self.phbands = PhbandsInput(
-            kpath=self.Kpath,
+            kpath=self.kpath_obj,
             job_desc=self.para_k_desc,
         )
 
@@ -252,10 +306,10 @@ class FullGridFlow:
         )
 
         self.dftelbands = DftelbandsInput(
-            kpath=self.Kpath,
+            kpath=self.kpath_obj,
             nbands=self.dftelbands_cond + self.max_val,
             job_desc=self.para_desc,
-            job_pw2bgw_desc=self.para_desc,
+            job_pw2bgw_desc=self.single_node_desc,
         )
 
         self.kpdos = KpdosInput(
@@ -276,7 +330,7 @@ class FullGridFlow:
             atoms=self.atoms_input,
             kdim=self.wfn_qe_kdim,
             qshift=(0.0, 0.0, 0.0),
-            is_reduced=False,
+            is_reduced=self.wfn_qe_sym,
             bands=self.wfn_qe_cond + self.max_val,
             job_wfn_desc=self.para_k_desc,
             job_pw2bgw_desc=self.single_node_desc,
@@ -284,20 +338,26 @@ class FullGridFlow:
             parabands_bands=self.wfn_para_cond + self.max_val,
         )
 
-        if self.abs_val_bands==self.max_val:
-            if self.wfn_qe_cond==self.abs_cond_bands:
-                skipped_bands=None
-            else:
-                skipped_bands = [(self.max_val + self.abs_cond_bands + 1, self.wfn_qe_cond + self.max_val)]
-        else:
-            skipped_bands = [(1, self.max_val - self.abs_val_bands), (self.max_val + self.abs_cond_bands + 1, self.wfn_qe_cond + self.max_val)]
+        skipped_bands = []
+        if self.abs_val_bands!= self.max_val:
+            temp = (1, self.max_val - self.abs_val_bands)
+            skipped_bands.append(temp)
+
+        if self.abs_cond_bands!= self.wfn_qe_cond:
+            temp = (self.max_val + self.abs_cond_bands + 1, self.wfn_qe_cond + self.max_val)
+            skipped_bands.append(temp)
+
+        if len(skipped_bands)==0:
+            skipped_bands = None
+
         self.epw = EpwInput(
             kgrid_coarse=self.wfn_qe_kdim,
             qgrid_coarse=self.wfn_qe_kdim,
             kgrid_fine=self.wfn_qe_kdim,
             qgrid_fine=self.wfn_qe_kdim,
-            bands=self.wfnq_qe_cond + self.max_val,
-            exec_loc='$SCRATCH/q-e-cpu/bin/epw.x',
+            bands=self.abs_cond_bands + self.abs_val_bands,
+            exec_loc=self.epw_exec_loc,
+            # exec_loc='$SCRATCH/q-e-cpu/bin/epw.x',
             job_desc=self.para_epwk_desc,
             skipped_bands=skipped_bands,     # The input bands are 1 to 14, which are fine.
         )
@@ -306,37 +366,37 @@ class FullGridFlow:
             atoms=self.atoms_input,
             kdim=self.wfnq_qe_kdim,
             qshift=self.qshift,
-            is_reduced=False,
+            is_reduced=self.wfnq_qe_sym,
             bands=self.wfnq_qe_cond + self.max_val,
             job_wfn_desc=self.para_k_desc,
             job_pw2bgw_desc=self.single_node_desc,
         )
 
-        # self.wfnfi = WfnGeneralInput(
-        #     atoms=self.atoms_input,
-        #     kdim=(2, 2, 2),
-        #     qshift=(0.0, 0.0, 0.000),
-        #     is_reduced=False,
-        #     bands=14,
-        #     job_wfn_desc=self.para_k_desc,
-        #     job_pw2bgw_desc=self.single_node_desc,
-        # )
+        self.wfnfi = WfnGeneralInput(
+            atoms=self.atoms_input,
+            kdim=self.wfnfi_qe_kdim,
+            qshift=(0.0, 0.0, 0.000),
+            is_reduced=self.wfnfi_qe_sym,
+            bands=self.wfnfi_qe_cond,
+            job_wfn_desc=self.para_k_desc,
+            job_pw2bgw_desc=self.single_node_desc,
+        )
 
-        # self.wfnqfi = WfnGeneralInput(
-        #     atoms=self.atoms_input,
-        #     kdim=(2, 2, 2),
-        #     qshift=(0.0, 0.0, 0.001),
-        #     is_reduced=False,
-        #     bands=14,
-        #     job_wfn_desc=self.para_k_desc,
-        #     job_pw2bgw_desc=self.single_node_desc,
-        # )
+        self.wfnqfi = WfnGeneralInput(
+            atoms=self.atoms_input,
+            kdim=self.wfnqfi_qe_kdim,
+            qshift=(0.0, 0.0, 0.001),
+            is_reduced=self.wfnqfi_qe_sym,
+            bands=self.wfnqfi_qe_cond,
+            job_wfn_desc=self.para_k_desc,
+            job_pw2bgw_desc=self.single_node_desc,
+        )
 
         self.epsilon = EpsilonInput(
             bands=self.epssig_bands_cond + self.max_val,
             cutoff=self.epssig_cutoff,
-            wfn_link='WFN_parabands.h5',
-            wfnq_link='WFNq_coo.h5',
+            wfn_link=self.epssig_wfnlink,
+            wfnq_link=self.epssig_wfnqlink,
             job_desc=self.para_desc,
         )
 
@@ -345,7 +405,7 @@ class FullGridFlow:
             band_min=self.max_val - self.sig_band_val + 1,
             band_max=self.max_val + self.sig_band_cond,
             cutoff=self.epssig_cutoff,
-            wfn_inner_link='WFN_parabands.h5',
+            wfn_inner_link=self.epssig_wfnlink,
             job_desc=self.para_desc,
         )
 
@@ -354,8 +414,8 @@ class FullGridFlow:
             cond_bands_coarse=self.dftelbands_cond-1,
             val_bands_fine=self.inteqp_band_val,
             cond_bands_fine=self.dftelbands_cond-1,
-            wfn_co_link='./WFN_coo',
-            wfn_fi_link='WFN_dftelbands',
+            wfn_co_link=self.inteqp_wfn_co_link,
+            wfn_fi_link=self.inteqp_wfn_fi_link,
             job_desc=self.para_desc,
         )
 
@@ -363,8 +423,8 @@ class FullGridFlow:
             val_bands_coarse=self.abs_val_bands,
             cond_bands_coarse=self.abs_cond_bands,
             Qshift=(0.0, 0.0, 0.0),
-            wfn_co_link='./WFN_parabands.h5',
-            wfnq_co_link='./WFN_parabands.h5',
+            wfn_co_link=self.abs_wfn_co_link,
+            wfnq_co_link=self.abs_wfnq_co_link,
             job_desc=self.para_desc,
         )
 
@@ -374,10 +434,10 @@ class FullGridFlow:
             val_bands_fine=self.abs_val_bands,
             cond_bands_fine=self.abs_cond_bands,
             Qshift=(0.0, 0.0, 0.0),
-            wfn_co_link='./WFN_parabands.h5',
-            wfnq_co_link='./WFN_parabands.h5',
-            wfn_fi_link='./WFN_parabands.h5',
-            wfnq_fi_link='./WFN_parabands.h5',
+            wfn_co_link=self.abs_wfn_co_link,
+            wfnq_co_link=self.abs_wfnq_co_link,
+            wfn_fi_link=self.abs_wfn_fi_link,
+            wfnq_fi_link=self.abs_wfnq_fi_link,
             num_evec=self.abs_nevec,
             pol_dir=self.qshift,
             job_desc=self.para_desc,
@@ -387,8 +447,8 @@ class FullGridFlow:
             hole_position=self.plotxct_hole,
             supercell_size=self.plotxct_sc,
             state=self.plotxct_state,
-            wfn_fi_link='./WFN_parabands.h5',
-            wfnq_fi_link='./WFNq_coo.h5',
+            wfn_fi_link=self.abs_wfn_fi_link,
+            wfnq_fi_link=self.abs_wfnq_fi_link,
             job_desc=self.para_desc,
         )
 
@@ -399,16 +459,32 @@ class FullGridFlow:
             val_bands_fine=self.abs_val_bands,
             cond_bands_fine=self.abs_cond_bands,
             Qdim=self.bseq_Qdim,
-            wfn_co_link='./WFN_parabands.h5',
-            wfnq_co_link='./WFN_parabands.h5',
-            wfn_fi_link='./WFN_parabands.h5',
-            wfnq_fi_link='./WFN_parabands.h5',
+            wfn_co_link=self.abs_wfn_co_link,
+            wfnq_co_link=self.abs_wfnq_co_link,
+            wfn_fi_link=self.abs_wfn_fi_link,
+            wfnq_fi_link=self.abs_wfnq_fi_link,
             num_evec=self.abs_nevec,
             pol_dir=self.qshift,
             job_desc=self.para_desc,
         )
 
         self.esf = EsfInput(
+            job_desc=self.single_task_desc,
+        )
+
+        self.esdstep = EsdStepInput(
+            fmax=self.esd_fmax,
+            max_steps=self.esd_max_steps,
+            job_desc=self.single_task_desc,
+        )
+
+        self.xctph = XctPhInput(
+            job_desc=self.single_task_desc,
+        )
+
+        self.xctpol = XctPolInput(
+            max_error=self.xctpol_max_error,
+            max_steps=self.xctpol_max_steps,
             job_desc=self.single_task_desc,
         )
 
@@ -438,6 +514,9 @@ class FullGridFlow:
             plotxct=self.plotxct,
             bseq=self.bseq,
             esf=self.esf,
+            esdstep=self.esdstep,
+            xctph=self.xctph,
+            xctpol=self.xctpol,
         )
         if save: save_obj(self.input, 'input.pkl')
 
@@ -445,7 +524,8 @@ class FullGridFlow:
         
         self.create_atoms()
 
-        self.create_pseudos()
+        if not self.skip_pseudo_generation:
+            self.create_pseudos()
 
         self.create_kpath()
 
@@ -460,7 +540,7 @@ class FullGridFlow:
 
         list_of_steps = [step_class(self.input) for step_class in list_of_step_classes]
         self.flowmanage: FlowManage = FlowManage(list_of_steps)
-        if save_pkl: save_obj(self.flowmanage, 'flowmanage.pkl')
+        if save_pkl: save_obj(self.flowmanage, 'flowmanage.pkl'); save_obj(self, 'fullgridflow.pkl')
         return self.flowmanage
 
 #endregion

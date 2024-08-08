@@ -38,32 +38,32 @@ def main():
     flowmanage = fullgridflow.get_flowmanage([
             Relax,
             Scf,
-            Dfpt,
-            Phbands,
-            Phdos,
-            Phmodes,
-            Dos,
-            Pdos,
+            # Dfpt,
+            # Phbands,
+            # Phdos,
+            # Phmodes,
+            # Dos,
+            # Pdos,
             Dftelbands,
-            Kpdos,
-            Wannier,
+            # Kpdos,
+            # Wannier,
             Wfn,
-            Epw,
+            # Epw,
             Wfnq,
             # Wfnfi,
             # Wfnqfi,
             Epsilon,
             Sigma,
             Inteqp,
-            Kernel,
-            Absorption,
-            Plotxct,
-            Bseq,
-            Esf,
-            # Esd(input=input),
-            # XctPh(input=input),
-            # Pol(input=input),
-            # Xctpol(input=input),
+            # Kernel,
+            # Absorption,
+            # Plotxct,
+            # Bseq,
+            # Esf,
+            # Esd,
+            # XctPh,
+            # Pol,
+            # XctPol,
         ], 
         save_pkl=True
     )
@@ -71,11 +71,11 @@ def main():
     flowmanage.create_job_all_script(
         filename='job_all.sh',
         start_job='job_relax.sh',
-        stop_job='job_esf.sh',
-        save_folder_flag=True,
-        save_folder='./test_save_folder/',
-        flowfile_to_read='flowmanage.pkl'
+        stop_job='job_inteqp.sh',
+        flowfile_to_read='flowmanage.pkl',
     )
+    
+
 #endregion
 
 #region: Classes.

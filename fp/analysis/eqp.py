@@ -9,7 +9,7 @@ import numpy as np
 #endregion
 
 #region: Classes.
-class Eqp:
+class EqpResult:
     def __init__(self):
         self.dft: np.ndarray = None  
         self.gw: np.ndarray = None 

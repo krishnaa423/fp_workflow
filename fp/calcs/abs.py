@@ -22,8 +22,8 @@ class Absorption:
 f'''# Q-points
 exciton_Q_shift 2 {self.input.absorption.Qshift[0]:15.10f} {self.input.absorption.Qshift[1]:15.10f} {self.input.absorption.Qshift[2]:15.10f}
 use_symmetries_coarse_grid
-no_symmetries_fine_grid
-no_symmetries_shifted_grid
+use_symmetries_fine_grid
+use_symmetries_shifted_grid
 
 # Bands
 number_val_bands_coarse {self.input.absorption.val_bands_coarse}

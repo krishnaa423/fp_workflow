@@ -1,0 +1,160 @@
+scheduler:
+  Perlmutter:
+    is_interactive: true
+    is_gpu: true
+single_task_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+single_node_desc:
+  nodes: 1
+  ntasks: 4
+  time: "01:45:00"
+para_desc:
+  nodes: 4
+  ntasks: 16
+  time: "01:45:00"
+big_para_desc:
+  nodes: 4
+  ntasks: 16
+  time: "01:45:00"
+para_k_desc:
+  nodes: 4
+  ntasks: 16
+  time: "00:01:45"
+big_para_k_desc:
+  nodes: 4
+  ntasks: 16
+  time: "01:45:00"
+para_epwk_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+
+atoms: "uc_atoms.xsf"
+sc_grid:
+  - 1
+  - 1
+  - 1
+use_esd_atoms_if_needed: true
+skip_pseudo_generation: false 
+
+# path_string: "LGXWLKG"
+# path_npoints: 60
+path_special_points:
+  - 'L'
+  - 'G'
+  - 'X'
+  - 'W'
+  - 'L'
+  - 'K'
+  - 'G'
+path_segment_npoints: 10
+
+relax_type: 1
+
+scf_kgrid:
+  - 2
+  - 2
+  - 2
+scf_cutoff: 50.0
+
+dfpt_qgrid:
+  - 2
+  - 2
+  - 2
+dfpt_conv_threshold: "1.0d-16"
+dfpt_phmode: 1
+# dfpt_njobs: 1
+
+dos_kdim:
+  - 2
+  - 2
+  - 2
+# WFN_dftelbands
+dftelbands_cond: 2
+wannier_kdim: 
+  - 2
+  - 2
+  - 2
+wannier_bands_cond: 2
+
+# WFN_coo, WFN_parabands.h5
+wfn_qe_kdim:
+  - 4
+  - 4
+  - 4
+wfn_qe_cond: 2
+wfn_qe_sym: true
+wfn_para_cond: 2001
+
+epw_exec_loc: "$APP/q-e-cpu/bin/epw.x"
+
+# WFNq_coo, WFNq_coo.h5
+qshift: 
+  - 0.000
+  - 0.000
+  - 0.001
+wfnq_qe_kdim:
+  - 4
+  - 4
+  - 4
+wfnq_qe_cond: 2
+wfnq_qe_sym: true
+
+# WFN_fii, WFN_fii.h5
+wfnfi_qe_kdim:
+  - 2
+  - 2
+  - 2
+wfnfi_qe_cond: 2
+wfnfi_qe_sym: false
+
+# WFNq_fii, WFNq_fii.h5
+wfnqfi_qe_kdim:
+  - 2
+  - 2
+  - 2
+wfnqfi_qe_cond: 2
+wfnqfi_qe_sym: false
+
+epssig_bands_cond: 2000
+epssig_cutoff: 5.0
+epssig_wfnlink: "WFN_parabands.h5"
+epssig_wfnqlink: "WFNq_coo.h5"
+
+sig_band_val: 4
+sig_band_cond: 2
+
+inteqp_band_val: 3
+inteqp_wfn_co_link: "WFN_coo"
+inteqp_wfn_fi_link: "WFN_dftelbands"
+
+abs_val_bands: 4
+abs_cond_bands: 2
+abs_nevec: 5
+abs_wfn_co_link: "WFN_parabands.h5"
+abs_wfnq_co_link: "WFN_parabands.h5"
+abs_wfn_fi_link: "WFN_parabands.h5"
+abs_wfnq_fi_link: "WFN_parabands.h5"
+
+bseq_Qdim: 
+  - 2
+  - 2
+  - 2
+
+plotxct_hole:
+  - 0.25
+  - 0.25
+  - 0.25
+plotxct_sc:
+  - 2
+  - 2
+  - 2
+plotxct_state: 1
+
+esd_fmax: 0.1
+esd_max_steps: 10
+
+xctpol_max_error: 0.1
+xctpol_max_steps: 10

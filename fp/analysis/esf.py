@@ -20,14 +20,20 @@ from ase.io.xsf import write_xsf
 class EsfCalculator(Calculator):
     implemented_properties = ['energy', 'forces']
     
-    def __init__(self, excited_force, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.excited_force = excited_force*Hartree
+        self.excited_force = None 
         
     def calculate(self, atoms=None, properties=['energy', 'forces'], system_changes=all_changes):
         super().calculate(atoms, properties=properties, system_changes=system_changes)
         
+        # TODO. 
         self.results['energy'] = 0.0
+
+        with h5py.File('esf.h5', 'r') as r:
+            self.excited_force: np.ndarray = r['excited_force'][:]
+
+        # self.results['forces'] = self.excited_force.flatten()*Hartree  # I don't think multiplying by Hartree is correct. 
         self.results['forces'] = self.excited_force
 
 class Esf:
@@ -40,14 +46,14 @@ class Esf:
     def assemble_components(self):
         self.atoms = DftAtoms().get_atoms()
         
-        self.dft_force = DftForce().get_dftforce()
+        self.dft_force = DftForceResult().get_dftforce()
         
-        self.xct = Xct()
+        self.xct = XctResult()
         self.vbm, self.nc, self.nv = self.xct.get_vbm_nc_nv()
         
-        self.eig_c, self.eig_v = Eqp().get_eig(self.vbm, self.nc, self.nv)
+        self.eig_c, self.eig_v = EqpResult().get_eig(self.vbm, self.nc, self.nv)
         
-        self.elph_c, self.elph_v = Elph().get_elph(self.vbm, self.nc, self.nv)
+        self.elph_c, self.elph_v = ElphResult().get_elph(self.vbm, self.nc, self.nv)
         
         self.xct_evec = self.xct.get_xctevec()
     
@@ -91,7 +97,6 @@ class Esf:
     def calc(self):
         self.assemble_components()
         self.do_calculation()
-
     
     def write(self):
         
@@ -107,7 +112,7 @@ class Esf:
             ds_excited_force[:] = self.excited_force
             
         # Write xsf file. 
-        self.atoms.calc = EsfCalculator(excited_force=self.excited_force)
+        self.atoms.calc = EsfCalculator()
         self.atoms.get_potential_energy()
         self.atoms.get_forces()
         with open('esf.xsf', 'w') as w: write_xsf(w, [self.atoms])

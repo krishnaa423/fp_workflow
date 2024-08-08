@@ -19,6 +19,9 @@ from fp.inputs.kernel import *
 from fp.inputs.abs import *
 from fp.inputs.bse_q import *
 from fp.inputs.esf import *
+from fp.inputs.esd import *
+from fp.inputs.xctph import *
+from fp.inputs.xctpol import *
 
 from fp.schedulers import *
 #endregion
@@ -58,6 +61,9 @@ class Input:
         plotxct: PlotxctInput,
         bseq: BseqInput,
         esf: EsfInput,
+        esdstep: EsdStepInput,
+        xctph: XctPhInput,
+        xctpol: XctPolInput,
     ):
         self.scheduler: Scheduler = scheduler
         self.atoms: AtomsInput = atoms 
@@ -86,11 +92,11 @@ class Input:
         self.absorption: AbsorptionInput = absorption
         self.plotxct: PlotxctInput = plotxct
         self.bseq: BseqInput = bseq
-        # self.xctph: XctphInput = xctph
+        self.xctph: XctPhInput = xctph
 
         self.esf: EsfInput = esf
-        # self.esd: EsdInput = esd
+        self.esdstep: EsdStepInput = esdstep
 
         # self.pol: PolInput = pol
-        # self.xctpol: XctpolInput = xctpol
+        self.xctpol: XctPolInput = xctpol
 #endregion

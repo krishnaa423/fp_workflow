@@ -18,7 +18,7 @@ class DftAtoms:
         
         return atoms 
 
-class DftForce:
+class DftForceResult:
     def get_dftforce(self):
         root = ET.parse('./scf.xml').getroot()
     

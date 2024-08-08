@@ -15,15 +15,15 @@ class KPath:
     def __init__(
             self, 
             atoms: Atoms, 
-            path_string: str, 
-            npoints: int
+            path_special_points: str, 
+            path_segment_npoints: int
         ):
         self.atoms: Atoms = atoms
-        self.path_string: str = path_string
-        self.npoints: int = npoints
+        self.path_special_points: list = path_special_points
+        self.path_segment_npoints: int = path_segment_npoints
 
         # generate bandpath.
-        self.bandpath = atoms.cell.bandpath(path=self.path_string, npoints=self.npoints)
+        # self.bandpath: BandPath = atoms.cell.bandpath(path=self.path_special_points, npoints=self.path_segment_npoints)
 
     def get_kpts(self):
         return self.bandpath.kpts
@@ -47,7 +47,6 @@ class KPath:
                 KG[i] += abs(np.round(KG[i]))
 
         return KG, G
-
 
     def get_sc_path(self, sc_grid: np.ndarray):
         M = np.diag(sc_grid)

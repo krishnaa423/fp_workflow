@@ -1,0 +1,14 @@
+# Q-points
+exciton_Q_shift 2    0.0000000000    0.0000000000    0.0000000000
+use_symmetries_coarse_grid
+
+# Bands 
+number_val_bands 4
+number_cond_bands 2
+#spinor
+
+# Options
+#extended_kernel
+
+# IO. 
+use_wfn_hdf5

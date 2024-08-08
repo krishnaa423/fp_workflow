@@ -81,9 +81,7 @@ class FlowManage:
             self, 
             start_job, 
             stop_job, 
-            save_folder_flag=False, 
-            save_folder=None, 
-            flowfile='flowmanage.pkl'
+            flowfile='flowmanage.pkl',
         ):
         assert len(self.list_of_steps)>=1, 'There should be atleast one job step.'
 
@@ -96,25 +94,20 @@ from fp.io import *
 
 start_job='{start_job}'
 stop_job='{stop_job}'
-save_flag={'True' if save_folder_flag else 'False'} 
-save_folder='{save_folder if save_folder else ''}'
 
 flow: FlowManage = load_obj('{flowfile}')
 flow.run(total_time=0, start_job=start_job, stop_job=stop_job)
-if save_flag: os.system('mkdir -p %s' % (save_folder) ); flow.save_job_results(folder=save_folder)
 '''
 
         return output 
 
-    def create_job_all_script(self, filename, start_job, stop_job, save_folder_flag=False, save_folder=None, flowfile_to_read='flowmanage.pkl'):
+    def create_job_all_script(self, filename, start_job, stop_job, flowfile_to_read='flowmanage.pkl'):
         write_str_2_f(
             filename, 
             self.get_job_all_script(
                 start_job, 
                 stop_job, 
-                save_folder_flag, 
-                save_folder, 
-                flowfile_to_read
+                flowfile_to_read,
             )
         )
 

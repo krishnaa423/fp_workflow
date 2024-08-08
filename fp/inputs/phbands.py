@@ -1,6 +1,7 @@
 #region: Modules.
 import numpy as np 
 from fp.schedulers import *
+from fp.structure.kpath import KPath
 #endregion
 
 #region: Variables.
@@ -16,15 +17,17 @@ class PhbandsInput:
         kpath,
         job_desc,
     ):
-        self.kpath:np.ndarray = np.array(kpath) 
+        self.kpath: KPath = kpath
         self.job_desc: JobProcDesc = job_desc
         
     def get_kpath_str(self):
-        output = ''
-        output += f'{self.kpath.shape[0]}\n'
+        # TODO. 
+        pass 
+        # output = ''
+        # output += f'{self.kpath.shape[0]}\n'
         
-        for row in self.kpath:
-            output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f}\n'
+        # for row in self.kpath:
+        #     output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f}\n'
         
-        return output 
+        # return output 
 #endregion

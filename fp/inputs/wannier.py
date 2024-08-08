@@ -66,7 +66,7 @@ class WannierInput:
     
     def get_kpoints(self):
         kgrid = Kgrid(
-            atoms=self.atoms.atoms,
+            atoms=self.atoms,
             kdim=self.kdim,
             is_reduced=False,
         )
@@ -85,7 +85,7 @@ class WannierInput:
     
     def get_kpoints_qe(self):
         kgrid = Kgrid(
-            atoms=self.atoms.atoms,
+            atoms=self.atoms,
             kdim=self.kdim,
             is_reduced=False,
         )

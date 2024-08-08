@@ -41,7 +41,7 @@ class WfnGeneralInput:
       
     def create_kgrid(self):
         kgrid = Kgrid(
-            self.atoms.atoms, 
+            self.atoms, 
             kdim=self.kdim,
             qshift=self.qshift,
             is_reduced=self.is_reduced

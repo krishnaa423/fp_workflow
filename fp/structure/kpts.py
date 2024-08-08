@@ -3,6 +3,7 @@ from ase import Atoms
 import numpy as np 
 import os
 import subprocess
+from fp.inputs import *
 from io import StringIO
 #endregion
 
@@ -22,7 +23,7 @@ class Kgrid:
         is_reduced=False,
     ):
         self.kdim: np.ndarray = np.array(kdim).astype(dtype='i4')
-        self.atoms: Atoms = atoms 
+        self.atoms: AtomsInput = atoms 
         self.qshift: np.ndarray = np.array(qshift)
         self.is_reduced: bool = is_reduced
 
@@ -51,7 +52,27 @@ class Kgrid:
         return kpts
 
     def get_ibz_kpts(self):
-        pass 
+        with open('kgrid.inp', 'w') as f:
+            f.write(f'{self.kdim[0]:15.10f} {self.kdim[1]:15.10f} {self.kdim[2]:15.10f}\n')     
+            f.write(f'0.0 0.0 0.0\n')     
+            f.write(f'{self.qshift[0]:15.10f} {self.qshift[1]:15.10f} {self.qshift[2]:15.10f}\n')
+            f.write(f'{self.atoms.get_scf_cell()}')
+            f.write(f'{self.atoms.get_nat()}\n')
+            f.write(f'{self.atoms.get_scf_atomic_positions(first_column="atom_index")}')
+            f.write(f'0 0 0\n')
+            f.write(f'.false.\n')
+            f.write(f'.false.\n')
+            f.write(f'.false.\n')
+        
+        command = ['kgrid.x']
+        args = ['kgrid.inp', 'kgrid.log', 'kgrid.out']
+        result = subprocess.run(command + args, capture_output=True, text=True)
+        
+        kpts = np.loadtxt('kgrid.log', skiprows=2)
+        
+        if kpts.ndim == 1 : kpts = kpts.reshape(1, kpts.size)
+
+        return kpts 
 
     def get_kpts(self):
         return self.get_ibz_kpts() if self.is_reduced else self.get_fbz_kpts()

@@ -6,7 +6,7 @@ import numpy as np
 from numpy.linalg import eigh
 
 from ase import Atoms
-from ase.optimize.optimize import Optimizer, UnitCellFilter
+from ase.optimize.optimize import UnitCellFilter
 
 import sys
 import pickle
@@ -18,7 +18,12 @@ import numpy as np
 
 from ase.parallel import rank, barrier
 from ase.io.trajectory import PickleTrajectory
+from ase.io import read, write 
+import os 
 
+from fp.flows import *
+from fp.io import *
+from fp.analysis.esf import *
 #endregion
 
 #region: Variables.
@@ -372,4 +377,172 @@ class BFGS(Optimizer):
 
         self.pos0 = pos0
         self.forces0 = forces0
+
+class Esd(BFGS):
+    def __init__(self, fmax=0.05, max_steps=10, *args, **kwargs):
+        self.fmax = fmax 
+        self.max_steps = max_steps 
+        self.pos_new = None 
+        self.is_converged = False
+        self.is_max_steps = False 
+        super().__init__(*args, **kwargs)
+        self.nsteps = -1 
+
+    def dump_hdf5(self, data):
+        H, pos0, pos_new, forces0, nsteps, maxstep, is_converged, is_max_steps = data 
+
+        with h5py.File('esd.h5', 'w') as w:
+            ds_H = w.create_dataset('H', shape=(maxstep, H.shape[0], H.shape[1]), dtype=H.dtype); ds_H[:] = np.zeros((maxstep, H.shape[0], H.shape[1])); ds_H[nsteps, ...] = H 
+            ds_pos0 = w.create_dataset('pos0', shape=(maxstep, pos0.shape[0]), dtype=pos0.dtype); ds_pos0[:] = np.zeros((maxstep, pos0.shape[0])); ds_pos0[nsteps, ...] = pos0 
+            ds_pos_new = w.create_dataset('pos_new', shape=(maxstep, pos_new.shape[0]), dtype=pos_new.dtype); ds_pos_new[:] = np.zeros((maxstep, pos_new.shape[0])); ds_pos_new[nsteps, ...] = pos_new 
+            ds_forces0 = w.create_dataset('forces0', shape=(maxstep, forces0.shape[0]), dtype=forces0.dtype); ds_forces0[:] = np.zeros((maxstep, forces0.shape[0])); ds_forces0[nsteps, ...] = forces0 
+            w.create_dataset('nsteps', data=nsteps)
+            w.create_dataset('maxstep', data=maxstep)
+            w.create_dataset('is_converged', data=is_converged)
+            w.create_dataset('is_max_steps', data=is_max_steps)
+
+    def load_hdf5(self, step_idx=-1):
+        with h5py.File('esd.h5', 'r') as r:
+            nsteps = r['nsteps'][()] if step_idx==-1 else step_idx 
+            H = r['H'][nsteps, ...]
+            pos0 = r['pos0'][nsteps, ...]
+            pos_new = r['pos_new'][nsteps, ...]
+            forces0 = r['forces0'][nsteps, ...]
+            maxstep = r['maxstep'][()]
+            is_converged = r['is_converged'][()]
+            is_max_steps = r['is_max_steps'][()]
+
+        return (H, pos0, pos_new, forces0, nsteps, maxstep, is_converged, is_max_steps)
+
+    def read_hdf5(self, step_idx=-1):
+        file = self.load_hdf5(step_idx)
+        self.H, self.pos0, self.pos_new, self.forces0, self.nsteps, self.maxstep, self.is_converged, self.is_max_steps = file
+
+    # def dump(self, data):
+    #     # # TODO: 
+    #     # if rank == 0 and self.restart is not None:
+    #     #     pickle.dump(data, open(self.restart, 'wb'), protocol=2)
+    #     self.dump_hdf5(data)
+
+    # def load(self, step_idx=-1):
+    #     # # TODO: 
+    #     # return pickle.load(open(self.restart))
+    #     return self.load_hdf5(step_idx)
+
+    # def read(self, step_idx=-1):
+    #     # # TODO: 
+    #     # file = self.load()  
+    #     # self.H, self.pos0, self.pos_new, self.forces0, self.nsteps, self.maxstep, self.is_converged, self.is_max_steps = file
+    #     self.read_hdf5(step_idx)
+
+    def converged(self, forces=None):
+        """Did the optimization converge?"""
+        # if forces is None:
+        #     forces = self.atoms.get_forces()
+        if hasattr(self.atoms, 'get_curvature'):
+            return (forces**2).sum(axis=1).max() < self.fmax**2 and \
+                   self.atoms.get_curvature() < 0.0
+        return (forces**2).sum(axis=1).max() < self.fmax**2
+
+    @staticmethod
+    def static_step(fmax, max_steps, ymlfile):
+        # Read atoms.
+        atoms = read('./esd_atoms.xsf') if os.path.exists('./esd_atoms.xsf') else read('./sc_atoms.xsf')
+        atoms.calc = EsfCalculator()
+        
+        # Read esd if present.
+        esd = Esd(fmax=fmax, max_steps=max_steps, atoms=atoms)
+        if os.path.exists('./esd.h5'): esd.read_hdf5()
+        if esd.is_converged:
+            print('ESD has converged')
+            return 
+        if esd.is_max_steps:
+            print(f'ESD has reached max steps: {esd.max_steps}')
+            return
+        
+        # Create the flow.
+        fullgridflow = FullGridFlow.from_yml(ymlfile)
+        flowmanage = fullgridflow.get_flowmanage([
+                # Relax,
+                Scf,
+                Dfpt,
+                # Phbands,
+                # Phdos,
+                # Phmodes,
+                # Dos,
+                # Pdos,
+                Dftelbands,
+                # Kpdos,
+                # Wannier,
+                Wfn,
+                Epw,
+                Wfnq,
+                # Wfnfi,
+                # Wfnqfi,
+                Epsilon,
+                Sigma,
+                Inteqp,
+                Kernel,
+                Absorption,
+                # Plotxct,
+                # Bseq,
+                Esf,
+                # Esd(input=input),
+                # XctPh(input=input),
+                # Pol(input=input),
+                # Xctpol(input=input),
+            ], 
+            save_pkl=True
+        )
+        flowmanage.create()
+        flowmanage.create_job_all_script(
+            filename='job_esd_step_flow.sh',
+            start_job='job_scf.sh',
+            stop_job='job_esf.sh',
+            flowfile_to_read='flowmanage.pkl',
+        )
+
+        total_time = run_and_wait_command('./job_esd_step_flow.sh', total_time=0.0) 
+        print(f'Total time for step flow: {esd.nsteps} is: {total_time}')
+        esd.step()
+
+    def step(self, forces=None):
+
+        atoms = self.atoms
+
+        if forces is None:
+            forces = atoms.get_forces()
+
+        # Return if converged.
+        if self.converged(forces):
+            self.is_converged = True 
+            self.dump_hdf5((self.H, self.pos0, self.pos_new, self.forces0, self.nsteps, self.maxstep, self.is_converged, self.is_max_steps))
+            return 
+        
+        # Return if is max_steps.
+        if not self.nsteps < self.max_steps:
+            self.is_max_steps = True 
+            self.dump_hdf5((self.H, self.pos0, self.pos_new, self.forces0, self.nsteps, self.maxstep, self.is_converged, self.is_max_steps))
+            return
+
+        pos = atoms.get_positions()
+        dpos, steplengths = self.prepare_step(pos, forces)
+        dpos = self.determine_step(dpos, steplengths)
+        self.pos_new = pos + dpos
+        
+        # Update new position. 
+        atoms.set_positions(self.pos_new)
+        # Increment the number of steps.
+        self.nsteps += 1
+        
+        # Save and move all to save folder.
+        self.dump_hdf5((self.H, self.pos0, self.pos_new, self.forces0, self.nsteps, self.maxstep, self.is_converged, self.is_max_steps))
+        save_folder = f'./esd/iter_{self.nsteps}'
+        os.system('mkdir -p ./esd')
+        os.system(f'mkdir -p {save_folder}')
+        flow: FlowManage = load_obj('./flowmanage.pkl')
+        flow.save_job_results(save_folder)
+
+        # Write the new positions for the next step.
+        write('./esd_atoms.xsf', atoms)
 #endregion

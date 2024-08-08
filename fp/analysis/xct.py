@@ -10,7 +10,7 @@ import numpy as np
 #endregion
 
 #region: Classes.
-class Xct:
+class XctResult:
     def get_xcteig(self):
         with h5py.File('./eigenvectors.h5', 'r') as r:
             xct_eig = r['/exciton_data/eigenvalues'][:][0]

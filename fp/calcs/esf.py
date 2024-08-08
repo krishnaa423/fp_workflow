@@ -61,10 +61,16 @@ python3 script_esf.py &> script_esf.out
             os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
-        os.system('rm -rf pdos.in')
-        os.system('rm -rf job_pdos.sh')
-        
-        os.system('rm -rf struct_pdos.dat*')
-        os.system('rm -rf pdos.in.out')
+        inodes = [
+            'script_esf.py',
+            'job_esf.sh',
+
+            'script_esf.out',
+            'esf.h5',
+            'esf.xsf',
+        ] 
+
+        for inode in inodes:
+            os.system(f'rm -rf ./{inode}')
 
 #endregion
