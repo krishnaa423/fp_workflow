@@ -53,7 +53,7 @@ class Kgrid:
 
     def get_ibz_kpts(self):
         with open('kgrid.inp', 'w') as f:
-            f.write(f'{self.kdim[0]:15.10f} {self.kdim[1]:15.10f} {self.kdim[2]:15.10f}\n')     
+            f.write(f'{self.kdim[0]} {self.kdim[1]} {int(self.kdim[2])}\n')     
             f.write(f'0.0 0.0 0.0\n')     
             f.write(f'{self.qshift[0]:15.10f} {self.qshift[1]:15.10f} {self.qshift[2]:15.10f}\n')
             f.write(f'{self.atoms.get_scf_cell()}')
