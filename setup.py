@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="fp_workflow",
-    version="2.1.1",
+    version="2.1.2",
     author="Krishnaa Vadivel",
     author_email="krishnaa.vadivel@yale.edu",
     description="First principles workflow and utilities",

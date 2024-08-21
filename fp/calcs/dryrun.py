@@ -77,6 +77,7 @@ cp ./tmp/struct.save/data-file-schema.xml ./dryrun.xml
     def create(self):
         write_str_2_f('dryrun.in', self.input_dryrun)
         write_str_2_f('job_dryrun.sh', self.job_dryrun)
+        os.system('chmod u+x ./*.sh')
 
     def run(self, total_time):
         subprocess.run('./job_dryrun.sh')
