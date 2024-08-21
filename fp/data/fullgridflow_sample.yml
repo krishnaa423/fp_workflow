@@ -35,6 +35,7 @@ sc_grid:
   - 1
   - 1
   - 1
+read_relaxed_coord: true
 use_esd_atoms_if_needed: true
 skip_pseudo_generation: false 
 

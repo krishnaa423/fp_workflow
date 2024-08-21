@@ -19,6 +19,14 @@ class Relax:
     ):
         self.input: Input = input
 
+        self.save_final_cell_parameters_str = \
+"awk '/Begin final coordinates/ {end_flag=1; next} end_flag && /CELL_PARAMETERS/ {cell_flag=1; next} /End final coordinates/ {end_flag=0} end_flag && cell_flag {print; if (length==0) cell_flag=0 }' relax.in.out > relaxed_cell_parameters.txt"
+        
+        # Skipping the first field. 
+        # "awk '/Begin final coordinates/ {end_flag=1; next} end_flag && /ATOMIC_POSITIONS/ {pos_flag=1} /End final coordinates/ {end_flag=0}  end_flag && pos_flag {print}' relax.in.out > relaxed_atomic_positions.txt"
+        self.save_final_atomic_positions_str = \
+"awk '/Begin final coordinates/ {end_flag=1; next} end_flag && /ATOMIC_POSITIONS/ {pos_flag=1; next} /End final coordinates/ {end_flag=0}  end_flag && pos_flag { print $2, $3, $4 }' relax.in.out > relaxed_atomic_positions.txt"
+
         self.input_relax: str = \
 f'''&CONTROL
 outdir='./tmp'
@@ -43,6 +51,7 @@ ecutwfc={self.input.scf.ecutwfc}
 /
 
 &IONS
+/
 
 &CELL
 /
@@ -67,6 +76,10 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_mpi_prefix(self.input.relax.job_desc)}pw.x {self.input.scheduler.get_sched_mpi_infix(self.input.relax.job_desc)} < relax.in &> relax.in.out
 
 cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
+
+# Copy the end atomic positions and cell parameters (if vc-relax).
+{self.save_final_cell_parameters_str}
+{self.save_final_atomic_positions_str}
 '''
     
         self.jobs = [

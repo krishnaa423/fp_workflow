@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from fp.io.pkl import load_obj
 from fp.structure import KPath
+from fp.flows.fullgridflow import FullGridFlow
 #endregion
 
 #region: Variables.
@@ -17,14 +18,17 @@ class GwelbandsPlot:
         self,
         inteqp_filename,
         bandpathpkl_filename,
+        fullgridflow_filename,
     ):
         self.inteqp_filename = inteqp_filename
         self.bandpathpkl_filename = bandpathpkl_filename
+        self.fullgridflow_filename = fullgridflow_filename
 
         self.num_bands: int = None 
         self.emf: np.ndarray = None 
         self.eqp: np.ndarray = None 
         self.kpath: KPath = None 
+        self.fullgridflow: FullGridFlow = None 
 
     def get_data(self):
         data = np.loadtxt(self.inteqp_filename, skiprows=2)
@@ -36,6 +40,7 @@ class GwelbandsPlot:
         self.emf = emf 
         self.eqp = eqp
         self.kpath = load_obj(self.bandpathpkl_filename)
+        self.fullgridflow = load_obj(self.fullgridflow_filename)
         
 
 
@@ -46,17 +51,22 @@ class GwelbandsPlot:
         plt.style.use('bmh')
         fig = plt.figure()
         ax = fig.add_subplot()
+        path_special_points = self.fullgridflow.path_special_points
+        path_segment_npoints = self.fullgridflow.path_segment_npoints
 
         # ax.plot(xaxis, self.emf[:, 0], label='DFT', color='blue')
         # ax.plot(xaxis, self.eqp[:, 0], label='GW', color='green')
         # ax.plot(xaxis, self.emf, color='blue')
         # ax.plot(xaxis, self.eqp, color='green')
-        # ax.plot(xaxis, self.emf[:, 0], label='DFT', color='blue')
-        # ax.plot(xaxis, self.eqp[:, 0], label='GW', color='green')
+        ax.plot(self.emf[:, 0], label='DFT', color='blue')
+        ax.plot(self.eqp[:, 0], label='GW', color='green')
         ax.plot(self.emf, color='blue')
         ax.plot(self.eqp, color='green')
         ax.yaxis.grid(False)
-        # ax.set_xticks(ticks=special_points, labels=special_labels)
+        ax.set_xticks(
+            ticks=np.arange(len(path_special_points))*path_segment_npoints,
+            labels=path_special_points,
+        )
         ax.legend()
 
         fig.savefig(save_filename)

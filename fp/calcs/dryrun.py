@@ -17,8 +17,12 @@ class Dryrun:
     def __init__(
         self,
         atoms: AtomsInput,
+        scheduler: Scheduler,
+        job_desc: JobProcDesc,
     ):
         self.atoms: AtomsInput = atoms
+        self.scheduler: Scheduler = scheduler
+        self.job_desc: JobProcDesc = job_desc
 
         self.input_dryrun: str = \
 f'''&CONTROL
@@ -43,6 +47,7 @@ ecutwfc=20.0
 /
 
 &IONS
+/
 
 &CELL
 /
@@ -62,8 +67,9 @@ K_POINTS automatic
         # The dryrun jobs will not be in parallel. Just to get some info.
         self.job_dryrun: str = \
 f'''#!/bin/bash
+{self.scheduler.get_sched_header(self.job_desc)}
 
-pw.x < dryrun.in &> dryrun.in.out
+{self.scheduler.get_sched_mpi_prefix(self.job_desc)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_desc)} < dryrun.in &> dryrun.in.out
 
 cp ./tmp/struct.save/data-file-schema.xml ./dryrun.xml
 '''

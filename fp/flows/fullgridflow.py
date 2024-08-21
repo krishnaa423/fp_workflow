@@ -26,6 +26,7 @@ class FullGridFlow:
     def __init__(
         self,
         scheduler: Scheduler=None,
+        dryrun_scheduler: Scheduler=None,
         
         single_task_desc: dict=dict(),
         single_node_desc: dict=dict(),
@@ -44,6 +45,7 @@ class FullGridFlow:
         path_segment_npoints: int=None,
         
         relax_type = None,
+        read_relaxed_coord: bool = None,
 
         scf_kgrid=None,
         scf_cutoff=None,
@@ -114,6 +116,7 @@ class FullGridFlow:
         Simplifies flow manage. 
         '''
         self.scheduler: Scheduler = scheduler
+        self.dryrun_scheduler: Scheduler = dryrun_scheduler
         
         self.single_task_desc: JobProcDesc = JobProcDesc(**single_task_desc)
         self.single_node_desc: JobProcDesc = JobProcDesc(**single_node_desc)
@@ -132,6 +135,7 @@ class FullGridFlow:
         self.path_segment_npoints: int = path_segment_npoints
         
         self.relax_type = relax_type
+        self.read_relaxed_coord = read_relaxed_coord
 
         self.scf_kgrid = scf_kgrid
         self.scf_cutoff = scf_cutoff
@@ -215,7 +219,7 @@ class FullGridFlow:
         for key, value in data.items():
             assert hasattr(fullgridflow, key), f'FullGridFlow class does not have attribute: {key}.'
 
-            if key=='scheduler':        # Create the scheduler class. 
+            if 'scheduler' in key:        # Create the scheduler class. 
                 first_key, first_value = next(iter(value.items()))
                 sched_cls = getattr(schedulers, first_key)
                 setattr(fullgridflow, key, sched_cls(**first_value))
@@ -226,10 +230,22 @@ class FullGridFlow:
                 setattr(fullgridflow, key, value)
 
         return fullgridflow
-         
+                 
+    def set_relaxed_coords_from_files(self):
+        cell_file = 'relaxed_cell_parameters.txt'
+        pos_file = 'relaxed_atomic_positions.txt'
+
+        # Read cell/positions and set them. 
+        # Only set if the read files are non-zero in length
+        if len(open(cell_file).read())!=0: self.uc_atoms.cell = np.loadtxt(cell_file)
+        if len(open(pos_file).read())!=0: self.uc_atoms.positions = np.loadtxt(pos_file)
+
     def create_atoms(self):
         # Make atoms. 
         self.uc_atoms = read(self.atoms) 
+
+        if self.read_relaxed_coord: self.set_relaxed_coords_from_files()
+
         self.sc_atoms = make_supercell(self.uc_atoms, np.diag(self.sc_grid))
 
         # Replace with ESD atoms if needed. 
@@ -248,7 +264,7 @@ class FullGridFlow:
         self.atoms_input = AtomsInput(atoms=self.sc_atoms)
 
     def create_max_val(self):
-        dryrun = Dryrun(atoms=self.atoms_input)
+        dryrun = Dryrun(atoms=self.atoms_input, scheduler=self.dryrun_scheduler, job_desc=self.single_node_desc)
         dryrun.create()
         dryrun.run(0.0)
         self.max_val = dryrun.get_max_val()
@@ -524,8 +540,7 @@ class FullGridFlow:
         
         self.create_atoms()
 
-        if not self.skip_pseudo_generation:
-            self.create_pseudos()
+        if not self.skip_pseudo_generation: self.create_pseudos()
 
         self.create_kpath()
 

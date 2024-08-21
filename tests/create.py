@@ -38,7 +38,7 @@ def main():
     flowmanage = fullgridflow.get_flowmanage([
             Relax,
             Scf,
-            # Dfpt,
+            Dfpt,
             # Phbands,
             # Phdos,
             # Phmodes,
@@ -48,30 +48,30 @@ def main():
             # Kpdos,
             # Wannier,
             Wfn,
-            # Epw,
+            Epw,
             Wfnq,
             # Wfnfi,
             # Wfnqfi,
             Epsilon,
             Sigma,
             Inteqp,
-            # Kernel,
-            # Absorption,
+            Kernel,
+            Absorption,
             # Plotxct,
-            # Bseq,
+            Bseq,
             # Esf,
             # Esd,
-            # XctPh,
+            XctPh,
             # Pol,
-            # XctPol,
+            XctPol,
         ], 
         save_pkl=True
     )
     flowmanage.create()
     flowmanage.create_job_all_script(
         filename='job_all.sh',
-        start_job='job_relax.sh',
-        stop_job='job_inteqp.sh',
+        start_job='job_scf.sh',
+        stop_job='job_xctpol.sh',
         flowfile_to_read='flowmanage.pkl',
     )
     
