@@ -55,7 +55,7 @@ plot_state {self.input.plotxct.state}
 use_wfn_hdf5
 
 {plotxct_spinorbit_extra_args if self.input.scf.is_spinorbit else ""}
-{self.input.plotxct.extra_args if self.input.plotxct.extra_args else ""}
+{self.input.plotxct.extra_args if self.input.plotxct.extra_args is not None else ""}
 '''
         job_plotxct = \
 f'''#!/bin/bash
@@ -86,7 +86,7 @@ number_cond_bands {self.input.absorption.cond_bands_coarse}
 
 # IO. 
 use_wfn_hdf5
-{self.input.kernel.extra_args if self.input.kernel.extra_args else ""}
+{self.input.kernel.extra_args if self.input.kernel.extra_args is not None else ""}
 '''
         
         job_ker = \
@@ -132,7 +132,7 @@ use_wfn_hdf5
 # Output
 energy_resolution 0.01
 write_eigenvectors {self.input.absorption.num_evec}
-{self.input.absorption.extra_args if self.input.absorption.extra_args else ""}
+{self.input.absorption.extra_args if self.input.absorption.extra_args is not None else ""}
 '''
         
         job_abs = \

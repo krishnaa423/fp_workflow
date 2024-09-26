@@ -34,7 +34,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='{self.input.relax.calc_str()}'
 tprnfor=.true.
-{self.input.relax.extra_control_args if self.input.relax.extra_control_args else ""}
+{self.input.relax.extra_control_args if self.input.relax.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -46,11 +46,11 @@ nbnd={self.input.relax.get_nbnd()}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.relax.extra_system_args if self.input.relax.extra_system_args else ""}
+{self.input.relax.extra_system_args if self.input.relax.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.relax.extra_electrons_args if self.input.relax.extra_electrons_args else ""}
+{self.input.relax.extra_electrons_args if self.input.relax.extra_electrons_args is not None else ""}
 /
 
 &IONS

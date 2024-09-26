@@ -35,7 +35,7 @@ epsilon_cutoff {self.input.epsilon.cutoff}
 use_wfn_hdf5
 
 # Extra args.
-{self.input.epsilon.extra_args if self.input.epsilon.extra_args else ""}
+{self.input.epsilon.extra_args if self.input.epsilon.extra_args is not None else ""}
 '''
         
         self.job_epsilon = \

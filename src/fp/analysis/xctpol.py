@@ -1,5 +1,4 @@
 #region: Modules.
-from fp.analysis import XctPh
 import numpy as np 
 import h5py 
 from scipy.spatial import KDTree

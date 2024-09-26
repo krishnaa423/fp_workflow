@@ -23,7 +23,7 @@ f'''&PROJWFC
 outdir='./tmp'
 prefix='struct'
 filpdos='struct_pdos.dat'
-{self.input.dos.extra_pdos_args if self.input.dos.extra_pdos_args else ""}
+{self.input.dos.extra_pdos_args if self.input.dos.extra_pdos_args is not None else ""}
 /
 '''
         

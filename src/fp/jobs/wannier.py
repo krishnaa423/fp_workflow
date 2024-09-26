@@ -25,7 +25,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='bands'
 tprnfor=.true. 
-{self.input.wannier.extra_control_args if self.input.wannier.extra_control_args else ""}
+{self.input.wannier.extra_control_args if self.input.wannier.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -36,11 +36,11 @@ nbnd={self.input.wannier.num_bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wannier.extra_system_args if self.input.wannier.extra_system_args else ""}
+{self.input.wannier.extra_system_args if self.input.wannier.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.wannier.extra_electrons_args if self.input.wannier.extra_electrons_args else ""}
+{self.input.wannier.extra_electrons_args if self.input.wannier.extra_electrons_args is not None else ""}
 /
 
 &CELL

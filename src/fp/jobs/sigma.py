@@ -42,7 +42,7 @@ dont_use_vxcdat
 use_wfn_hdf5
 
 # Extra args.
-{self.input.sigma.extra_args if self.input.sigma.extra_args else ""}
+{self.input.sigma.extra_args if self.input.sigma.extra_args is not None else ""}
 '''
         
         self.job_sigma = \

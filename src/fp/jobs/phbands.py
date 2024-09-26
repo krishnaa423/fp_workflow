@@ -24,7 +24,7 @@ f'''&INPUT
 zasr='crystal'
 fildyn='struct.dyn'
 flfrc='struct.fc'
-{self.input.phbands.extra_q2r_args if self.input.phbands.extra_q2r_args else ""}
+{self.input.phbands.extra_q2r_args if self.input.phbands.extra_q2r_args is not None else ""}
 /
 '''
         
@@ -43,7 +43,7 @@ flfrq='struct.freq'
 flvec='struct.modes'
 q_in_band_form=.true.
 q_in_cryst_coord=.true.
-{self.input.phbands.extra_matdyn_args if self.input.phbands.extra_matdyn_args else ""}
+{self.input.phbands.extra_matdyn_args if self.input.phbands.extra_matdyn_args is not None else ""}
 /
 {self.input.phbands.get_kpath_str()}
 '''

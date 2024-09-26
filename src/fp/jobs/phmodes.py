@@ -24,7 +24,7 @@ f'''&INPUT
 asr='crystal'
 fildyn='struct.dyn{self.input.phmodes.qidx}'
 filxsf='struct_phmodes.axsf'
-{self.input.phmodes.extra_args if self.input.phmodes.extra_args else ""}
+{self.input.phmodes.extra_args if self.input.phmodes.extra_args is not None else ""}
 /
 '''
         

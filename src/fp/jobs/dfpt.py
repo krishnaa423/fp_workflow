@@ -34,7 +34,7 @@ nq3={self.input.dfpt.qgrid[2]}
 tr2_ph={self.input.dfpt.conv_threshold}
 fildyn='struct.dyn'
 fildvscf='dvscf'
-{self.input.dfpt.extra_args if self.input.dfpt.extra_args else ""}
+{self.input.dfpt.extra_args if self.input.dfpt.extra_args is not None else ""}
 /
 '''
         self.input_dfpt_recover = \
@@ -49,7 +49,7 @@ tr2_ph={self.input.dfpt.conv_threshold}
 fildyn='struct.dyn'
 fildvscf='dvscf'
 recover=.true.
-{self.input.dfpt.extra_args if self.input.dfpt.extra_args else ""}
+{self.input.dfpt.extra_args if self.input.dfpt.extra_args is not None else ""}
 /
 '''
         dfpt_recover_job_desc = JobProcDesc(
@@ -68,7 +68,7 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_header(self.input.dfpt.job_desc)}
 
 {self.input.scheduler.get_sched_mpi_prefix(self.input.dfpt.job_desc)}ph.x {self.input.scheduler.get_sched_mpi_infix(self.input.dfpt.job_desc)} < dfpt.in &> dfpt.in.out  
-{self.input.scheduler.get_sched_mpi_prefix(dfpt_recover_job_desc)}ph.x {self.input.scheduler.get_sched_mpi_infix(dfpt_recover_job_desc, add_ni_too=False)} < dfpt_recover.in &> dfpt_recover.in.out  
+{self.input.scheduler.get_sched_mpi_prefix(dfpt_recover_job_desc)}ph.x {self.input.scheduler.get_sched_mpi_infix(dfpt_recover_job_desc, add_ni_if_present=False)} < dfpt_recover.in &> dfpt_recover.in.out  
 
 python3 ./create_save.py
 '''

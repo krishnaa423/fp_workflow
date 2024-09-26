@@ -60,7 +60,7 @@ scdm_proj=.true.
 !temps=300.0
 !iverbosity=1
 
-{self.input.epw.extra_args if self.input.epw.extra_args else ""}
+{self.input.epw.extra_args if self.input.epw.extra_args is not None else ""}
 /
 '''
         

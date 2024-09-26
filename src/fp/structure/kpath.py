@@ -20,7 +20,7 @@ class KPath:
             path_total_npoints: int=None,
         ):
 
-        assert path_segment_npoints ^ path_total_npoints, "Only either path_segments_npoints or path_total_npoints should be present"
+        assert (path_segment_npoints is not None) ^ (path_total_npoints is not None) , "Only either path_segments_npoints or path_total_npoints should be present"
 
         self.atoms: Atoms = atoms
         self.path_special_points: list = path_special_points

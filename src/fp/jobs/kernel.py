@@ -35,7 +35,7 @@ number_cond_bands {self.input.kernel.cond_bands_coarse}
 use_wfn_hdf5
 
 # Extra args.
-{self.input.kernel.extra_args if self.input.kernel.extra_args else ""}
+{self.input.kernel.extra_args if self.input.kernel.extra_args is not None else ""}
 '''
         
         self.job_kernel = \

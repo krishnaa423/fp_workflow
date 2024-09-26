@@ -25,7 +25,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='bands'
 tprnfor=.true. 
-{self.input.wfn.extra_control_args if self.input.wfn.extra_control_args else ""}
+{self.input.wfn.extra_control_args if self.input.wfn.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -36,11 +36,11 @@ nbnd={self.input.wfn.bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wfn.extra_system_args if self.input.wfn.extra_system_args else ""}
+{self.input.wfn.extra_system_args if self.input.wfn.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.wfn.extra_electrons_args if self.input.wfn.extra_control_args else ""}
+{self.input.wfn.extra_electrons_args if self.input.wfn.extra_control_args is not None else ""}
 /
 
 &CELL
@@ -115,7 +115,7 @@ vkb_file VKB
 number_bands {self.input.wfn.parabands_bands}
 
 # Use ELPA
-solver_algorithm 10
+# solver_algorithm 10
 '''
         
         self.job_parabands = \
@@ -196,7 +196,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='bands'
 tprnfor=.true. 
-{self.input.wfnq.extra_control_args if self.input.wfnq.extra_control_args else ""}
+{self.input.wfnq.extra_control_args if self.input.wfnq.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -207,11 +207,11 @@ nbnd={self.input.wfnq.bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wfnq.extra_system_args if self.input.wfnq.extra_system_args else ""}
+{self.input.wfnq.extra_system_args if self.input.wfnq.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.wfnq.extra_electrons_args if self.input.wfnq.extra_electrons_args else ""}
+{self.input.wfnq.extra_electrons_args if self.input.wfnq.extra_electrons_args is not None else ""}
 /
 
 &CELL
@@ -318,7 +318,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='bands'
 tprnfor=.true. 
-{self.input.wfnfi.extra_control_args if self.input.wfnfi.extra_control_args else ""}
+{self.input.wfnfi.extra_control_args if self.input.wfnfi.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -329,11 +329,11 @@ nbnd={self.input.wfnfi.bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wfnfi.extra_system_args if self.input.wfnfi.extra_system_args else ""}
+{self.input.wfnfi.extra_system_args if self.input.wfnfi.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.wfnfi.extra_electrons_args if self.input.wfnfi.extra_electrons_args else ""}
+{self.input.wfnfi.extra_electrons_args if self.input.wfnfi.extra_electrons_args is not None else ""}
 /
 
 &CELL
@@ -440,7 +440,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='bands'
 tprnfor=.true. 
-{self.input.wfnqfi.extra_control_args if self.input.wfnqfi.extra_control_args else ""}
+{self.input.wfnqfi.extra_control_args if self.input.wfnqfi.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -451,11 +451,11 @@ nbnd={self.input.wfnqfi.bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wfnqfi.extra_system_args if self.input.wfnqfi.extra_system_args else ""}
+{self.input.wfnqfi.extra_system_args if self.input.wfnqfi.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.wfnqfi.extra_electrons_args if self.input.wfnqfi.extra_electrons_args else ""}
+{self.input.wfnqfi.extra_electrons_args if self.input.wfnqfi.extra_electrons_args is not None else ""}
 /
 
 &CELL

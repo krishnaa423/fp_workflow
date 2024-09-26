@@ -24,7 +24,7 @@ outdir='./tmp'
 prefix='struct'
 kresolveddos=.true.
 filpdos='struct_kpdos.dat'
-{self.input.dos.extra_kpdos_args if self.input.dos.extra_kpdos_args else ""}
+{self.input.kpdos.extra_args if self.input.kpdos.extra_args is not None else ""}
 /
 '''
         

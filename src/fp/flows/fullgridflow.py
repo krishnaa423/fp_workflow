@@ -241,7 +241,7 @@ class FullGridFlow:
         save_obj(self.kpath_obj, 'bandpath.pkl')
         # self.Kpath, self.Gpath = self.kpath_obj.get_sc_path(self.sc_grid)
 
-    def create_calcs_input(self, save=True):
+    def create_jobs_input(self, save=True):
         self.relax = RelaxInput(
             max_val=self.max_val,
             job_desc=self.job_para,
@@ -266,38 +266,37 @@ class FullGridFlow:
             atoms=self.atoms_input,
             qgrid=self.dfpt_qgrid,
             conv_threshold=self.dfpt_conv_threshold,
-            job_desc=self.job_para_k,
-            njobs=self.dfpt_njobs,
+            job_desc=self.job_big_para_k,
             extra_args=self.dfpt_extra_args,
         )
 
         self.phbands = PhbandsInput(
             kpath=self.kpath_obj,
-            job_desc=self.job_para_k,
+            job_desc=self.job_single_node,
             extra_q2r_args=self.phbands_extra_q2r_args,
             extra_matdyn_args=self.phbands_extra_matdyn_args,
         )
 
         self.phdos = PhdosInput(
             qdim=self.dos_kdim,
-            job_desc=self.job_para_k,
+            job_desc=self.job_single_node,
             extra_q2r_args=self.phdos_extra_q2r_args,
             extra_matdyn_args=self.phdos_extra_matdyn_args,
         )
 
         self.phmodes = PhmodesInput(
             qidx=self.phmodes_qpt_idx,
-            job_desc=self.job_para,
+            job_desc=self.job_single_node,
             extra_args=self.phmodes_extra_args,
         )
 
         self.dos = DosInput(
             kdim=self.dos_kdim,
             bands=self.dftelbands_cond + self.max_val,
-            job_desc=self.job_para,
+            job_desc=self.job_big_para,
             extra_control_args=self.dos_extra_control_args,
             extra_system_args=self.dos_extra_system_args,
-            extra_electron_args=self.dos_extra_electrons_args,
+            extra_electrons_args=self.dos_extra_electrons_args,
             extra_dos_args=self.dos_extra_args,
             extra_pdos_args=self.pdos_extra_args,
         )
@@ -313,7 +312,7 @@ class FullGridFlow:
         )
 
         self.kpdos = KpdosInput(
-            job_desc = self.job_para,
+            job_desc = self.job_big_para,
             extra_args=self.kpdos_extra_args,
         )
 
@@ -478,7 +477,7 @@ class FullGridFlow:
         self.bseq = BseqInput(
             atoms=self.atoms_input,
             Qdim=self.bseq_Qdim,
-            job_desc=self.job_para,
+            job_desc=self.job_big_para,
         )
 
         self.xctphbgw = XctPhBgwInput(
@@ -542,7 +541,7 @@ class FullGridFlow:
 
         self.create_max_val()
 
-        self.create_calcs_input(save)
+        self.create_jobs_input(save)
 
     def get_flowmanage(self, list_of_step_classes: list, save_pkl: bool =True) -> FlowManage:
         self.create_input(save_pkl)

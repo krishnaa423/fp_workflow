@@ -24,7 +24,7 @@ f'''&INPUT
 zasr='crystal'
 fildyn='struct.dyn'
 flfrc='struct.fc'
-{self.input.phdos.extra_q2r_args if self.input.phdos.extra_q2r_args else ""}
+{self.input.phdos.extra_q2r_args if self.input.phdos.extra_q2r_args is not None else ""}
 /
 '''
         
@@ -46,7 +46,7 @@ fldos='struct.phdos'
 nk1={int(self.input.phdos.qdim[0])}
 nk2={int(self.input.phdos.qdim[1])}
 nk3={int(self.input.phdos.qdim[2])}
-{self.input.phdos.extra_matdyn_args if self.input.phdos.extra_matdyn_args else ""}
+{self.input.phdos.extra_matdyn_args if self.input.phdos.extra_matdyn_args is not None else ""}
 /
 '''
         

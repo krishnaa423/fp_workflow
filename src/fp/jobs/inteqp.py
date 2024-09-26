@@ -28,7 +28,7 @@ number_cond_bands_fine {int(self.input.inteqp.cond_bands_fine)}
 
 use_symmetries_coarse_grid
 no_symmetries_fine_grid
-{self.input.inteqp.extra_args if self.input.inteqp.extra_args else ""}
+{self.input.inteqp.extra_args if self.input.inteqp.extra_args is not None else ""}
 '''
         
         self.job_inteqp = \

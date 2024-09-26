@@ -20,7 +20,7 @@ class XctPolJob:
 
         self.script_xctpol = \
 f'''
-from fp.analysis.xctpol import XctPolAnalysis
+from fp.analysis.xctpol import XctPolCalc
 
 xctpol = XctPolCalc(
     './eph_xctph.h5',

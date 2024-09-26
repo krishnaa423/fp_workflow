@@ -26,7 +26,7 @@ prefix='struct'
 pseudo_dir='./ONCVPSP/sg15'
 calculation='scf'
 tprnfor=.true.
-{self.input.scf.extra_control_args if self.input.scf.extra_control_args else ""}
+{self.input.scf.extra_control_args if self.input.scf.extra_control_args is not None else ""}
 /
 
 &SYSTEM
@@ -37,11 +37,11 @@ nbnd={self.input.scf.num_val_bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.scf.extra_system_args if self.input.scf.extra_system_args else ""}
+{self.input.scf.extra_system_args if self.input.scf.extra_system_args is not None else ""}
 /
 
 &ELECTRONS
-{self.input.scf.extra_electrons_args if self.input.scf.extra_electrons_args else ""}
+{self.input.scf.extra_electrons_args if self.input.scf.extra_electrons_args is not None else ""}
 /
 
 &IONS
