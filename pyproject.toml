@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fp_workflow"
+version = "2.1.9"
+description = "First principles workflow and utilities"
+authors = [ { name = "Krishnaa Vadivel", email = "krishnaa.vadivel@yale.edu" }]
+dependencies = ["numpy", "ase", "dill", "pyyaml"]
+# Optional dependencies = ["h5py"]
+urls = { repository = "https://gitlab.com/krishnaa42342/fp_workflow.git" }
+
+[tool.setuptools]
+include-package-data = true 
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"fp" = ["data/**/*"]

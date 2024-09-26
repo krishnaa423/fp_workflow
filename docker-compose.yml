@@ -123,6 +123,18 @@ services:
       DISPLAY: $DISPLAY
     stdin_open: true
     tty: true
+  fp-testing:
+    image: krishnaa42342/fp:testing
+    container_name: fp-testing
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    environment:
+      DISPLAY: $DISPLAY
+    stdin_open: true
+    tty: true
 
 
 # networks:

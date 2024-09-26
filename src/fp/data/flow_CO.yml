@@ -1,0 +1,173 @@
+scheduler:
+  WSL:
+    is_interactive: true 
+dryrun_scheduler:
+  WSL:
+    is_interactive: true
+single_task_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+single_node_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+para_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+big_para_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+para_k_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+big_para_k_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+para_epwk_desc:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+
+atoms: "structure.cif"
+sc_grid:
+  - 1
+  - 1
+  - 1
+read_relaxed_coord: false
+use_esd_atoms_if_needed: true
+skip_pseudo_generation: false 
+
+# path_string: "LGXWLKG"
+# path_npoints: 60
+path_special_points:
+  - 'G'
+  - 'G'
+path_segment_npoints: 10
+
+relax_type: 1
+
+scf_kgrid:
+  - 1
+  - 1
+  - 1
+scf_cutoff: 20.0
+scf_is_spinorbit: false
+
+dfpt_qgrid:
+  - 1
+  - 1
+  - 1
+dfpt_conv_threshold: "1.0d-18"
+dfpt_phmode: 1
+# dfpt_njobs: 1
+
+dos_kdim:
+  - 1
+  - 1
+  - 1
+# WFN_dftelbands
+dftelbands_cond: 4
+wannier_kdim: 
+  - 1
+  - 1
+  - 1
+wannier_bands_cond: 4
+
+# WFN_coo, WFN_parabands.h5
+wfn_qe_kdim:
+  - 1
+  - 1
+  - 1
+wfn_qe_cond: 13
+wfn_qe_sym: false
+wfn_para_cond: 201
+
+epw_exec_loc: "$APP/qe-cpu/bin/epw.x"
+
+# WFNq_coo, WFNq_coo.h5
+qshift: 
+  - 0.000
+  - 0.000
+  - 0.000
+wfnq_qe_kdim:
+  - 1
+  - 1
+  - 1
+wfnq_qe_cond: 13
+wfnq_qe_sym: false
+
+# WFN_fii, WFN_fii.h5
+wfnfi_qe_kdim:
+  - 1
+  - 1
+  - 1
+wfnfi_qe_cond: 13
+wfnfi_qe_sym: false
+
+# WFNq_fii, WFNq_fii.h5
+wfnqfi_qe_kdim:
+  - 1
+  - 1
+  - 1
+wfnqfi_qe_cond: 13
+wfnqfi_qe_sym: false
+
+epssig_bands_cond: 200
+epssig_cutoff: 10.0
+epssig_wfnlink: "WFN_parabands.h5"
+# epssig_wfnqlink: "WFNq_coo.h5"
+epssig_wfnqlink: "WFN_parabands.h5"
+eps_extra_args: |
+  cell_box_truncation
+
+sig_band_val: 5
+sig_band_cond: 13
+sig_extra_args: |
+  cell_box_truncation
+
+inteqp_band_val: 3
+inteqp_wfn_co_link: "WFN_coo"
+inteqp_wfn_fi_link: "WFN_dftelbands"
+
+abs_val_bands: 5
+abs_cond_bands: 13
+abs_nevec: 10
+abs_wfn_co_link: "WFN_parabands.h5"
+abs_wfnq_co_link: "WFN_parabands.h5"
+abs_wfn_fi_link: "WFN_parabands.h5"
+abs_wfnq_fi_link: "WFN_parabands.h5"
+abs_pol_dir:
+  - 0.000
+  - 0.000
+  - 0.001
+ker_extra_args: |
+  cell_box_truncation
+abs_extra_args: |
+  cell_box_truncation
+  
+
+bseq_Qdim: 
+  - 1
+  - 1
+  - 1
+
+plotxct_hole:
+  - 0.25
+  - 0.25
+  - 0.25
+plotxct_sc:
+  - 1
+  - 1
+  - 1
+plotxct_state: 1
+
+esd_fmax: 0.1
+esd_max_steps: 10
+
+xctpol_max_error: 0.1
+xctpol_max_steps: 10
