@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fp_workflow"
-version = "2.1.9"
+version = "2.1.10"
 description = "First principles workflow and utilities"
 authors = [ { name = "Krishnaa Vadivel", email = "krishnaa.vadivel@yale.edu" }]
-dependencies = ["numpy", "ase", "dill", "pyyaml"]
+dependencies = ["numpy", "scipy", "ase", "dill", "pyyaml"]
 # Optional dependencies = ["h5py"]
 urls = { repository = "https://gitlab.com/krishnaa42342/fp_workflow.git" }
 

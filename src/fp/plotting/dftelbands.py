@@ -17,11 +17,11 @@ from fp.flows.fullgridflow import FullGridFlow
 class DftelbandsPlot:
     def __init__(
         self,
-        dftxml_filename,
+        dftelbands_xml_filename,
         bandpathpkl_filename,
         fullgridflow_filename,
     ):
-        self.dftxml_filename = dftxml_filename
+        self.dftelbands_xml_filename = dftelbands_xml_filename
         self.bandpathpkl_filename = bandpathpkl_filename
         self.fullgridflow_filename = fullgridflow_filename
 
@@ -33,7 +33,7 @@ class DftelbandsPlot:
     
     def get_data(self):
         ha2eV = 27.2114
-        tree = ET.parse('dftelbands.xml')
+        tree = ET.parse(self.dftelbands_xml_filename)
         root = tree.getroot()
 
         eig_nodes = root.findall('.//ks_energies/eigenvalues')
@@ -46,7 +46,7 @@ class DftelbandsPlot:
 
         self.dft_eigs = dft_eigs
 
-        # self.kpath = load_obj(self.bandpathpkl_filename)
+        self.kpath = load_obj(self.bandpathpkl_filename)
         self.fullgridflow = load_obj(self.fullgridflow_filename)
 
     def save_plot(self, save_filename, show=False, ylim=None):
@@ -77,6 +77,7 @@ class DftelbandsPlot:
                 labels=special_labels,
             )
 
+        ax.set_title('DFT Bandstructure')
         ax.set_ylabel('Energy (eV)')
         if ylim: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         ax.legend()

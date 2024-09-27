@@ -76,6 +76,7 @@ class GwelbandsPlot:
                 labels=special_labels,
             )
 
+        ax.set_title('GW Bandstructure')
         ax.set_ylabel('Energy (eV)')
         if ylim: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         ax.legend()

@@ -30,7 +30,8 @@ class BseSpectrumPlot:
         ax.plot(abs_noeh_data[:, 0], abs_noeh_data[:, 1], label='noeh')
         
         ax.set_xlabel('Energy (eV)')
-        ax.set_ylabel('Absorption (arb units)')
+        ax.set_ylabel(r'$\epsilon_2$ (arb units)')
+        ax.set_title('BSE Absorption Spectrum')
         ax.legend()
         fig.savefig(save_filename)
         if show: plt.show()

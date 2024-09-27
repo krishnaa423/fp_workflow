@@ -65,6 +65,7 @@ class PhbandsPlot:
             )
 
         # Set some labels. 
+        ax.set_title('Phonon Bandstructure')
         ax.set_ylabel('Freq (cm-1)')
         if ylim: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         fig.savefig(save_filename)

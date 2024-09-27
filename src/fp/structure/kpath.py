@@ -1,6 +1,6 @@
 #region: Modules.
 from ase import Atoms 
-from ase.dft.kpoints import BandPath
+from ase.dft.kpoints import BandPath, get_special_points
 import numpy as np 
 #endregion
 
@@ -34,10 +34,35 @@ class KPath:
             self.bandpath: BandPath = atoms.cell.bandpath(path=''.join(self.path_special_points), npoints=self.path_total_npoints)
 
     def get_kpts(self):
-        return self.bandpath.kpts
+        
+        kpts: np.ndarray = None 
+        if self.path_segment_npoints is not None:
+            special_points_loc = get_special_points(self.atoms.cell)
+
+            num_special_points = len(self.path_special_points)
+            kpts = np.zeros(shape=((num_special_points-1)*self.path_segment_npoints+1, 3), dtype='f8')
+
+            # Add points between the special points. 
+            for sp_idx in range(num_special_points-1):
+                for coord in range(3):
+                    start = special_points_loc[self.path_special_points[sp_idx]][coord]
+                    stop = special_points_loc[self.path_special_points[sp_idx+1]][coord]
+                    step = (stop - start)/self.path_segment_npoints
+                    kpts[sp_idx*self.path_segment_npoints:(sp_idx+1)*self.path_segment_npoints, coord] = np.arange(start, stop, step) if step!=0.0 else 0.0
+
+            # Add the final kpoint. 
+            kpts[-1, :] = np.array(special_points_loc[self.path_special_points[-1]])
+        else: # path_total_npoints. 
+            kpts = self.bandpath.kpts
+
+        return kpts
     
     def get_axis(self):
-        return self.bandpath.get_linear_kpoint_axis() 
+        
+        if self.path_total_npoints is not None:
+            return self.bandpath.get_linear_kpoint_axis()
+        else: # self.path_segment_npoints
+            raise NotImplementedError('Need to implement axis for segments')
     
     def find_K_from_k(self, k, M):
         """Gets a k vector in scaled coordinates and returns a K vector and the
