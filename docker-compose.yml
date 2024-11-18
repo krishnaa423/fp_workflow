@@ -120,19 +120,31 @@ services:
               count: all
               driver: nvidia
     environment:
-      DISPLAY: $DISPLAY
+      DISPLAY: host.docker.internal:0
     stdin_open: true
     tty: true
-  fp-testing:
-    image: krishnaa42342/fp:testing
-    container_name: fp-testing
+  fp-testing-amd64:
+    image: krishnaa42342/fp:testing-amd64
+    container_name: fp-testing-amd64
     ports:
       - "8888:8888"
     volumes:
       - "./:/scratch"
       - "/tmp/.X11-unix:/tmp/.X11-unix"
     environment:
-      DISPLAY: $DISPLAY
+      DISPLAY: host.docker.internal:0
+    stdin_open: true
+    tty: true
+  fp-testing-arm64:
+    image: krishnaa42342/fp:testing-arm64
+    container_name: fp-testing-arm64
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/scratch"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    environment:
+      DISPLAY: host.docker.internal:0
     stdin_open: true
     tty: true
 

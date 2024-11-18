@@ -11,7 +11,7 @@ from fp.flows.run import *
 #endregion
 
 #region: Classes.
-class EsfXctPhJob:
+class EsfJob:
     def __init__(
         self,
         input: Input,
@@ -20,15 +20,15 @@ class EsfXctPhJob:
         
         self.job_esfxctph = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.esfxctph.job_desc)}
+{self.input.scheduler.get_sched_header(self.input.esf.job_desc)}
 
 echo "\nStarting eph switched calculation"
-write_eph_h5.py ./tmp struct {self.input.xctphbgw.num_epw_qpts} {self.input.xctphbgw.num_epw_cond_bands} {self.input.xctphbgw.num_epw_val_bands} --switch_nu_and_cart
+write_eph_h5.py ./tmp struct {self.input.xctph.num_epw_qpts} {self.input.xctph.num_epw_cond_bands} {self.input.xctph.num_epw_val_bands} --switch_nu_and_cart
 cp eph.h5 eph_esf.h5
 echo "Done eph switched calculation\n"
 
 echo "\nStarting xctph esf calculation"
-compute_xctph.py ./eph_esf.h5 ./xct.h5 {self.input.xctphbgw.num_exciton_states}  --add_electron_part --add_hole_part 
+compute_xctph.py ./eph_esf.h5 ./xct.h5 {self.input.xctph.num_exciton_states}  --add_electron_part --add_hole_part 
 mv xctph.h5 xctph_esf.h5
 echo "Done xctph esf calculation\n"
 

@@ -65,8 +65,8 @@ class Input:
         plotxct: PlotxctInput,
         bseq: BseqInput,
         
-        xctphbgw: XctPhBgwInput,
-        esfxctph: EsfXctphInput,
+        xctph: XctPhInput,
+        esf: EsfInput,
         xctpol: XctPolInput,
     ):
         self.scheduler: Scheduler = scheduler
@@ -99,8 +99,8 @@ class Input:
         self.plotxct: PlotxctInput = plotxct
         self.bseq: BseqInput = bseq
         
-        self.xctphbgw: XctPhBgwInput = xctphbgw
-        self.esfxctph: EsfXctphInput = esfxctph
+        self.xctph: XctPhInput = xctph
+        self.esf: EsfInput = esf
 
         # self.pol: PolInput = pol
         self.xctpol: XctPolInput = xctpol

@@ -16,11 +16,4 @@ class EsfInput:
         job_desc,
     ):
         self.job_desc: JobProcDesc = job_desc
-
-class EsfXctphInput:
-    def __init__(
-        self,
-        job_desc,
-    ):
-        self.job_desc: JobProcDesc = job_desc
 #endregion

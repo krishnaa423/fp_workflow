@@ -5,7 +5,6 @@ scheduler_dryrun:
   WSL:
     is_interactive: true
 
-
 job_single_task:
   nodes: 1
   ntasks: 1
@@ -34,9 +33,10 @@ job_para_epwk:
   nodes: 1
   ntasks: 1
   time: "00:45"
+  nk: 1
 
 
-atoms: "uc_atoms.xsf"
+atoms: "atoms.xsf"
 atoms_sc_grid:
   - 1
   - 1
@@ -53,7 +53,7 @@ path_special_points:
   - 'L'
   - 'K'
   - 'G'
-path_segment_npoints: 10
+path_segment_npoints: 20
 #path_total_npoints: 100
 
 
@@ -156,7 +156,8 @@ wfn_para_cond: 201
 #   asd
 
 
-epw_exec_loc: "$APP/qe-cpu/bin/epw.x"
+# epw_exec_loc: "$APP/qe-cpu/bin/epw.x"
+epw_exec_loc: "epw.x"
 # epw_extra_args: |
 #   asd
 
@@ -231,6 +232,10 @@ inteqp_wfn_fi_link: "WFN_dftelbands"
 abs_val_bands: 4
 abs_cond_bands: 10
 abs_nevec: 10
+abs_pol_dir:
+  - 0.000
+  - 0.000
+  - 0.001
 abs_wfn_co_link: "WFN_parabands.h5"
 abs_wfnq_co_link: "WFN_parabands.h5"
 abs_wfn_fi_link: "WFN_parabands.h5"

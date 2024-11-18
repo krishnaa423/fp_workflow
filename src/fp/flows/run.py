@@ -9,14 +9,18 @@ from fp.inputs.input_main import *
 #endregion
 
 #region: Functions.
-def run_and_wait_command(script, input: Input, total_time):
+def run_and_wait_command(script, input: Input, total_time, skip_scheduler=False):
     '''
     Run each script and write out some logging info. 
     '''
 
     start_time = time.time()
     print(f'Starting {script}.', flush=True)
-    ps_result = subprocess.run(f'{input.scheduler.get_sched_submit()}{script}')
+    ps_result = None
+    if skip_scheduler:
+        ps_result = subprocess.run(f'{input.scheduler.get_sched_submit()}{script}')
+    else:
+        ps_result = subprocess.run(f'{script}')
     stop_time = time.time()
     elapsed_time = stop_time - start_time
     total_time += elapsed_time

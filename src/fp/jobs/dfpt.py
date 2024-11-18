@@ -75,7 +75,7 @@ python3 ./create_save.py
 
     def copy_createsave_file(self):
         pkg_dir = resource_filename('fp', '')
-        src_path = pkg_dir + '/calcs/create_save.py'
+        src_path = pkg_dir + '/jobs/create_save.py'
         dst_path = './create_save.py'
 
         os.system(f'cp {src_path} {dst_path}')

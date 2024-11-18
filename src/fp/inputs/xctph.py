@@ -10,7 +10,7 @@ from fp.schedulers.scheduler import *
 #endregion
 
 #region: Classes.
-class XctPhBgwInput:
+class XctPhInput:
     def __init__(
         self,
         epw_qgrid,

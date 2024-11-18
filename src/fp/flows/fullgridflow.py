@@ -480,7 +480,7 @@ class FullGridFlow:
             job_desc=self.job_big_para,
         )
 
-        self.xctphbgw = XctPhBgwInput(
+        self.xctphbgw = XctPhInput(
             job_desc=self.job_single_task,
             epw_qgrid=self.bseq_Qdim,
             num_epw_val_bands=self.abs_val_bands,
@@ -488,7 +488,7 @@ class FullGridFlow:
             num_exciton_states=self.abs_nevec,
         )
 
-        self.esfxctph = EsfXctphInput(
+        self.esf = EsfInput(
             job_desc=self.job_single_task,
         )
 
@@ -523,8 +523,8 @@ class FullGridFlow:
             absorption=self.absorption,
             plotxct=self.plotxct,
             bseq=self.bseq,
-            xctphbgw=self.xctphbgw,
-            esfxctph=self.esfxctph,
+            xctph=self.xctphbgw,
+            esf=self.esf,
             xctpol=self.xctpol,
         )
         if save: save_obj(self.input, 'input.pkl')

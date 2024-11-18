@@ -69,7 +69,8 @@ f'''#!/bin/bash
 {self.input.scheduler.get_sched_header(self.input.epw.job_desc)}
 
 {self.input.scheduler.get_sched_mpi_prefix(self.input.epw.job_desc)}{self.input.epw.exec_loc} {self.input.scheduler.get_sched_mpi_infix(self.input.epw.job_desc)} < epw.in &> epw.in.out 
-# cp ./tmp/struct_elph* ./
+cp ./tmp/struct.xml ./save/
+cp ./tmp/*epb* ./save/
 '''
         
         self.jobs = [
@@ -88,7 +89,7 @@ f'''#!/bin/bash
     def save(self, folder):
         inodes = [
             'epw.in*',
-            'struct_elph*',
+            'save',
             'job_epw.sh',
         ] 
 
