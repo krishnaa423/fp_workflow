@@ -22,37 +22,42 @@ class XctPhJob:
 f'''#!/bin/bash
 {self.input.scheduler.get_sched_header(self.input.xctph.job_desc)}
 
-echo "\nStarting xct calculation"
-write_xct_h5.py ./bseq_for_xctph/Q_\*/eigenvectors.h5
-echo "Done xct calculation\n"
+rm -rf xctph.out
+touch xctph.out
 
-echo "\nStarting eph calculation"
+exec &> xctph.out
+
+echo "\\nStarting xct calculation"
+write_xct_h5.py ./bseq_for_xctph/Q_\*/eigenvectors.h5
+echo "Done xct calculation\\n"
+
+echo "\\nStarting eph calculation"
 write_eph_h5.py ./save struct {self.input.xctph.num_epw_qpts} {self.input.xctph.num_epw_cond_bands} {self.input.xctph.num_epw_val_bands} {self.input.scf.num_val_bands} {self.input.epw.job_desc.nk}
 mv eph.h5 eph_xctph.h5
-echo "Done eph calculation\n"
+echo "Done eph calculation\\n"
 
-echo "\nStarting xctph elec-only calculation"
+echo "\\nStarting xctph elec-only calculation"
 compute_xctph.py ./eph_xctph.h5 ./xct.h5 {self.input.xctph.num_exciton_states} --add_electron_part
 mv xctph.h5 xctph_elec.h5 
-echo "Done xctph elec-only calculation\n"
+echo "Done xctph elec-only calculation\\n"
 
-echo "\nStarting xctph hole-only calculation"
+echo "\\nStarting xctph hole-only calculation"
 compute_xctph.py ./eph_xctph.h5 ./xct.h5 {self.input.xctph.num_exciton_states}  --add_hole_part 
 mv xctph.h5 xctph_hole.h5
-echo "Done xctph hole-only calculation\n"
+echo "Done xctph hole-only calculation\\n"
 
-echo "\nStarting xctph elec+hole calculation"
+echo "\\nStarting xctph elec+hole calculation"
 compute_xctph.py ./eph_xctph.h5 ./xct.h5 {self.input.xctph.num_exciton_states}  --add_electron_part --add_hole_part 
 mv xctph.h5 xctph_elhole.h5
-echo "Done xctph elec+hole calculation\n"
+echo "Done xctph elec+hole calculation\\n"
 
 # Print stuff if needed. 
-echo "\nStaring printing"
+echo "\\nStaring printing"
 print_eph.py ./eph_xctph.h5
 mv eph.dat eph_xctph.dat
 print_xctph.py ./xctph_elhole.h5
 mv xctph.dat xctph_elhole.dat
-echo "Done printing\n"
+echo "Done printing\\n"
 '''
 
         self.jobs = [

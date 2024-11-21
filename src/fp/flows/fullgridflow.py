@@ -97,6 +97,7 @@ class FullGridFlow:
         self.wfn_extra_control_args: str = None 
         self.wfn_extra_system_args: str = None 
         self.wfn_extra_electrons_args: str = None 
+        self.wfn_extra_parabands_args: str = None
 
         self.epw_exec_loc: str = None
         self.epw_extra_args: str = None 
@@ -155,6 +156,8 @@ class FullGridFlow:
         self.plotxct_sc: List[int] = None
         self.plotxct_state: int = None
         self.plotxct_extra_args: str = None 
+        self.plotxct_wfn_fi_link: str = None
+        self.plotxct_wfnq_fi_link: str = None 
 
         self.xctpol_max_error: float = None
         self.xctpol_max_steps: int = None
@@ -343,6 +346,7 @@ class FullGridFlow:
             extra_control_args=self.wfn_extra_control_args,
             extra_system_args=self.wfn_extra_system_args,
             extra_electrons_args=self.wfn_extra_electrons_args,
+            extra_parabands_args=self.wfn_extra_parabands_args,
         )
 
         skipped_bands = []
@@ -468,10 +472,10 @@ class FullGridFlow:
             hole_position=self.plotxct_hole,
             supercell_size=self.plotxct_sc,
             state=self.plotxct_state,
-            wfn_fi_link=self.abs_wfn_fi_link,
-            wfnq_fi_link=self.abs_wfnq_fi_link,
+            wfn_fi_link=self.plotxct_wfn_fi_link,
+            wfnq_fi_link=self.plotxct_wfnq_fi_link,
             job_desc=self.job_para,
-            extra_args=self.plotxct_extra_args
+            extra_args=self.plotxct_extra_args,
         )
 
         self.bseq = BseqInput(

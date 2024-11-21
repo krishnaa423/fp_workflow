@@ -28,6 +28,7 @@ class WfnGeneralInput:
         extra_control_args: str=None,
         extra_system_args: str=None,
         extra_electrons_args: str=None,
+        extra_parabands_args: str=None,
     ):      
         self.atoms: AtomsInput = atoms 
         self.kdim = kdim
@@ -41,6 +42,7 @@ class WfnGeneralInput:
         self.extra_control_args: str = extra_control_args
         self.extra_system_args: str = extra_system_args
         self.extra_electrons_args: str = extra_electrons_args
+        self.extra_parabands_args: str = extra_parabands_args
         
         self.kpts: np.ndarray = None 
         self.create_kgrid() 

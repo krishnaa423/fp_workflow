@@ -1,0 +1,274 @@
+scheduler:
+  Frontera:
+    is_interactive: false
+scheduler_dryrun:
+  WSL:
+    is_interactive: true
+
+
+job_single_task:
+  nodes: 1
+  ntasks: 1
+  time: "01:45:00"
+job_single_node:
+  nodes: 1
+  ntasks: 56
+  time: "01:45:00"
+job_para:
+  nodes: 20
+  ntasks: 1120
+  time: "01:45:00"
+job_para_k:
+  nodes: 20
+  ntasks: 1120
+  time: "01:45:00"
+job_big_para:
+  nodes: 40
+  ntasks: 2240
+  time: "01:45:00"
+job_big_para_k:
+  nodes: 40
+  ntasks: 2240
+  time: "01:45:00"
+  # nk: 
+  ni: 8
+job_para_epwk:
+  nodes: 2
+  ntasks: 64
+  time: "01:45:00"
+  nk: 64 
+
+
+atoms: "atoms.xsf"
+atoms_sc_grid:
+  - 1
+  - 1
+  - 1
+atoms_use_esd_if_needed: true
+atoms_skip_pseudo_generation: false 
+
+
+path_special_points:
+  - 'L'
+  - 'G'
+  - 'X'
+  # - 'W'
+  # - 'L'
+  # - 'K'
+  # - 'G'
+path_segment_npoints: 30
+#path_total_npoints: 100
+
+
+relax_type: 1
+relax_read_coord: true
+relax_extra_control_args: |
+  forc_conv_thr=1.0d-6
+  etot_conv_thr=1.0d-6
+# relax_extra_system_args: |
+#   asd
+relax_extra_electrons_args: |
+  conv_thr=1.0d-8
+
+
+scf_kgrid:
+  - 4
+  - 4
+  - 4
+scf_cutoff: 70.0
+scf_is_spinorbit: false
+scf_extra_control_args: |
+  forc_conv_thr=1.0d-6
+  etot_conv_thr=1.0d-6
+# scf_extra_system_args: |
+#   asd
+scf_extra_electrons_args: |
+  conv_thr=1.0d-8
+
+
+dfpt_qgrid:
+  - 4
+  - 4
+  - 4
+dfpt_conv_threshold: "1.0d-14"
+dfpt_extra_args: |
+  diagonalization='cg'
+# phbands_extra_q2r_args: |
+#   asd
+# phbands_extra_matdyn_args: |
+#   asd
+# phdos_extra_q2r_args: |
+#   asd
+# phdos_extra_matdyn_args: |
+#   asd
+# phmodes_extra_args: |
+#   asd
+phmodes_qpt_idx: 1
+
+
+dos_kdim:
+  - 6
+  - 6
+  - 6
+# dos_extra_control_args: |
+#   asd
+# dos_extra_system_args: |
+#   asd
+# dos_extra_electrons_args: |
+#   asd
+# dos_extra_args: |
+#   asd
+# pdos_extra_args: |
+#   asd
+# Creates WFN_dftelbands, WFN_dftelbands.h5.
+dftelbands_cond: 2
+# dftelbands_extra_control_args: |
+#   asd
+# dftelbands_extra_system_args: |
+#   asd
+# dftelbands_extra_electrons_args: |
+#   asd
+# kpdos_extra_args: |
+#   asd
+wannier_kdim: 
+  - 4
+  - 4
+  - 4
+wannier_bands_cond: 3
+# wannier_extra_control_args: |
+#   asd
+# wannier_extra_system_args: |
+#   asd
+# wannier_extra_electrons_args: |
+#   asd
+# wannier_extra_args: |
+#   asd
+
+
+# Creates WFN_coo, WFN_parabands.h5.
+wfn_qe_kdim:
+  - 4
+  - 4
+  - 4
+wfn_qe_sym: false
+wfn_qe_cond: 2
+wfn_para_cond: 2001
+# wfn_extra_control_args: |
+#   asd
+# wfn_extra_system_args: |
+#   asd
+# wfn_extra_electrons_args: |
+#   asd
+wfn_extra_parabands_args: |
+  wfn_io_mpiio_mode 1
+
+
+epw_exec_loc: "epw.x"
+# epw_extra_args: |
+#   asd
+
+
+# Creates WFNq_coo, WFNq_coo.h5.
+qshift: 
+  - 0.000
+  - 0.000
+  - 0.001
+wfnq_qe_kdim:
+  - 4
+  - 4
+  - 4
+wfnq_qe_sym: false
+wfnq_qe_cond: 2
+# wfnq_extra_control_args: |
+#   asd
+# wfnq_extra_system_args: |
+#   asd
+# wfnq_extra_electrons_args: |
+#   asd
+
+
+# Creates WFN_fii, WFN_fii.h5.
+wfnfi_qe_kdim:
+  - 4
+  - 4
+  - 4
+wfnfi_qe_sym: false
+wfnfi_qe_cond: 2
+# wfnfi_extra_control_args: |
+#   asd
+# wfnfi_extra_system_args: |
+#   asd
+# wfnfi_extra_electrons_args: |
+#   asd
+
+
+# Creates WFNq_fii, WFNq_fii.h5.
+wfnqfi_qe_kdim:
+  - 4
+  - 4
+  - 4
+wfnqfi_qe_sym: false
+wfnqfi_qe_cond: 2
+# wfnqfi_extra_control_args: |
+#   asd
+# wfnqfi_extra_system_args: |
+#   asd
+# wfnqfi_extra_electrons_args: |
+#   asd
+
+
+epssig_cutoff: 6.0
+epssig_bands_cond: 2000
+epssig_wfnlink: "WFN_parabands.h5"
+epssig_wfnqlink: "WFNq_coo.h5"
+# eps_extra_args: |
+#   asd
+
+sig_band_val: 4
+sig_band_cond: 2
+# sig_extra_args: |
+#   asd
+
+inteqp_band_val: 4
+inteqp_wfn_co_link: "WFN_coo"
+inteqp_wfn_fi_link: "WFN_dftelbands"
+# inteqp_extra_args: |
+#   asd
+
+abs_val_bands: 4
+abs_cond_bands: 2
+abs_nevec: 5
+abs_wfn_co_link: "WFN_parabands.h5"
+abs_wfnq_co_link: "WFN_parabands.h5"
+abs_wfn_fi_link: "WFN_parabands.h5"
+abs_wfnq_fi_link: "WFN_parabands.h5"
+abs_pol_dir:
+  - 0.000
+  - 0.000
+  - 0.001
+# ker_extra_args: |
+#   asd
+# abs_extra_args: |
+#   asd
+
+bseq_Qdim: 
+  - 4
+  - 4
+  - 4
+
+plotxct_hole:
+  - 0.375
+  - 0.375
+  - 0.375
+plotxct_sc:
+  - 4
+  - 4
+  - 4
+plotxct_state: 1
+plotxct_wfn_fi_link: "WFN_parabands.h5"
+plotxct_wfnq_fi_link: "WFNq_coo.h5"
+# plotxct_extra_args: |
+#   asd
+
+xctpol_max_error: 0.1
+xctpol_max_steps: 10

@@ -22,6 +22,8 @@ class BseqJob:
             'job_bseq.sh',
         ]
 
+        self.bseq_for_xctph_link_str: str = ''
+
     def get_plotxct_strings(self, Qpt):
 
         plotxct_spinorbit_extra_args = \
@@ -155,6 +157,8 @@ mv bandstructure.dat bandstructure_absorption.dat
 
     def create_inputs_bseq(self):
         
+        self.bseq_for_xctph_link_str: str = '\n\n\n\n'
+
         os.system('mkdir -p ./bseq')
         os.system('mkdir -p ./bseq_for_xctph')
         os.chdir('./bseq')
@@ -167,7 +171,7 @@ mv bandstructure.dat bandstructure_absorption.dat
             Qpt2 = f'{Qpt[2]:15.10f}'.strip()
             dir_name = f'Q_{Qpt0}_{Qpt1}_{Qpt2}'
             os.system(f'mkdir -p {dir_name}')
-            os.system(f'ln -sf ../bseq/{dir_name} ../bseq_for_xctph/Q_{str(Qpt_idx).strip()}')
+            self.bseq_for_xctph_link_str += f'ln -sf ../bseq/{dir_name} ./bseq_for_xctph/Q_{str(Qpt_idx).strip()}\n'
             os.chdir(f'./{dir_name}')
             
             inp_ker, job_ker = self.get_kernel_strings(Qpt)
@@ -241,7 +245,7 @@ rm -rf *.a3Dr
 '''
         
         folder_variable = '${folders[$i]}'
-
+        kpt_variable = '${i}'
 
         # Add the looping block.
         job_bseq += \
@@ -249,11 +253,14 @@ f'''
 rm -rf ./bseq.out
 touch ./bseq.out
 
+{self.bseq_for_xctph_link_str}
+
 for (( i=$start; i<$stop; i++ )); do
     cd {folder_variable}
 
     echo -e "\\n\\n\\n" >> ../../bseq.out
 
+    echo "Running {kpt_variable} th kpoint" >> ../../bseq.out
     echo "Entering folder {folder_variable}" >> ../../bseq.out
     
     echo "Starting kernel for {folder_variable}" >> ../../bseq.out

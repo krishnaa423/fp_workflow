@@ -114,6 +114,8 @@ vkb_file VKB
 
 number_bands {self.input.wfn.parabands_bands}
 
+{self.input.wfn.extra_parabands_args}
+
 # Use ELPA
 # solver_algorithm 10
 '''
