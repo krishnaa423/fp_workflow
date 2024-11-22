@@ -17,13 +17,15 @@ class XctPolCalc:
         self,
         eph_filename,
         xctph_filename,
-        xctph_partial_filename, 
+        xctph_partial_filename,
+        fullgridflow_filename, 
         max_error=1.0e-4,
         max_steps=10,
     ):
         self.eph_filename = eph_filename
         self.xctph_filename = xctph_filename
         self.xctph_partial_filename = xctph_partial_filename
+        self.fullgridflow_filename = fullgridflow_filename
         self.max_error = max_error
         self.max_steps = max_steps 
 

@@ -10,12 +10,50 @@ from fp.structure.kpath import KPath
 from scipy.interpolate import griddata
 from typing import List, Dict, Tuple
 import h5py 
+import copy
+from scipy import spatial
 #endregion
 
 #region: Variables.
 #endregion
 
 #region: Functions.
+def unit_range(klist_in):
+
+    tol = 1e-6
+    klist = copy.copy(klist_in)
+
+    for ik, k in enumerate(klist):
+        for i, kx in enumerate(k):
+
+            while kx < -tol:
+                kx = kx + 1.0
+            while kx > 1.0 -tol:
+                kx = kx - 1.0
+
+            k[i] = kx
+
+        klist[ik,:] = k
+
+    return klist
+
+
+def find_kpt(ktargets, klist):
+
+    klist = unit_range(klist)
+    ktargets = unit_range(ktargets)
+
+    tree = spatial.KDTree(klist)
+    ik_addr = list()
+    for k in ktargets:
+        d, i = tree.query(k)
+        if d > 1e-6:
+            print('kpt not found:', k)
+            i = None
+
+        ik_addr.append(i)
+
+    return ik_addr
 #endregion
 
 #region: Classes.
@@ -46,7 +84,7 @@ class XctphPlot:
         # Additional data created. 
         self.num_bands: int = None 
         self.phbands: np.ndarray = None 
-        self.fullgridflow: FullGridFlow = None 
+        self.fullgridflow: FullGridFlow = load_obj(self.fullgridflow_filename) 
         self.kpath: KPath = None 
         
         self.xctph_interpolated: np.ndarray = None 
@@ -57,7 +95,33 @@ class XctphPlot:
 
         self.num_bands = self.phbands.shape[1]
         self.kpath = load_obj(self.bandpathpkl_filename)
-        self.fullgridflow = load_obj(self.fullgridflow_filename)
+
+    def get_xctph_gridded(self, xctph_values, kpts_flat):
+        kgrid_size = self.fullgridflow.wfn.kdim
+        xctph_gridded = np.zeros(kgrid_size)
+        for x_idx in range(kgrid_size[0]):
+            for y_idx in range(kgrid_size[1]):
+                for z_idx in range(kgrid_size[2]):
+                    kpt = np.array([
+                        x_idx/kgrid_size[0],
+                        y_idx/kgrid_size[1],
+                        z_idx/kgrid_size[2],
+                    ]).reshape(1, 3)
+                    kpt_idx = find_kpt(kpt, kpts_flat)[0]
+                    if kpt_idx==None or kpt_idx<0:
+                        raise Exception(f'kpt_idx is not valid: {kpt_idx}')
+                    xctph_gridded[x_idx, y_idx, z_idx] = xctph_values[kpt_idx]
+
+        xctph_gridded = np.pad(xctph_gridded, pad_width=1, mode='wrap')[1:, 1:, 1:]
+        kpts_gridded = np.zeros(shape=((kgrid_size[0]+1)*(kgrid_size[1]+1)*(kgrid_size[2]+1), 3))
+        x, y, z = np.meshgrid(
+            np.linspace(0, 1, kgrid_size[0]+1),
+            np.linspace(0, 1, kgrid_size[1]+1),
+            np.linspace(0, 1, kgrid_size[2]+1),
+        )
+        kpts_gridded[:, 0], kpts_gridded[:, 1], kpts_gridded[:, 2] = x.flatten(), y.flatten(), z.flatten()
+
+        return kpts_gridded.reshape(-1, 3), xctph_gridded.reshape(-1, 1)
 
     def get_xctph_data(self):
         ryau2eva = 13.6057039763/0.529177
@@ -79,7 +143,9 @@ class XctphPlot:
         num_modes = xctph.shape[0]
         self.xctph_interpolated = np.zeros(shape=(num_kpath_pts, num_modes)) 
         for mode in range(num_modes):
-            self.xctph_interpolated[:, mode] = griddata(qpts, xctph[mode, :], kpath_pts, method='linear')*self.xctph_mult_factor
+            kpts_gridded, xctph_gridded = self.get_xctph_gridded(xctph[mode, :], qpts)
+            # self.xctph_interpolated[:, mode] = griddata(qpts, xctph[mode, :], kpath_pts, method='linear')*self.xctph_mult_factor
+            self.xctph_interpolated[:, mode] = griddata(kpts_gridded, xctph_gridded, kpath_pts, method='linear').reshape(-1)*self.xctph_mult_factor
 
     def save_plot(self, save_filename, show=False, ylim=None):
         # Get some data. 
@@ -118,7 +184,7 @@ class XctphPlot:
             )
 
         # Set some labels. 
-        ax.set_title(f'Phonon bands and xctph coupling for xct={self.xct_state+1} and Qpt={self.xct_Qpt_idx+1}')
+        ax.set_title(f'Phonon bands and xctph coupling for xct={self.xct_state} and Qpt={self.xct_Qpt_idx}')
         ax.set_ylabel('Freq (cm-1)')
         if ylim: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         fig.savefig(save_filename)
