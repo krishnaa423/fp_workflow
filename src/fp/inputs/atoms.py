@@ -30,13 +30,11 @@ class AtomsInput:
             output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f}\n'
         return output 
     
-    def get_qe_scf_atomic_species(self, is_spinorbit=False):
+    def get_qe_scf_atomic_species(self):
         output = ''
-
-        spinorbit_str = 'fr' if is_spinorbit else 'sr'
         
         for atm_num in np.unique(self.atoms.get_atomic_numbers()):
-            output += f'{chemical_symbols[atm_num]} {atomic_masses[atm_num]} {chemical_symbols[atm_num]}_ONCV_PBE_{spinorbit_str}.upf\n'
+            output += f'{chemical_symbols[atm_num]} {atomic_masses[atm_num]} {chemical_symbols[atm_num]}.upf\n'
         return output 
 
     def get_qe_scf_atomic_positions(self, first_column='symbol'):

@@ -1,6 +1,6 @@
 #region: Modules.
 from ase import Atoms 
-from pkg_resources import resource_filename
+from importlib.util import find_spec
 import os 
 from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
@@ -23,21 +23,26 @@ class FlowManage:
         self.is_fr: bool = is_fr
 
     @staticmethod
-    def create_pseudos(atoms: Atoms, is_fr: bool=False):
+    def create_pseudos(atoms: Atoms, is_fr: bool=False, xc_type: str='pbe'):
         sr_fr_str = 'fr' if is_fr else 'sr'
 
-        pkg_dir = resource_filename('fp', '')
-        pseudo_dir = pkg_dir + '/data/pseudos/qe'
+        pkg_dir = os.path.dirname(find_spec('fp').origin)
+        pseudo_dir = pkg_dir + f'/data/pseudos/qe/{sr_fr_str}_{xc_type}'
 
-        os.system('mkdir -p ./ONCVPSP')
-        os.system('mkdir -p ./ONCVPSP/sg15')
+        os.system('mkdir -p ./pseudos')
 
         symbols = atoms.get_chemical_symbols()
 
+        # Debug file. 
+        os.system('touch debug_log.txt && echo "" > debug_log.txt')
         for sym in symbols:
-            source_file = pseudo_dir + f'/{sym}_ONCV_PBE_{sr_fr_str}.upf'
-            dest_file = './ONCVPSP/sg15' + f'/{sym}_ONCV_PBE_{sr_fr_str}.upf'
+            source_file = pseudo_dir + f'/{sym}.upf'
+            dest_file = './pseudos' + f'/{sym}.upf'
             os.system(f'cp {source_file} {dest_file}')
+            
+            # Debugging. 
+            debug_str = f'cp {source_file} {dest_file}'
+            os.system(f'echo "{debug_str}" >> debug_log.txt')
 
     def create(self):
         assert len(self.list_of_steps)>=1, 'Number of steps/jobs should be greater than 0.'

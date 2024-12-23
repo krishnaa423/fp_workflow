@@ -59,6 +59,7 @@ path_segment_npoints: 20
 
 relax_type: 1
 relax_read_coord: false
+relax_use_occupations: false
 # relax_extra_control_args: |
 #   asdasd
 # relax_extra_system_args: |
@@ -73,6 +74,7 @@ scf_kgrid:
   - 2
 scf_cutoff: 20.0
 scf_is_spinorbit: false
+scf_xc_type: 'lda'
 # scf_extra_control_args: |
 #   asdasd
 # scf_extra_system_args: |

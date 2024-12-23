@@ -31,7 +31,7 @@ class RelaxJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='{self.input.relax.calc_str()}'
 tprnfor=.true.
 {self.input.relax.extra_control_args if self.input.relax.extra_control_args is not None else ""}
@@ -39,10 +39,10 @@ tprnfor=.true.
 
 &SYSTEM
 ibrav=0
-occupations='from_input'
+{"!" if not self.input.relax.use_occupations else ""}occupations='from_input'
 ntyp={self.input.atoms.get_ntyp()}
 nat={self.input.atoms.get_nat()}
-nbnd={self.input.relax.get_nbnd()}
+{"!" if not self.input.relax.use_occupations else ""}nbnd={self.input.relax.get_nbnd()}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
@@ -59,10 +59,10 @@ ecutwfc={self.input.scf.ecutwfc}
 &CELL
 /
 
-{self.input.relax.get_occupations_str()}
+{self.input.relax.get_occupations_str() if self.input.relax.use_occupations else ""}
 
 ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species(self.input.scf.is_spinorbit)}
+{self.input.atoms.get_qe_scf_atomic_species()}
 
 CELL_PARAMETERS angstrom
 {self.input.atoms.get_scf_cell()}

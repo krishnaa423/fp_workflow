@@ -22,7 +22,7 @@ class WfnJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='bands'
 tprnfor=.true. 
 {self.input.wfn.extra_control_args if self.input.wfn.extra_control_args is not None else ""}
@@ -53,7 +53,7 @@ CELL_PARAMETERS angstrom
 {self.input.atoms.get_scf_cell()}
 
 ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species(self.input.scf.is_spinorbit)}
+{self.input.atoms.get_qe_scf_atomic_species()}
 
 ATOMIC_POSITIONS angstrom 
 {self.input.atoms.get_qe_scf_atomic_positions()}
@@ -195,7 +195,7 @@ class WfnqJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='bands'
 tprnfor=.true. 
 {self.input.wfnq.extra_control_args if self.input.wfnq.extra_control_args is not None else ""}
@@ -226,7 +226,7 @@ CELL_PARAMETERS angstrom
 {self.input.atoms.get_scf_cell()}
 
 ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species(self.input.scf.is_spinorbit)}
+{self.input.atoms.get_qe_scf_atomic_species()}
 
 ATOMIC_POSITIONS angstrom 
 {self.input.atoms.get_qe_scf_atomic_positions()}
@@ -317,7 +317,7 @@ class WfnfiJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='bands'
 tprnfor=.true. 
 {self.input.wfnfi.extra_control_args if self.input.wfnfi.extra_control_args is not None else ""}
@@ -348,7 +348,7 @@ CELL_PARAMETERS angstrom
 {self.input.atoms.get_scf_cell()}
 
 ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species(self.input.scf.is_spinorbit)}
+{self.input.atoms.get_qe_scf_atomic_species()}
 
 ATOMIC_POSITIONS angstrom 
 {self.input.atoms.get_qe_scf_atomic_positions()}
@@ -439,7 +439,7 @@ class WfnqfiJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='bands'
 tprnfor=.true. 
 {self.input.wfnqfi.extra_control_args if self.input.wfnqfi.extra_control_args is not None else ""}
@@ -470,7 +470,7 @@ CELL_PARAMETERS angstrom
 {self.input.atoms.get_scf_cell()}
 
 ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species(self.input.scf.is_spinorbit)}
+{self.input.atoms.get_qe_scf_atomic_species()}
 
 ATOMIC_POSITIONS angstrom 
 {self.input.atoms.get_qe_scf_atomic_positions()}

@@ -23,7 +23,7 @@ class ScfJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='scf'
 tprnfor=.true.
 {self.input.scf.extra_control_args if self.input.scf.extra_control_args is not None else ""}
@@ -33,7 +33,7 @@ tprnfor=.true.
 ibrav=0
 ntyp={self.input.atoms.get_ntyp()}
 nat={self.input.atoms.get_nat()}
-nbnd={self.input.scf.num_val_bands}
+!nbnd={self.input.scf.num_val_bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
@@ -51,7 +51,7 @@ ecutwfc={self.input.scf.ecutwfc}
 /
 
 ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species(self.input.scf.is_spinorbit)}
+{self.input.atoms.get_qe_scf_atomic_species()}
 
 CELL_PARAMETERS angstrom
 {self.input.atoms.get_scf_cell()}
@@ -109,4 +109,5 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
         os.system('rm -rf kgrid.inp kgrid.log kgrid.out')
         # os.system('rm -rf *.xsf')
         os.system('rm -rf ONCVPSP')
+        os.system('rm -rf pseudos')
 #endregion

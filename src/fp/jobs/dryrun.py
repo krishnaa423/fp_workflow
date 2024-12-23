@@ -31,7 +31,7 @@ class DryrunJob:
 f'''&CONTROL
 outdir='./tmp'
 prefix='struct'
-pseudo_dir='./ONCVPSP/sg15'
+pseudo_dir='./pseudos'
 calculation='md'
 nstep=0
 tprnfor=.true.
@@ -56,7 +56,7 @@ ecutwfc=20.0
 /
 
 ATOMIC_SPECIES
-{self.atoms.get_qe_scf_atomic_species(self.is_spinorbit)}
+{self.atoms.get_qe_scf_atomic_species()}
 
 CELL_PARAMETERS angstrom
 {self.atoms.get_scf_cell()}

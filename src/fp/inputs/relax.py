@@ -22,6 +22,7 @@ class RelaxInput:
         max_val: int,
         job_desc,
         relax_type: int = RelaxType.GS_RELAX,
+        use_occupations: bool = False,
         extra_control_args: str=None,
         extra_system_args: str=None,
         extra_electron_args: str=None,
@@ -29,6 +30,7 @@ class RelaxInput:
         self.job_desc: JobProcDesc = job_desc
         self.max_val: int = max_val
         self.relax_type: RelaxType = relax_type
+        self.use_occupations: bool = use_occupations
         self.extra_control_args: str = extra_control_args
         self.extra_system_args: str = extra_system_args
         self.extra_electrons_args: str = extra_electron_args

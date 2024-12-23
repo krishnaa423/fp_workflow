@@ -17,6 +17,7 @@ class ScfInput:
         ecutwfc, 
         job_desc,
         is_spinorbit: bool=False,
+        xc_type: str = 'pbe',
         num_val_bands: int =None,
         extra_control_args: str=None,
         extra_system_args: str=None,
@@ -25,6 +26,7 @@ class ScfInput:
         self.kdim:np.ndarray = np.array(kdim) 
         self.ecutwfc:float = ecutwfc
         self.is_spinorbit: bool = is_spinorbit
+        self.xc_type: str = xc_type
         self.job_desc: JobProcDesc = job_desc
         self.num_val_bands: int = num_val_bands
         self.extra_control_args: str = extra_control_args

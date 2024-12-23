@@ -51,6 +51,7 @@ class FullGridFlow:
         
         self.relax_type: RelaxType = None 
         self.relax_read_coord: bool = False  
+        self.relax_use_occupations: bool = False 
         self.relax_extra_control_args: str = None  
         self.relax_extra_system_args: str = None  
         self.relax_extra_electrons_args: str = None  
@@ -58,6 +59,7 @@ class FullGridFlow:
         self.scf_kgrid: List[int] = None 
         self.scf_cutoff: float = None
         self.scf_is_spinorbit: bool = False
+        self.scf_xc_type: str = None 
         self.scf_extra_control_args: str = None  
         self.scf_extra_system_args: str = None  
         self.scf_extra_electrons_args: str = None  
@@ -222,7 +224,7 @@ class FullGridFlow:
         write('sc_atoms.xsf', self.sc_atoms)
 
     def create_pseudos(self):
-        FlowManage.create_pseudos(self.uc_atoms, is_fr=self.scf_is_spinorbit)
+        FlowManage.create_pseudos(self.uc_atoms, is_fr=self.scf_is_spinorbit, xc_type=self.scf_xc_type)
 
     def create_atoms_input(self):
         self.atoms_input = AtomsInput(atoms=self.sc_atoms)
@@ -249,6 +251,7 @@ class FullGridFlow:
             max_val=self.max_val,
             job_desc=self.job_para,
             relax_type=self.relax_type,
+            use_occupations=self.relax_use_occupations,
             extra_control_args=self.relax_extra_control_args,
             extra_system_args=self.relax_extra_system_args,
             extra_electron_args=self.relax_extra_electrons_args,
