@@ -237,7 +237,7 @@ inteqp_wfn_fi_link: "WFN_dftelbands"
 
 abs_val_bands: 4
 abs_cond_bands: 2
-abs_nevec: 5
+abs_nevec: 200
 abs_wfn_co_link: "WFN_parabands.h5"
 abs_wfnq_co_link: "WFN_parabands.h5"
 abs_wfn_fi_link: "WFN_parabands.h5"

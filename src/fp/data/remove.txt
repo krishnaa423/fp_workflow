@@ -1,0 +1,21 @@
+#region modules
+from fp.flows.flow_manage import FlowManage
+from fp.io.pkl import load_obj
+#endregions
+
+#region variables
+#endregions
+
+#region functions
+def main():
+    flowmanage: FlowManage = load_obj('flowmanage.pkl')
+    flowmanage.remove()
+#endregions
+
+#region classes
+#endregions
+
+#region main
+if __name__=='__main__':
+    main()
+#endregions

@@ -1,0 +1,78 @@
+#region modules
+from fp.flows.fullgridflow import FullGridFlow
+from fp.flows.flow_manage import FlowManage
+from fp.jobs.relax import RelaxJob
+from fp.jobs.scf import ScfJob
+from fp.jobs.dfpt import DfptJob
+from fp.jobs.phbands import PhbandsJob
+from fp.jobs.phdos import PhdosJob
+from fp.jobs.phmodes import PhmodesJob
+from fp.jobs.dos import DosJob
+from fp.jobs.pdos import PdosJob
+from fp.jobs.dftelbands import DftelbandsJob
+from fp.jobs.kpdos import KpdosJob
+from fp.jobs.wannier import WannierJob
+from fp.jobs.wfngeneral import WfnJob
+from fp.jobs.wfngeneral import WfnqJob
+from fp.jobs.epw import EpwJob
+from fp.jobs.wfngeneral import WfnfiJob
+from fp.jobs.wfngeneral import WfnqfiJob
+from fp.jobs.epsilon import EpsilonJob
+from fp.jobs.sigma import SigmaJob
+from fp.jobs.inteqp import InteqpJob
+from fp.jobs.kernel import KernelJob
+from fp.jobs.abs import AbsorptionJob
+from fp.jobs.abs import PlotxctJob
+from fp.jobs.bseq import BseqJob
+from fp.jobs.xctph import XctPhJob
+# from fp.jobs.xctpol import XctPolJob
+from ase import Atoms
+from ase.io import read, write
+import numpy as np
+import os
+#endregions
+
+#region variables
+#endregions
+
+#region functions
+def main():
+    fullgridflow = FullGridFlow.from_yml('flow.yml')
+    flowmanage = fullgridflow.get_flowmanage([
+        RelaxJob,
+        ScfJob,
+        DfptJob,
+        PhbandsJob,
+        PhdosJob,
+        PhmodesJob,
+        DosJob,
+        PdosJob,
+        DftelbandsJob,
+        KpdosJob,
+        # WannierJob,
+        WfnJob,
+        EpwJob,
+        WfnqJob,
+        WfnfiJob,
+        WfnqfiJob,
+        EpsilonJob,
+        SigmaJob,
+        InteqpJob,
+        KernelJob,
+        AbsorptionJob,
+        PlotxctJob,
+        BseqJob,
+        XctPhJob,
+    ])
+    flowmanage.create()
+    flowmanage.create_job_all_script(filename='job_all.sh', start_job='job_scf.sh', stop_job='job_xctph.sh')
+    os.system('chmod u+x *.sh')
+#endregions
+
+#region classes
+#endregions
+
+#region main
+if __name__=='__main__':
+    main()
+#endregions
