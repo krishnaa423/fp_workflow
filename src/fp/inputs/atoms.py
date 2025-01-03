@@ -68,7 +68,7 @@ class CellUpdate:
             elif cell_units=='bohr':
                 cell_factor = Bohr
             elif cell_units=='alat':
-                cell_factor = self.input_dict['atoms']['read']['cell']['alat_info']['A']
+                cell_factor = 1.0
 
         cell_array = None
         if (cell_list := self.input_dict

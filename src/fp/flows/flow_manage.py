@@ -116,7 +116,7 @@ flow.run(total_time=0, start_job=start_job, stop_job=stop_job)
             'runall.sh',
 f'''#!/bin/bash
 
-job_all.sh &> job_all.out &
+./job_all.sh &> job_all.out &
 '''
         )
 
