@@ -13,25 +13,10 @@ from fp.schedulers.scheduler import *
 class ScfInput:
     def __init__(
         self,
-        kdim,
-        ecutwfc, 
-        job_desc,
-        is_spinorbit: bool=False,
-        xc_type: str = 'pbe',
-        num_val_bands: int =None,
-        extra_control_args: str=None,
-        extra_system_args: str=None,
-        extra_electron_args: str=None,
+        input_dict: dict,
     ):
-        self.kdim:np.ndarray = np.array(kdim) 
-        self.ecutwfc:float = ecutwfc
-        self.is_spinorbit: bool = is_spinorbit
-        self.xc_type: str = xc_type
-        self.job_desc: JobProcDesc = job_desc
-        self.num_val_bands: int = num_val_bands
-        self.extra_control_args: str = extra_control_args
-        self.extra_system_args: str = extra_system_args
-        self.extra_electrons_args: str = extra_electron_args
+        self.input_dict: dict = input_dict
+        self.kdim: np.ndarray = np.array(self.input_dict['scf']['kdim'], dtype='i4')
 
     def get_kgrid(self):
         output = ''

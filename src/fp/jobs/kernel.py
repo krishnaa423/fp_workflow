@@ -1,7 +1,11 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.jobs.bgw import BgwInputFile
 #endregion
 
 #region: Variables.
@@ -17,34 +21,62 @@ class KernelJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_kernel = \
-f'''# Q-points
-exciton_Q_shift 2 {self.input.kernel.Qshift[0]:15.10f} {self.input.kernel.Qshift[1]:15.10f} {self.input.kernel.Qshift[2]:15.10f}
-use_symmetries_coarse_grid
+    def set_job_info(self):
+        if isinstance(self.input_dict['ker']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['ker']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['ker']['job_info'])
 
-# Bands 
-number_val_bands {self.input.kernel.val_bands_coarse}
-number_cond_bands {self.input.kernel.cond_bands_coarse}
-#spinor
+    def set_inputs_str(self):
+        # Base.
+        input_kernel_dict: dict = {
+            'maps': {
+                'exciton_Q_shift': [
+                    2,
+                    self.input_dict['abs']['Qshift'][0],
+                    self.input_dict['abs']['Qshift'][1],
+                    self.input_dict['abs']['Qshift'][2],
+                ],
+                'use_symmetries_coarse_grid': '',
+                'number_val_bands': self.input_dict['abs']['num_val_bands'],
+                'number_cond_bands': self.input_dict['abs']['num_cond_bands'],
+                'use_wfn_hdf5': '',
+            },
+        }
 
-# Options
-#extended_kernel
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            input_kernel_dict['maps']['spinor'] = ''
+        args_dict = self.input_dict['ker']['args']
+        args_type = self.input_dict['ker']['args_type']
+        input_kernel_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_kernel_dict
+        )
 
-# IO. 
-use_wfn_hdf5
+        # Write.
+        self.input_kernel: str = BgwInputFile.write_general(input_kernel_dict)
 
-# Extra args.
-{self.input.kernel.extra_args if self.input.kernel.extra_args is not None else ""}
-'''
-        
+    def set_jobs_str(self):
         self.job_kernel = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.kernel.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-ln -sf {self.input.kernel.wfn_co_link} WFN_co.h5
-ln -sf {self.input.kernel.wfnq_co_link} WFNq_co.h5
-{self.input.scheduler.get_sched_mpi_prefix(self.input.kernel.job_desc)}kernel.cplx.x &> kernel.inp.out
+ln -sf {self.input_dict['abs']['wfnco_link']} WFN_co.h5
+ln -sf {self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}kernel.cplx.x &> kernel.inp.out
 '''
 
         self.jobs = [

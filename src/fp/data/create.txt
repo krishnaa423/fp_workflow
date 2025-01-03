@@ -39,33 +39,49 @@ import os
 def main():
     fullgridflow = FullGridFlow.from_yml('flow.yml')
     flowmanage = fullgridflow.get_flowmanage([
-        RelaxJob,
+        # RelaxJob,
         ScfJob,
+        # ScfAbacusJob,
+        # MdJob,
+        # MdAbacusJob,
         DfptJob,
-        PhbandsJob,
-        PhdosJob,
-        PhmodesJob,
-        DosJob,
-        PdosJob,
-        DftelbandsJob,
-        KpdosJob,
+        # PhfinitediffJob,
+        # PhbandsJob,
+        # PhdosJob,
+        # PhmodesJob,
+        # DosJob,
+        # PdosJob,
+        # DftelbandsJob,
+        # KpdosJob,
         # WannierJob,
         WfnJob,
         EpwJob,
+        # ElphJob,
         WfnqJob,
-        WfnfiJob,
-        WfnqfiJob,
+        # WfnfiJob,
+        # WfnqfiJob,
         EpsilonJob,
         SigmaJob,
-        InteqpJob,
+        # InteqpJob,
         KernelJob,
         AbsorptionJob,
         PlotxctJob,
         BseqJob,
         XctPhJob,
+        # EsfJob,
+        # XctPolJob,
+        # SteJob,
+        # EsdJob,
+        ## VCA doping stuff. Can't for now, as there is a fractional electrons bug. 
+        ## copy relax stuff. 
+        ## supercell path. 
+        ## pyscf, abacus, gpaw.
+        ## understand pseudo generation. 
+        ## debug the removing ./tmp issue.
     ])
-    flowmanage.create()
-    flowmanage.create_job_all_script(filename='job_all.sh', start_job='job_scf.sh', stop_job='job_xctph.sh')
+    flowmanage.create_jobs()
+    flowmanage.create_job_all_script(start_job='job_scf.sh', stop_job='job_xctph.sh')
+    fullgridflow.create_interactive()
     os.system('chmod u+x *.sh')
 #endregions
 

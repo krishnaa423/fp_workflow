@@ -16,40 +16,32 @@ from fp.structure.kpts import Kgrid
 class WfnGeneralInput:
     def __init__(
         self,
-        atoms,
-        kdim,
-        qshift,
-        is_reduced,     # Should be false for now, since using full grid.
-        bands, 
-        job_wfn_desc,
-        job_pw2bgw_desc=None,
-        job_parabands_desc=None,
-        parabands_bands=None,
-        extra_control_args: str=None,
-        extra_system_args: str=None,
-        extra_electrons_args: str=None,
-        extra_parabands_args: str=None,
-    ):      
-        self.atoms: AtomsInput = atoms 
-        self.kdim = kdim
-        self.qshift = qshift 
-        self.is_reduced: bool = is_reduced
-        self.bands: int = bands  
-        self.job_wfn_desc: JobProcDesc = job_wfn_desc
-        self.job_pw2bgw_desc: JobProcDesc = job_pw2bgw_desc
-        self.job_parabands_desc: JobProcDesc = job_parabands_desc
-        self.parabands_bands = parabands_bands 
-        self.extra_control_args: str = extra_control_args
-        self.extra_system_args: str = extra_system_args
-        self.extra_electrons_args: str = extra_electrons_args
-        self.extra_parabands_args: str = extra_parabands_args
+        input_dict: dict,
+        atoms_input: AtomsInput=None,
+        wfn_type: str = 'wfn',
+    ):
+        self.input_dict: dict = input_dict     
         
+        # Extract attributes used across class methods.
+        self.kdim: np.ndarray = np.array(self.input_dict[wfn_type]['kdim'])
+        self.is_reduced: bool = self.input_dict[wfn_type]['sym']
+        self.atoms_input: AtomsInput = atoms_input
+        if atoms_input is None:
+            self.atoms_input = AtomsInput(
+                input_dict=self.input_dict,
+            )
+        if 'qshift' in self.input_dict[wfn_type]:
+            self.qshift = np.array(self.input_dict[wfn_type]['qshift'])
+        else:
+            self.qshift = np.array([0.0, 0.0, 0.0])
+        
+        # Get kpoints. 
         self.kpts: np.ndarray = None 
         self.create_kgrid() 
       
     def create_kgrid(self):
         kgrid = Kgrid(
-            self.atoms, 
+            self.atoms_input, 
             kdim=self.kdim,
             qshift=self.qshift,
             is_reduced=self.is_reduced
@@ -57,45 +49,54 @@ class WfnGeneralInput:
 
         self.kpts = kgrid.get_kpts()
                     
-    def get_kgrid_dft_string(self):
-        output = ''
-        output += 'K_POINTS crystal\n'
-        
-        num_kpts = self.kpts.shape[0]
-        output += f'{num_kpts}\n'
-        
+    def get_kgrid_dft(self):
+        output = []
+
         for row in self.kpts:
-            output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f} {row[3]:15.10f}\n'
-        
-        return output 
+            output.append([
+                float(row[0]),
+                float(row[1]),
+                float(row[2]),
+                float(row[3]),
+            ])
+
+        return output
    
-    def get_kgrid_eps_string(self, qshift=None):
+    def get_kgrid_eps(self, qshift=None):
         if not qshift: qshift = self.qshift
         
-        output = ''
-        output += 'begin qpoints\n'
+        output = []
         
-        # qshift.
-        output += f'{qshift[0]:15.10f} {qshift[1]:15.10f} {qshift[2]:15.10f} 1.0 1\n' 
-        
-        # qgrid. 
         for row_idx, row in enumerate(self.kpts):
-            if row_idx==0: continue 
-            output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f} 1.0 0\n'
-        
-        output += 'end\n'
+            if row_idx==0:
+                output.append([
+                    float(qshift[0]),
+                    float(qshift[1]),
+                    float(qshift[2]),
+                    float(1.0),
+                    int(1),
+                ])
+            else:
+                output.append([
+                    float(row[0]),
+                    float(row[1]),
+                    float(row[2]),
+                    float(1.0),
+                    int(0),
+                ])
         
         return output 
     
-    def get_kgrid_sig_string(self):
-        output = ''
-        output += 'begin kpoints\n'
-        
-        # kgrid. 
+    def get_kgrid_sig(self):
+        output = []
+
         for row in self.kpts:
-            output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f} 1.0\n'
-        
-        output += 'end\n'
-        
-        return output 
+            output.append([
+                float(row[0]),
+                float(row[1]),
+                float(row[2]),
+                float(1.0),
+            ])
+
+        return output
 #endregion

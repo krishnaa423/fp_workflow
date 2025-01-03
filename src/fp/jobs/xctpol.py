@@ -1,7 +1,8 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
 #endregion
 
 #region: Variables.
@@ -36,7 +37,7 @@ xctpol.write()
         
         self.job_xctpol = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.xctpol.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
 python3 script_xctpol.py &> script_xctpol.out
 '''

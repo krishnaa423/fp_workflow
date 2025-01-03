@@ -31,7 +31,7 @@ job_big_para_k:
   ntasks: 2240
   time: "01:45:00"
   # nk: 
-  ni: 8
+  ni: 4
 job_para_epwk:
   nodes: 2
   ntasks: 64
@@ -56,14 +56,14 @@ path_special_points:
   # - 'L'
   # - 'K'
   # - 'G'
-path_segment_npoints: 30
+path_segment_npoints: 50
 #path_total_npoints: 100
 
 
 relax_type: 1
-relax_read_coord: true
+relax_read_coord: false
 relax_extra_control_args: |
-  forc_conv_thr=1.0d-6
+  forc_conv_thr=1.0d-8
   etot_conv_thr=1.0d-6
 # relax_extra_system_args: |
 #   asd
@@ -72,11 +72,12 @@ relax_extra_electrons_args: |
 
 
 scf_kgrid:
-  - 4
-  - 4
-  - 4
+  - 3
+  - 3
+  - 3
 scf_cutoff: 70.0
-scf_is_spinorbit: false
+scf_is_spinorbit: true
+scf_xc_type: 'pbe'
 scf_extra_control_args: |
   forc_conv_thr=1.0d-6
   etot_conv_thr=1.0d-6
@@ -87,9 +88,9 @@ scf_extra_electrons_args: |
 
 
 dfpt_qgrid:
-  - 4
-  - 4
-  - 4
+  - 3
+  - 3
+  - 3
 dfpt_conv_threshold: "1.0d-14"
 dfpt_extra_args: |
   diagonalization='cg'

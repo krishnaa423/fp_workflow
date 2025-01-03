@@ -14,20 +14,10 @@ from fp.inputs.wfngeneral import *
 class EpsilonInput:
     def __init__(
         self,
-        bands,
-        cutoff,
-        wfn_link,
-        wfnq_link,
-        job_desc,
-        extra_args: str=None,
+        input_dict: dict,
     ):
-        self.bands = bands  
-        self.cutoff = cutoff
-        self.wfn_link: str = wfn_link
-        self.wfnq_link: str = wfnq_link
-        self.extra_args: str = extra_args
-        self.job_desc: JobProcDesc = job_desc
+        self.input_dict: dict = input_dict
         
     def get_qgrid_str(self, wfn_input: WfnGeneralInput, qshift):
-        return wfn_input.get_kgrid_eps_string(qshift=qshift)
+        return wfn_input.get_kgrid_eps(qshift=qshift)
 #endregion

@@ -1,10 +1,14 @@
 #region: Modules.
-from fp.inputs import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
 import re 
 import math 
 import subprocess
+from fp.schedulers.scheduler import Scheduler, JobProcDesc
+import fp.schedulers as schedulers
+from fp.jobs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.
@@ -17,66 +21,77 @@ import subprocess
 class DryrunJob:
     def __init__(
         self,
-        atoms: AtomsInput,
-        scheduler: Scheduler,
-        job_desc: JobProcDesc,
-        is_spinorbit: bool = False,
+        input: Input,
     ):
-        self.atoms: AtomsInput = atoms
-        self.scheduler: Scheduler = scheduler
-        self.job_desc: JobProcDesc = job_desc
-        self.is_spinorbit: bool = is_spinorbit
+        self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict, runtype='dryrun')
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_dryrun: str = \
-f'''&CONTROL
-outdir='./tmp'
-prefix='struct'
-pseudo_dir='./pseudos'
-calculation='md'
-nstep=0
-tprnfor=.true.
-/
+    def set_job_info(self):
+        self.job_info = JobProcDesc(
+            nodes=1,
+            ntasks=1,
+            time='00:20:00',
+        )
 
-&SYSTEM
-ibrav=0
-ntyp={self.atoms.get_ntyp()}
-nat={self.atoms.get_nat()}
-ecutwfc=20.0
-{"" if self.is_spinorbit else "!"}noncolin=.true.
-{"" if self.is_spinorbit else "!"}lspinorb=.true. 
-/
+    def set_inputs_str(self):
+        # Base.
+        input_dryrun_dict: dict = {
+            'namelists': {
+                'control': {
+                    'outdir': './tmp',
+                    'prefix': 'struct',
+                    'pseudo_dir': './pseudos',
+                    'calculation': f'md',
+                    'nstep': 0,
+                    'tprnfor': True,
+                },
+                'system': {
+                    'ibrav': IbravType(self.input_dict).get_idx(),
+                    'ntyp': self.input.atoms.get_ntyp(),
+                    'nat': self.input.atoms.get_nat(),
+                    'ecutwfc': self.input_dict['scf']['cutoff'],
+                },
+                'electrons': {},
+                'ions': {},
+                'cell': {},
+            },
+            'blocks': {
+                'atomic_species': self.input.atoms.get_qe_scf_atomic_species(),
+                'cell_parameters': self.input.atoms.get_qe_scf_cell(),
+                'atomic_positions': self.input.atoms.get_qe_scf_atomic_positions(),
+                'kpoints': self.input_dict['scf']['kdim'],
+            },
+            'kpoints_type': 'automatic',   # Options are 'automatic', 'crystal' and 'crystal_b'. 
+            'cell_units': self.input_dict['atoms']['write_cell_units'],
+            'position_units': self.input_dict['atoms']['write_position_units'],
+        }
 
-&ELECTRONS
-/
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            input_dryrun_dict['namelists']['system']['noncolin'] = True
+            input_dryrun_dict['namelists']['system']['lspinorb'] = True
+        
+        # Get string. 
+        self.input_dryrun: str = QePwInputFile(input_dryrun_dict, self.input_dict).get_input_str()
 
-&IONS
-/
+    def set_jobs_str(self):
 
-&CELL
-/
-
-ATOMIC_SPECIES
-{self.atoms.get_qe_scf_atomic_species()}
-
-CELL_PARAMETERS angstrom
-{self.atoms.get_scf_cell()}
-
-ATOMIC_POSITIONS angstrom 
-{self.atoms.get_qe_scf_atomic_positions()}
-
-K_POINTS automatic 
-2 2 2 0 0 0
-'''
         # The dryrun jobs will not be in parallel. Just to get some info.
         self.job_dryrun: str = \
 f'''#!/bin/bash
-{self.scheduler.get_sched_header(self.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.scheduler.get_sched_mpi_prefix(self.job_desc)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_desc)} < dryrun.in &> dryrun.in.out
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_info)} < dryrun.in &> dryrun.in.out
 
 cp ./tmp/struct.save/data-file-schema.xml ./dryrun.xml
 '''
-    
+
     def create(self):
         write_str_2_f('dryrun.in', self.input_dryrun)
         write_str_2_f('job_dryrun.sh', self.job_dryrun)
@@ -103,7 +118,7 @@ cp ./tmp/struct.save/data-file-schema.xml ./dryrun.xml
         pattern  = r'number of electrons\s*=(.*)\n'
         num_of_electrons = int(math.ceil(float(re.findall(pattern, txt)[0])))
 
-        num_bands = int(num_of_electrons/2) if not self.is_spinorbit else num_of_electrons
+        num_bands = int(num_of_electrons/2) if not self.input_dict['scf']['is_spinorbit'] else num_of_electrons
         
         return num_bands
 #endregion

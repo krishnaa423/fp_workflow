@@ -155,7 +155,7 @@ class KpdosPlot:
         ax.legend()
         ax.set_ylabel('Energy (eV)')
         ax.set_title('k-resolved PDOS')
-        if ylim is not None: ax.set_ylim(bottom=ylim[0], top=ylim[1])
+        if ylim  is not None: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         fig.savefig(save_filename)
         if show: plt.show()
 #endregion

@@ -1,7 +1,10 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.bgw import BgwInputFile
 #endregion
 
 #region: Variables.
@@ -17,55 +20,62 @@ class BseqJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+
+    def set_job_info(self):
+        if isinstance(self.input_dict['bseq']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['bseq']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['bseq']['job_info'])
 
         self.jobs = [
             'job_bseq.sh',
         ]
 
-        self.bseq_for_xctph_link_str: str = ''
-
     def get_plotxct_strings(self, Qpt):
+        # Base.
+        input_plotxct_dict: dict = {
+            'maps': {
+                'hole_position': self.input_dict['plotxct']['hole_position'],
+                'supercell_size': self.input_dict['plotxct']['supercell_size'],
+                'use_symmetries_fine_grid': '',
+                'use_symmetries_shifted_grid': '',
+                'plot_spin': 1,
+                'plot_state': self.input_dict['plotxct']['xct_state'],
+                'use_wfn_hdf5': '',
+            },
+        }
 
-        plotxct_spinorbit_extra_args = \
-f'''
-# Spin-orbit extra args.
-spinor 
-hole_spin 1
-electron_spin 2
-'''
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            input_plotxct_dict['maps']['spinor'] = ''
+            input_plotxct_dict['maps']['hole_spin'] = 1
+            input_plotxct_dict['maps']['electron_spin'] = 2
+        args_dict = self.input_dict['abs']['args']
+        args_type = self.input_dict['abs']['args_type']
+        input_plotxct_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_plotxct_dict
+        )
 
-        input_plotxct = \
-f'''# Cell parameters.
-hole_position {self.input.plotxct.get_hole_position_str()}
-supercell_size {self.input.plotxct.get_supercell_size_str()}
+        # Write.
+        input_plotxct: str = BgwInputFile.write_general(input_plotxct_dict)
 
-# Q-points. 
-# q_shift
-no_symmetries_fine_grid
-no_symmetries_shifted_grid
-
-# Bands and state. 
-plot_spin 1
-plot_state {self.input.plotxct.state}
-#spinor
-#electron_spin 1
-#hole_spin 2
-
-# Output. 
-
-# IO
-use_wfn_hdf5
-
-{plotxct_spinorbit_extra_args if self.input.scf.is_spinorbit else ""}
-{self.input.plotxct.extra_args if self.input.plotxct.extra_args is not None else ""}
-'''
         job_plotxct = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.plotxct.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-ln -sf {self.input.plotxct.wfn_fi_link} WFN_fi.h5 
-ln -sf {self.input.plotxct.wfnq_fi_link} WFNq_fi.h5 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.plotxct.job_desc)}plotxct.cplx.x &> plotxct.inp.out 
+ln -sf ../../{self.input_dict['plotxct']['wfnfi_link']} WFN_fi.h5 
+ln -sf ../../{self.input_dict['plotxct']['wfnqfi_link']} WFNq_fi.h5 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}plotxct.cplx.x &> plotxct.inp.out 
 volume.py ./scf.in espresso *.a3Dr a3dr plotxct_elec.xsf xsf false abs2 true 
 rm -rf *.a3Dr
 '''
@@ -73,87 +83,113 @@ rm -rf *.a3Dr
         return input_plotxct, job_plotxct
 
     def get_kernel_strings(self, Qpt):
-        input_ker = \
-f'''# Q-points
-exciton_Q_shift 2 {Qpt[0]:15.10f} {Qpt[1]:15.10f} {Qpt[2]:15.10f}
-use_symmetries_coarse_grid
+        # Base.
+        input_kernel_dict: dict = {
+            'maps': {
+                'exciton_Q_shift': [
+                    2,
+                    Qpt[0],
+                    Qpt[1],
+                    Qpt[2],
+                ],
+                'use_symmetries_coarse_grid': '',
+                'number_val_bands': self.input_dict['abs']['num_val_bands'],
+                'number_cond_bands': self.input_dict['abs']['num_cond_bands'],
+                'use_wfn_hdf5': '',
+            },
+        }
 
-# Bands 
-number_val_bands {self.input.absorption.val_bands_coarse}
-number_cond_bands {self.input.absorption.cond_bands_coarse}
-#spinor
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            input_kernel_dict['maps']['spinor'] = ''
+        args_dict = self.input_dict['ker']['args']
+        args_type = self.input_dict['ker']['args_type']
+        input_kernel_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_kernel_dict
+        )
 
-# Options
-#extended_kernel
-
-# IO. 
-use_wfn_hdf5
-{self.input.kernel.extra_args if self.input.kernel.extra_args is not None else ""}
-'''
+        # Write.
+        input_kernel: str = BgwInputFile.write_general(input_kernel_dict)
         
-        job_ker = \
+        job_kernel = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.kernel.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
 ln -sf ../../epsmat.h5 ./
 ln -sf ../../eps0mat.h5 ./
-ln -sf ../../{self.input.absorption.wfn_co_link} WFN_co.h5
-ln -sf ../../{self.input.absorption.wfnq_co_link} WFNq_co.h5
-{self.input.scheduler.get_sched_mpi_prefix(self.input.kernel.job_desc)}kernel.cplx.x &> kernel.inp.out
+ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5
+ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}kernel.cplx.x &> kernel.inp.out
 '''
         
-        return input_ker, job_ker
+        return input_kernel, job_kernel
 
     def get_absorption_strings(self, Qpt):
-        input_abs = \
-f'''# Q-points
-exciton_Q_shift 2 {Qpt[0]:15.10f} {Qpt[1]:15.10f} {Qpt[2]:15.10f}
-use_symmetries_coarse_grid
-no_symmetries_fine_grid
-no_symmetries_shifted_grid
+        # Base.
+        input_absorption_dict: dict = {
+            'maps': {
+                'exciton_Q_shift': [
+                    2,
+                    Qpt[0],
+                    Qpt[1],
+                    Qpt[2],
+                ],
+                'use_symmetries_coarse_grid': '',
+                'use_symmetries_fine_grid': '',
+                'use_symmetries_shifted_grid': '',
+                'number_val_bands_coarse': self.input_dict['abs']['num_val_bands'],
+                'number_val_bands_fine': self.input_dict['abs']['num_val_bands'] - 1,
+                'number_cond_bands_coarse': self.input_dict['abs']['num_cond_bands'],
+                'number_cond_bands_fine': self.input_dict['abs']['num_cond_bands'],
+                'degeneracy_check_override': '',
+                'diagonalization': '',
+                # 'use_elpa': '',  
+                'use_momentum': '',  
+                # 'use_velocity': '',  
+                'polarization': self.input_dict['abs']['pol_dir'],
+                'eqp_co_corrections': '',
+                'dump_bse_hamiltonian': '',
+                'use_wfn_hdf5': '',
+                'energy_resolution': 0.1,
+                'write_eigenvectors': self.input_dict['abs']['num_evecs'],
+            },
+        }
 
-# Bands
-number_val_bands_coarse {self.input.absorption.val_bands_coarse}
-number_cond_bands_coarse {self.input.absorption.cond_bands_coarse}
-number_val_bands_fine {self.input.absorption.val_bands_fine}
-number_cond_bands_fine {self.input.absorption.cond_bands_fine}
-degeneracy_check_override
-#spinor
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            input_absorption_dict['maps']['spinor'] = ''
+        args_dict = self.input_dict['abs']['args']
+        args_type = self.input_dict['abs']['args_type']
+        input_absorption_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_absorption_dict
+        )
 
-# Options
-diagonalization
-#use_velocity
-use_momentum
-polarization {self.input.absorption.pol_dir[0]:15.10f} {self.input.absorption.pol_dir[1]:15.10f} {self.input.absorption.pol_dir[2]:15.10f}
-eqp_co_corrections
-dump_bse_hamiltonian
-
-# IO
-use_wfn_hdf5
-
-# Output
-energy_resolution 0.01
-write_eigenvectors {self.input.absorption.num_evec}
-{self.input.absorption.extra_args if self.input.absorption.extra_args is not None else ""}
-'''
+        # Write.
+        input_absorption: str = BgwInputFile.write_general(input_absorption_dict)
         
-        job_abs = \
+        job_absorption = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.absorption.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
 ln -sf ../../epsmat.h5 ./
 ln -sf ../../eps0mat.h5 ./
 ln -sf ../../eqp1.dat eqp_co.dat 
 ln -sf ../../bsemat.h5 ./
-ln -sf ../../{self.input.absorption.wfn_co_link} WFN_co.h5 
-ln -sf ../../{self.input.absorption.wfnq_co_link} WFNq_co.h5 
-ln -sf ../../{self.input.absorption.wfn_fi_link} WFN_fi.h5 
-ln -sf ../../{self.input.absorption.wfnq_fi_link} WFNq_fi.h5 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.absorption.job_desc)}absorption.cplx.x &> absorption.inp.out
+ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5 
+ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5 
+ln -sf ../../{self.input_dict['abs']['wfnfi_link']} WFN_fi.h5 
+ln -sf ../../{self.input_dict['abs']['wfnqfi_link']} WFNq_fi.h5 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}absorption.cplx.x &> absorption.inp.out
 mv bandstructure.dat bandstructure_absorption.dat
 '''
         
-        return input_abs, job_abs
+        return input_absorption, job_absorption
 
     def create_inputs_bseq(self):
         
@@ -163,7 +199,7 @@ mv bandstructure.dat bandstructure_absorption.dat
         os.system('mkdir -p ./bseq_for_xctph')
         os.chdir('./bseq')
 
-        Qpts = self.input.bseq.get_Qpts()
+        Qpts = self.input.bseq.get_Qpts(self.input.atoms)
 
         for Qpt_idx, Qpt in enumerate(Qpts):
             Qpt0 = f'{Qpt[0]:15.10f}'.strip()
@@ -195,9 +231,9 @@ mv bandstructure.dat bandstructure_absorption.dat
         '''
         Idea is to create a list with start and stop indices to control execution.
         '''
-        Qpts = self.input.bseq.get_Qpts()
+        Qpts = self.input.bseq.get_Qpts(self.input.atoms)
         job_bseq = '#!/bin/bash\n'
-        job_bseq += f'{self.input.scheduler.get_sched_header(self.input.bseq.job_desc)}\n'
+        job_bseq += f'{self.scheduler.get_sched_header(self.job_info)}\n'
 
         job_bseq += "start=0\n"
         job_bseq += f"stop={Qpts.shape[0]}\n\n"
@@ -218,9 +254,9 @@ mv bandstructure.dat bandstructure_absorption.dat
         kernel_commands = \
 f'''ln -sf ../../epsmat.h5 ./
 ln -sf ../../eps0mat.h5 ./
-ln -sf ../../{self.input.kernel.wfn_co_link} WFN_co.h5
-ln -sf ../../{self.input.kernel.wfnq_co_link} WFNq_co.h5
-{self.input.scheduler.get_sched_mpi_prefix(self.input.bseq.job_desc)}kernel.cplx.x &> kernel.inp.out
+ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5
+ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}kernel.cplx.x &> kernel.inp.out
 '''
         
         absorption_commands = \
@@ -228,18 +264,18 @@ f'''ln -sf ../../epsmat.h5 ./
 ln -sf ../../eps0mat.h5 ./
 ln -sf ../../eqp1.dat eqp_co.dat 
 ln -sf ../../bsemat.h5 ./
-ln -sf ../../{self.input.absorption.wfn_co_link} WFN_co.h5 
-ln -sf ../../{self.input.absorption.wfnq_co_link} WFNq_co.h5 
-ln -sf ../../{self.input.absorption.wfn_fi_link} WFN_fi.h5 
-ln -sf ../../{self.input.absorption.wfnq_fi_link} WFNq_fi.h5 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.bseq.job_desc)}absorption.cplx.x &> absorption.inp.out
+ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5 
+ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5 
+ln -sf ../../{self.input_dict['abs']['wfnfi_link']} WFN_fi.h5 
+ln -sf ../../{self.input_dict['abs']['wfnqfi_link']} WFNq_fi.h5 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}absorption.cplx.x &> absorption.inp.out
 mv bandstructure.dat bandstructure_absorption.dat
 '''
         
         plotxct_commands = \
-f'''ln -sf ../../{self.input.plotxct.wfn_fi_link} WFN_fi.h5 
-ln -sf ../../{self.input.plotxct.wfnq_fi_link} WFNq_fi.h5 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.bseq.job_desc)}plotxct.cplx.x &> plotxct.inp.out 
+f'''ln -sf ../../{self.input_dict['plotxct']['wfnfi_link']} WFN_fi.h5 
+ln -sf ../../{self.input_dict['plotxct']['wfnqfi_link']} WFNq_fi.h5 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}plotxct.cplx.x &> plotxct.inp.out 
 volume.py ../../scf.in espresso *.a3Dr a3dr plotxct_elec.xsf xsf false abs2 true 
 rm -rf *.a3Dr
 '''
@@ -285,6 +321,8 @@ done
     def create(self):
         self.create_inputs_bseq()
         self.create_job_bseq()
+
+        
 
     def run(self, total_time):
         total_time = run_and_wait_command('./job_bseq.sh', self.input, total_time)

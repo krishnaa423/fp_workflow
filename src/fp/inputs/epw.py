@@ -13,32 +13,34 @@ from fp.schedulers.scheduler import *
 class EpwInput:
     def __init__(
         self,
-        kgrid_coarse,
-        qgrid_coarse,
-        kgrid_fine,
-        qgrid_fine,
-        bands,
-        job_desc,
-        exec_loc,
-        skipped_bands=None,
-        extra_args: str=None,
-    ): 
-        self.kgrid_coarse:np.ndarray = kgrid_coarse
-        self.qgrid_coarse:np.ndarray = qgrid_coarse
-        self.kgrid_fine:np.ndarray = kgrid_fine
-        self.qgrid_fine:np.ndarray = qgrid_fine
-        self.bands = bands  
-        self.job_desc: JobProcDesc = job_desc
-        self.exec_loc: str = exec_loc
-        self.skipped_bands: list[tuple] = skipped_bands
-        self.extra_args: str = extra_args
+        input_dict: dict,
+    ):
+        self.input_dict: dict = input_dict
         
-    def get_skipped_bands_str(self):
-        bands_skipped = self.skipped_bands
-        
+    def get_skipped_bands_str(self, bands_skipped: list=None):
+        # Populate list.
+        if bands_skipped is None:
+            bands_skipped = []
+            abs_val_bands = self.input_dict['abs']['num_val_bands']
+            total_val_bands = self.input_dict['total_valence_bands']
+            abs_cond_bands = self.input_dict['abs']['num_cond_bands']
+            wfn_cond = self.input_dict['wfn']['num_cond_bands']
+
+            if abs_val_bands!= total_val_bands:
+                temp = (1, total_val_bands - abs_val_bands)
+                bands_skipped.append(temp)
+
+            if abs_cond_bands!= wfn_cond:
+                temp = (total_val_bands+ abs_cond_bands + 1, wfn_cond + total_val_bands)
+                bands_skipped.append(temp)
+
+            if len(bands_skipped)==0:
+                bands_skipped = None
+
+        # Populate string. 
         bands_skipped_str = ''
-        
-        if bands_skipped:
+        exclude_bands_str = None
+        if bands_skipped is not None:
             num_bands_skipped = len(bands_skipped)
             exclude_bands_str = "'exclude_bands="
             
@@ -50,5 +52,5 @@ class EpwInput:
             
             bands_skipped_str = 'bands_skipped=' + exclude_bands_str
         
-        return bands_skipped_str
+        return exclude_bands_str
 #endregion

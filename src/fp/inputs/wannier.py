@@ -18,35 +18,24 @@ from fp.structure.kpts import Kgrid
 class WannierInput:
     def __init__(
         self,
-        atoms,
-        kdim,
-        num_bands,
-        num_wann,
-        job_wfnwan_desc,
-        job_pw2wan_desc,
-        job_wan_desc,
-        extra_control_args: str=None,
-        extra_system_args: str=None,
-        extra_electron_args: str=None,
-        extra_args: str=None,
+        input_dict: dict,
+        atoms_input: AtomsInput=None,
     ):
-        self.atoms: AtomsInput = atoms 
-        self.kdim: np.ndarray = np.array(kdim)
-        self.num_bands: int = num_bands
-        self.num_wann: int = num_wann
-        self.job_wfnwan_desc: JobProcDesc = job_wfnwan_desc
-        self.job_pw2wan_desc: JobProcDesc = job_pw2wan_desc
-        self.job_wan_desc: JobProcDesc = job_wan_desc
-        self.extra_args: str = extra_args
-        self.extra_control_args: str = extra_control_args
-        self.extra_system_args: str = extra_system_args
-        self.extra_electrons_args: str = extra_electron_args
+        self.input_dict: dict = input_dict
+
+        # Create attributes. 
+        self.kdim: np.ndarray = np.array(self.input_dict['wannier']['kdim'])
+        self.atoms_input: AtomsInput = atoms_input
+        if atoms_input is None:
+            self.atoms_input = AtomsInput(
+                input_dict=self.input_dict,
+            )
         
     def get_unit_cell_cart(self):
         output = ''
         output += 'begin unit_cell_cart\nAng\n'
         
-        for row in self.atoms.atoms.get_cell():
+        for row in self.atoms_input.atoms.get_cell():
             output += f'{row[0]:15.10f} {row[1]:15.10f} {row[2]:15.10f}\n'
             
         output += 'end unit_cell_cart\n'
@@ -54,8 +43,8 @@ class WannierInput:
         return output 
     
     def get_atoms_cart(self):
-        numbers = self.atoms.atoms.get_atomic_numbers()
-        positions = self.atoms.atoms.get_positions()
+        numbers = self.atoms_input.atoms.get_atomic_numbers()
+        positions = self.atoms_input.atoms.get_positions()
         
         output = ''
         output += 'begin atoms_cart\nAng\n'
@@ -74,7 +63,7 @@ class WannierInput:
     
     def get_kpoints(self):
         kgrid = Kgrid(
-            atoms=self.atoms,
+            atoms_input=self.atoms_input,
             kdim=self.kdim,
             is_reduced=False,
         )
@@ -93,7 +82,7 @@ class WannierInput:
     
     def get_kpoints_qe(self):
         kgrid = Kgrid(
-            atoms=self.atoms,
+            atoms_input=self.atoms_input,
             kdim=self.kdim,
             is_reduced=False,
         )

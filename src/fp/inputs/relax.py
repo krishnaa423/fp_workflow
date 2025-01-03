@@ -19,50 +19,44 @@ class RelaxType:
 class RelaxInput:
     def __init__(
         self, 
-        max_val: int,
-        job_desc,
-        relax_type: int = RelaxType.GS_RELAX,
-        use_occupations: bool = False,
-        extra_control_args: str=None,
-        extra_system_args: str=None,
-        extra_electron_args: str=None,
+        input_dict: dict,
     ):
-        self.job_desc: JobProcDesc = job_desc
-        self.max_val: int = max_val
-        self.relax_type: RelaxType = relax_type
-        self.use_occupations: bool = use_occupations
-        self.extra_control_args: str = extra_control_args
-        self.extra_system_args: str = extra_system_args
-        self.extra_electrons_args: str = extra_electron_args
-        
-    def get_occupations_str(self):
+        self.input_dict: dict = input_dict
 
-        nbands = self.max_val if self.relax_type==RelaxType.GS_RELAX or self.relax_type==RelaxType.GS_VC_RELAX else self.max_val+1
+        # Extract some variables to use across class methods. 
+        self.relax_type: str = self.input_dict['relax']['type']
+        self.is_spinorbit: bool = self.input_dict['scf']['is_spinorbit']
+
+    def get_occupations(self):
+        self.total_valence_bands: int = self.input_dict['total_valence_bands']
+
+        nbands = self.total_valence_bands+1 if 'cdft' in self.relax_type else self.total_valence_bands
 
         occupations = np.zeros((nbands,), dtype='f8')
 
-        if self.relax_type==RelaxType.GS_RELAX or self.relax_type==RelaxType.GS_VC_RELAX:
-            occupations[:] = 2.0
-        elif self.relax_type==RelaxType.CDFT_RELAX or self.relax_type==RelaxType.CDFT_VC_RELAX:
-            occupations[:-2] = 2.0
-            occupations[-1] = 2.0
-        else:
-            Exception('Must set valid occupations type')
-
-        output = 'OCCUPATIONS \n'
-        
-        for occ in occupations:
-            output += f'{occ:15.10f}\n'
+        if 'cdft' in self.relax_type:
+            if self.is_spinorbit:
+                occupations[:-2] = 1.0
+                occupations[-1] = 1.0
+            else:
+                occupations[:-2] = 2.0
+                occupations[-1] = 2.0
+        else: 
+            if self.is_spinorbit:
+                occupations[:] = 1.0
+            else:
+                occupations[:] = 2.0
             
-        return output 
+        return occupations.tolist()
     
     def get_nbnd(self):
-        nbands = self.max_val if self.relax_type==RelaxType.GS_RELAX or self.relax_type==RelaxType.GS_VC_RELAX else self.max_val+1
+        self.total_valence_bands: int = self.input_dict['total_valence_bands']
+        nbands = self.total_valence_bands+1 if 'cdft' in self.relax_type else self.total_valence_bands
 
         return int(nbands)
     
     def calc_str(self):
-        output = 'relax' if self.relax_type==RelaxType.GS_RELAX or self.relax_type==RelaxType.CDFT_RELAX else 'vc-relax'
+        output = 'relax' if self.relax_type in ['relax', 'cdft-relax'] else 'vc-relax'
 
         return output
 #endregion

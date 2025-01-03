@@ -1,4 +1,6 @@
 #region: Modules.
+import fp.schedulers as schedulers
+from fp.io.strings import write_str_2_f
 #endregion
 
 #region: Variables.
@@ -16,6 +18,7 @@ class JobProcDesc:
         time: int = None,
         nk: int = None,
         ni: int = None,
+        **kwargs,
     ):
         self.nodes: int = nodes
         self.ntasks: int = ntasks
@@ -23,26 +26,108 @@ class JobProcDesc:
         self.nk: int = nk
         self.ni: int = ni
 
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @staticmethod
+    def from_job_id(id: str, input_dict: dict, ):
+        assert id in input_dict['job_types'], f'id: {id} is not in job_types'
+
+        return JobProcDesc(**input_dict['job_types'][id])
+
+
 class Scheduler:
     def __init__(
         self,
-        is_interactive:bool = False,
-        mpi_exec: str = None,
-        queue: str = None,
+        sched_dict: dict,
+        **kwargs,
     ):
-        self.is_interactive: bool = is_interactive
-        self.mpi_exec: str = mpi_exec
-        self.queue: str = queue
+        self.sched_dict: dict = sched_dict
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @staticmethod
+    def from_input_dict(input_dict: dict, runtype='mainrun'):
+        # sched_name = list(input_dict['scheduler'][runtype].keys())[0]
+        # sched_class = getattr(schedulers, sched_name)
+        
+        # return sched_class(**input_dict['scheduler'][runtype][sched_name])
+
+        key = input_dict['scheduler'][runtype]
+
+        return Scheduler(sched_dict=input_dict['scheduler'][key])
 
     def get_sched_header(self, job_desc: JobProcDesc):
-        return ''
+        header = ''
+
+        # Return if it is in interactive mode.
+        if self.sched_dict.get('options', {}).get('is_interactive') is not None:
+            if self.sched_dict['options']['is_interactive']:
+                return header
+            
+        if self.sched_dict.get('header') is not None:
+            for key, value in self.sched_dict['header'].items():
+                header += f"#{self.sched_dict['launch'].upper()} --{key}={value}\n"
+
+        header += f"#{self.sched_dict['launch'].upper()} --nodes={job_desc.nodes}\n"
+        header += f"#{self.sched_dict['launch'].upper()} --time={job_desc.time}\n"
+
+        return header
+
 
     def get_sched_mpi_prefix(self, job_desc: JobProcDesc):
-        return ''
+        prefix = ''
+
+        # If there is no mpi, just return empty string.
+        if self.sched_dict.get('mpi') is None:
+            return prefix
+
+        prefix += f"{self.sched_dict['mpi']} "
+        prefix += f'-n {job_desc.ntasks} '
+        
+        if self.sched_dict.get('options', {}).get('is_gpu') is not None:
+            if self.sched_dict['options']['is_gpu']:
+                prefix += f"--gpus-per-task={self.sched_dict['node_info']['gpus']} "
+
+        return prefix
     
-    def get_sched_mpi_infix(self, job_desc: JobProcDesc, add_nk_if_present: bool=True, add_ni_if_present: bool=True):
-        return ''
+    def get_sched_mpi_infix(self, job_desc: JobProcDesc):
+        infix = ''
+
+        if job_desc.nk is not None:
+            infix += f' -nk {job_desc.nk}'
+
+        if job_desc.ni is not None:
+            infix += f' -ni {job_desc.ni}'
+
+        return infix
 
     def get_sched_submit(self):
-        return '' 
+        submit = ''
+
+        if self.sched_dict.get('launch') is not None:
+            submit += f"{self.sched_dict['launch']} "
+
+        return submit
+    
+    def create_interactive(self):
+        file_contents = '#!/bin/bash\n'
+
+        file_contents += f"{self.sched_dict['launch']} "
+
+        if self.sched_dict.get('interactive', {}).get('args') is not None:
+            for key, value in self.sched_dict['interactive']['args'].items():
+                if value is None:
+                    file_contents += f' --{key} '
+                else:
+                    file_contents += f' --{key}=={value} '
+
+
+        if self.sched_dict.get('interactive', {}).get('extra_string') is not None:
+            file_contents += f" {self.sched_dict['interactive']['extra_string']}"
+
+        file_contents += '\n'
+
+        write_str_2_f('job_interactive.sh', file_contents)
 #endregion

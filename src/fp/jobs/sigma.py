@@ -1,7 +1,11 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.jobs.bgw import BgwInputFile
 #endregion
 
 #region: Variables.
@@ -17,40 +21,59 @@ class SigmaJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_sigma = \
-f'''# kpoints
-{self.input.sigma.get_kgrid_str(self.input.wfn)}
-no_symmetries_q_grid
-# use_symmetries_q_grid
+    def set_job_info(self):
+        if isinstance(self.input_dict['sig']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['sig']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['sig']['job_info'])
 
-# Bands.
-number_bands {self.input.sigma.bands}
-band_index_min {self.input.sigma.band_min}
-band_index_max {self.input.sigma.band_max}
-degeneracy_check_override
+    def set_inputs_str(self):
+        # Base.
+        input_sigma_dict: dict = {
+            'maps': {
+                'no_symmetries_q_grid': '',
+                'number_bands': self.input_dict['sig']['total_cond_bands'] + self.input_dict['total_valence_bands'],
+                'band_index_min': self.input_dict['total_valence_bands'] - self.input_dict['sig']['se_val_bands'] + 1,
+                'band_index_max': self.input_dict['total_valence_bands'] + self.input_dict['sig']['se_cond_bands'],
+                'degeneracy_check_override': '',
+                'screened_coulomb_cutoff': self.input_dict['sig']['cutoff'],
+                'dont_use_vxcdat': '',
+                'use_wfn_hdf5': '',
+            },
+            'blocks': {
+                'kpoints': self.input.sig.get_kgrid(self.input.wfn)
+            }
+        }
 
-# G-cutoff
-screened_coulomb_cutoff {self.input.sigma.cutoff}
+        # Additions.
+        args_dict = self.input_dict['sig']['args']
+        args_type = self.input_dict['sig']['args_type']
+        input_sigma_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_sigma_dict
+        )
 
+        # Write.
+        self.input_sigma: str = BgwInputFile.write_general(input_sigma_dict)
 
-# Options
-dont_use_vxcdat
-
-# IO
-# verbosity 3
-use_wfn_hdf5
-
-# Extra args.
-{self.input.sigma.extra_args if self.input.sigma.extra_args is not None else ""}
-'''
-        
+    def set_jobs_str(self):
         self.job_sigma = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.sigma.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-ln -sf {self.input.sigma.wfn_inner_link} ./WFN_inner.h5 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.sigma.job_desc)}sigma.cplx.x &> sigma.inp.out
+ln -sf {self.input_dict['sig']['wfninner_link']} ./WFN_inner.h5 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}sigma.cplx.x &> sigma.inp.out
 '''
         
         self.jobs = [

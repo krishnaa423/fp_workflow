@@ -9,7 +9,7 @@ from fp.io.pkl import load_obj
 #region functions
 def main():
     flowmanage: FlowManage = load_obj('flowmanage.pkl')
-    flowmanage.remove()
+    flowmanage.remove(job_all=True, interactive=True, fmt_files=True)
 #endregions
 
 #region classes

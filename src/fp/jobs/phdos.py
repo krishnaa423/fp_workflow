@@ -1,8 +1,10 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
-from pkg_resources import resource_filename
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.
@@ -18,43 +20,84 @@ class PhdosJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_q2r_dos = \
-f'''&INPUT
-zasr='crystal'
-fildyn='struct.dyn'
-flfrc='struct.fc'
-{self.input.phdos.extra_q2r_args if self.input.phdos.extra_q2r_args is not None else ""}
-/
-'''
-        
+    def set_job_info(self):
+        if isinstance(self.input_dict['phdos']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['phdos']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['phdos']['job_info'])
+
+    def set_inputs_str(self):
+        # Base. 
+        input_q2r_dos_dict = {
+            'namelists': {
+                'input': {
+                    'zasr': "'crystal'",
+                    'fildyn': "'struct.dyn'",
+                    'flfrc': "'struct.fc'",
+                }
+            }
+        }
+        input_matdyn_dos_dict = {
+            'namelists': {
+                'input': {
+                    'asr': "'crystal'",
+                    'flfrc': "'struct.fc'",
+                    'flfrq': "'struct.freq'",
+                    'flvec': "'struct.modes'",
+                    'dos': '.true.',
+                    'fldos': "'struct.phdos'",
+                    'nk1': self.input_dict['phdos']['qdim'][0],
+                    'nk2': self.input_dict['phdos']['qdim'][1],
+                    'nk3': self.input_dict['phdos']['qdim'][2],
+                }
+            }
+        }
+
+        # Additions.
+        #q2r.
+        args_dict = self.input_dict['phdos']['q2r_args']
+        args_type = self.input_dict['phdos']['q2r_args_type']
+        input_q2r_dos_dict = self.input.update_qe_args_dict(
+            args_dict=args_dict,
+            args_type=args_type,
+            qedict_to_update=input_q2r_dos_dict
+        )
+        #matdyn.
+        args_dict = self.input_dict['phdos']['matdyn_args']
+        args_type = self.input_dict['phdos']['matdyn_args_type']
+        input_matdyn_dos_dict = self.input.update_qe_args_dict(
+            args_dict=args_dict,
+            args_type=args_type,
+            qedict_to_update=input_matdyn_dos_dict
+        )
+
+        # Get inputs.
+        self.input_q2r_dos: str = QePwInputFile.write_general(input_q2r_dos_dict)
+        self.input_matdyn_dos: str = QePwInputFile.write_general(input_matdyn_dos_dict)
+
+    def set_jobs_str(self): 
         self.job_q2r_dos = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.phdos.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.phdos.job_desc)}q2r.x < q2r_dos.in &> q2r_dos.in.out 
-'''
-        
-        self.input_matdyn_dos = \
-f'''&INPUT
-asr='crystal'
-flfrc='struct.fc'
-flfrq='struct.phdos.freq'
-flvec='struct.phdos.modes'
-dos=.true.
-fldos='struct.phdos'
-nk1={int(self.input.phdos.qdim[0])}
-nk2={int(self.input.phdos.qdim[1])}
-nk3={int(self.input.phdos.qdim[2])}
-{self.input.phdos.extra_matdyn_args if self.input.phdos.extra_matdyn_args is not None else ""}
-/
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}q2r.x < q2r_dos.in &> q2r_dos.in.out 
 '''
         
         self.job_matdyn_dos = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.phbands.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.phbands.job_desc)}matdyn.x < matdyn_dos.in &> matdyn_dos.in.out 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}matdyn.x < matdyn_dos.in &> matdyn_dos.in.out 
 '''
 
         self.jobs = [

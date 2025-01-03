@@ -1,7 +1,10 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
 from pkg_resources import resource_filename
 #endregion
 
@@ -18,57 +21,79 @@ class DfptJob:
         input: Input,
     ):
         self.input: Input = input
-    
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
+
+    def set_job_info(self):
+        if isinstance(self.input_dict['dfpt']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['dfpt']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['dfpt']['job_info'])
+
+        self.job_recover_info = JobProcDesc(
+            nodes=self.job_info.nodes,
+            ntasks=self.job_info.ntasks,
+            time=self.job_info.time,
+            ni=self.job_info.ni,
+            nk=self.job_info.nk,
+        )
+        if self.job_recover_info.ni is not None:
+            self.job_recover_info.ntasks /= self.job_recover_info.ni
+            self.job_recover_info.ntasks = int(self.job_recover_info.ntasks)
+            self.job_recover_info.ni = None
+
+    def set_inputs_str(self):
+        # Base. 
+        input_dfpt_dict = {
+            'namelists': {
+                'inputph': {
+                    'outdir': "'./tmp'",
+                    'prefix': "'struct'",
+                    'ldisp': '.true.',
+                    'nq1': self.input_dict['dfpt']['qdim'][0],
+                    'nq2': self.input_dict['dfpt']['qdim'][1],
+                    'nq3': self.input_dict['dfpt']['qdim'][2],
+                    'fildyn': "'struct.dyn'",
+                    'fildvscf': "'dvscf'",
+                }
+            }
+        }
+
+        # Additions.
+        #override or extra. 
+        args_dict = self.input_dict['dfpt']['args']
+        args_type = self.input_dict['dfpt']['args_type']
+        input_dfpt_dict = self.input.update_qe_args_dict(
+            args_dict=args_dict,
+            args_type=args_type,
+            qedict_to_update=input_dfpt_dict
+        )
+
+        input_dfpt_recover_dict = input_dfpt_dict.copy()
+        input_dfpt_recover_dict['namelists']['inputph']['recover'] = '.true.'
+
+        # Get inputs.
+        self.input_dfpt: str = QePwInputFile.write_general(input_dfpt_dict)
+        self.input_dfpt_recover: str = QePwInputFile.write_general(input_dfpt_recover_dict)
+
+    def set_jobs_str(self):
         self.jobs = [
             'job_dfpt.sh',
         ]
 
-        self.input_dfpt = \
-f'''&INPUTPH
-outdir='./tmp'
-prefix='struct'
-ldisp=.true.
-nq1={self.input.dfpt.qgrid[0]}
-nq2={self.input.dfpt.qgrid[1]}
-nq3={self.input.dfpt.qgrid[2]}
-tr2_ph={self.input.dfpt.conv_threshold}
-fildyn='struct.dyn'
-fildvscf='dvscf'
-{self.input.dfpt.extra_args if self.input.dfpt.extra_args is not None else ""}
-/
-'''
-        self.input_dfpt_recover = \
-f'''&INPUTPH
-outdir='./tmp'
-prefix='struct'
-ldisp=.true.
-nq1={self.input.dfpt.qgrid[0]}
-nq2={self.input.dfpt.qgrid[1]}
-nq3={self.input.dfpt.qgrid[2]}
-tr2_ph={self.input.dfpt.conv_threshold}
-fildyn='struct.dyn'
-fildvscf='dvscf'
-recover=.true.
-{self.input.dfpt.extra_args if self.input.dfpt.extra_args is not None else ""}
-/
-'''
-        dfpt_recover_job_desc = JobProcDesc(
-            nodes=self.input.dfpt.job_desc.nodes,
-            ntasks=self.input.dfpt.job_desc.ntasks,
-            time=self.input.dfpt.job_desc.time,
-            ni=self.input.dfpt.job_desc.ni,
-            nk=self.input.dfpt.job_desc.nk,
-        )
-        if dfpt_recover_job_desc.ni:
-            dfpt_recover_job_desc.ntasks /= dfpt_recover_job_desc.ni
-            dfpt_recover_job_desc.ntasks = int(dfpt_recover_job_desc.ntasks)
-
         self.job_dfpt = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.dfpt.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.dfpt.job_desc)}ph.x {self.input.scheduler.get_sched_mpi_infix(self.input.dfpt.job_desc)} < dfpt.in &> dfpt.in.out  
-{self.input.scheduler.get_sched_mpi_prefix(dfpt_recover_job_desc)}ph.x {self.input.scheduler.get_sched_mpi_infix(dfpt_recover_job_desc, add_ni_if_present=False)} < dfpt_recover.in &> dfpt_recover.in.out  
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}ph.x {self.scheduler.get_sched_mpi_infix(self.job_info)} < dfpt.in &> dfpt.in.out  
+{self.scheduler.get_sched_mpi_prefix(self.job_recover_info)}ph.x {self.scheduler.get_sched_mpi_infix(self.job_recover_info)} < dfpt_recover.in &> dfpt_recover.in.out  
 
 python3 ./create_save.py
 '''
@@ -106,10 +131,6 @@ python3 ./create_save.py
             os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
-        os.system('rm -rf dfpt_start.in')
-        os.system('rm -rf dfpt_start.in.out')
-        os.system('rm -rf dfpt_end.in')
-        os.system('rm -rf dfpt_end.in.out')
         os.system('rm -rf dfpt*.in')
         os.system('rm -rf dfpt*.in.out')
         os.system('rm -rf create_save.py')

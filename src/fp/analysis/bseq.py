@@ -37,7 +37,7 @@ class BseqResult:
     def get_Qpts(self):
         kdim = self.input.bseq.Qdim
         self.Qpts = Kgrid(
-            atoms=self.input.atoms,
+            atoms_input=self.input.atoms,
             kdim=kdim,
             qshift=(0.0, 0.0, 0.0),
             is_reduced=False,

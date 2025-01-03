@@ -1,8 +1,10 @@
 #region: Modules.
 from fp.inputs.input_main import Input
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
 import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.
@@ -18,54 +20,77 @@ class ScfJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_scf: str = \
-f'''&CONTROL
-outdir='./tmp'
-prefix='struct'
-pseudo_dir='./pseudos'
-calculation='scf'
-tprnfor=.true.
-{self.input.scf.extra_control_args if self.input.scf.extra_control_args is not None else ""}
-/
+    def set_job_info(self):
+        if isinstance(self.input_dict['scf']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['scf']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['scf']['job_info'])
 
-&SYSTEM
-ibrav=0
-ntyp={self.input.atoms.get_ntyp()}
-nat={self.input.atoms.get_nat()}
-!nbnd={self.input.scf.num_val_bands}
-ecutwfc={self.input.scf.ecutwfc}
-{"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
-{"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.scf.extra_system_args if self.input.scf.extra_system_args is not None else ""}
-/
+    def set_inputs_str(self):
+        #Base. 
+        input_scf_dict: dict = {
+            'namelists': {
+                'control': {
+                    'outdir': './tmp',
+                    'prefix': 'struct',
+                    'pseudo_dir': './pseudos',
+                    'calculation': 'scf',
+                    'tprnfor': True,
+                },
+                'system': {
+                    'ibrav': IbravType(self.input_dict).get_idx(),
+                    'ntyp': self.input.atoms.get_ntyp(),
+                    'nat': self.input.atoms.get_nat(),
+                    'ecutwfc': self.input_dict['scf']['cutoff'],
+                },
+                'electrons': {},
+                'ions': {},
+                'cell': {},
+            },
+            'blocks': {
+                'atomic_species': self.input.atoms.get_qe_scf_atomic_species(),
+                'cell_parameters': self.input.atoms.get_qe_scf_cell(),
+                'atomic_positions': self.input.atoms.get_qe_scf_atomic_positions(),
+                'kpoints': self.input_dict['scf']['kdim'],
+            },
+            'kpoints_type': 'automatic',   # Options are 'automatic', 'crystal' and 'crystal_b'. 
+            'cell_units': self.input_dict['atoms']['write_cell_units'],
+            'position_units': self.input_dict['atoms']['write_position_units'],
+        }
 
-&ELECTRONS
-{self.input.scf.extra_electrons_args if self.input.scf.extra_electrons_args is not None else ""}
-/
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            input_scf_dict['namelists']['system']['noncolin'] = True
+            input_scf_dict['namelists']['system']['lspinorb'] = True
+        #override or extra. 
+        args_dict = self.input_dict['scf']['args']
+        args_type = self.input_dict['scf']['args_type']
+        input_scf_dict = self.input.update_qe_args_dict(
+            args_dict=args_dict,
+            args_type=args_type,
+            qedict_to_update=input_scf_dict
+        )
 
-&IONS
-/
+        # Get string. 
+        self.input_scf: str = QePwInputFile(input_scf_dict, self.input_dict).get_input_str()
 
-&CELL
-/
-
-ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species()}
-
-CELL_PARAMETERS angstrom
-{self.input.atoms.get_scf_cell()}
-
-ATOMIC_POSITIONS angstrom 
-{self.input.atoms.get_qe_scf_atomic_positions()}
-
-{self.input.scf.get_kgrid()}
-'''
+    def set_jobs_str(self):
         self.job_scf: str = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.scf.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.scf.job_desc)}pw.x {self.input.scheduler.get_sched_mpi_infix(self.input.scf.job_desc)} < scf.in &> scf.in.out
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_info)} < scf.in &> scf.in.out
 
 cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
 '''
@@ -102,12 +127,6 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
         
         os.system('rm -rf ./tmp')
         os.system('rm -rf scf.in.out')
-        os.system('rm -rf uc_*.txt')
-        os.system('rm -rf sc_*.txt')
         os.system('rm -rf scf.xml')
-        os.system('rm -rf bandpath.json')
-        os.system('rm -rf kgrid.inp kgrid.log kgrid.out')
-        # os.system('rm -rf *.xsf')
-        os.system('rm -rf ONCVPSP')
         os.system('rm -rf pseudos')
 #endregion

@@ -108,7 +108,7 @@ class XctphPlot:
                         z_idx/kgrid_size[2],
                     ]).reshape(1, 3)
                     kpt_idx = find_kpt(kpt, kpts_flat)[0]
-                    if kpt_idx==None or kpt_idx<0:
+                    if kpt_idx is None or kpt_idx<0:
                         raise Exception(f'kpt_idx is not valid: {kpt_idx}')
                     xctph_gridded[x_idx, y_idx, z_idx] = xctph_values[kpt_idx]
 

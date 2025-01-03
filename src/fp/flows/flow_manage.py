@@ -17,38 +17,33 @@ class FlowManage:
     def __init__(
         self,
         list_of_steps,
-        is_fr=False,    # Is fully relativistic for the pseudopotentials?
     ):
         self.list_of_steps: list = list_of_steps
-        self.is_fr: bool = is_fr
 
     @staticmethod
-    def create_pseudos(atoms: Atoms, is_fr: bool=False, xc_type: str='pbe'):
+    def create_pseudos(atoms: Atoms, is_fr: bool=False, xc_type: str='pbe', override_files: dict=None):
+        # Flags. 
         sr_fr_str = 'fr' if is_fr else 'sr'
 
+        # Directories. 
         pkg_dir = os.path.dirname(find_spec('fp').origin)
         pseudo_dir = pkg_dir + f'/data/pseudos/qe/{sr_fr_str}_{xc_type}'
-
         os.system('mkdir -p ./pseudos')
 
+        # Copy pseudos.
         symbols = atoms.get_chemical_symbols()
-
-        # Debug file. 
-        os.system('touch debug_log.txt && echo "" > debug_log.txt')
         for sym in symbols:
             source_file = pseudo_dir + f'/{sym}.upf'
             dest_file = './pseudos' + f'/{sym}.upf'
             os.system(f'cp {source_file} {dest_file}')
-            
-            # Debugging. 
-            debug_str = f'cp {source_file} {dest_file}'
-            os.system(f'echo "{debug_str}" >> debug_log.txt')
 
-    def create(self):
+        # Override pseudos.
+        if override_files is not None:
+            for item in override_files:
+                os.system(f'cp {item["source_fileloc"]} ./pseudos/{item["dest_filename"]}')
+
+    def create_jobs(self):
         assert len(self.list_of_steps)>=1, 'Number of steps/jobs should be greater than 0.'
-
-        # Add the pseudopotential files.
-        self.create_pseudos(self.list_of_steps[0].input.atoms.atoms, self.is_fr)
 
         for step in self.list_of_steps:
             step.create()
@@ -93,9 +88,9 @@ class FlowManage:
         output = \
 f'''#!/usr/bin/env python3
 
-from fp.flows import FlowManage
+from fp.flows.flow_manage import FlowManage
 import os
-from fp.io import *
+from fp.io.pkl import load_obj
 
 start_job='{start_job}'
 stop_job='{stop_job}'
@@ -106,9 +101,9 @@ flow.run(total_time=0, start_job=start_job, stop_job=stop_job)
 
         return output 
 
-    def create_job_all_script(self, filename, start_job, stop_job, flowfile_to_read='flowmanage.pkl'):
+    def create_job_all_script(self, start_job, stop_job, flowfile_to_read='flowmanage.pkl'):
         write_str_2_f(
-            filename, 
+            'job_all.sh', 
             self.get_job_all_script(
                 start_job, 
                 stop_job, 
@@ -116,11 +111,25 @@ flow.run(total_time=0, start_job=start_job, stop_job=stop_job)
             )
         )
 
-    def remove(self, pkl_too=False):
+        # Write the run script too that wraps around the above script. 
+        write_str_2_f(
+            'runall.sh',
+f'''#!/bin/bash
+
+job_all.sh &> job_all.out &
+'''
+        )
+
+    def remove(self, pkl=False, job_all=False, interactive=False, fmt_files=True, xsf=False):
         for step in self.list_of_steps:
             step.remove()
 
-        if pkl_too:
-            os.system('rm -rf *.pkl')
+        if pkl: os.system('rm -rf *.pkl')
+        if job_all: os.system('rm -rf ./job_all* ./runall.sh')
+        if interactive: os.system('rm -rf ./job_interactive.sh')
+        if fmt_files: os.system('rm -rf *.fmt')
+        if xsf: os.system('rm -rf *.xsf')
+
+        
                      
 #endregion

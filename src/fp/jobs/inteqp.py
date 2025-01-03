@@ -1,7 +1,11 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.jobs.bgw import BgwInputFile
 #endregion
 
 #region: Variables.
@@ -17,28 +21,57 @@ class InteqpJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_inteqp = \
-f'''number_val_bands_coarse {int(self.input.inteqp.val_bands_coarse)}
-number_cond_bands_coarse {int(self.input.inteqp.cond_bands_coarse)}
-degeneracy_check_override
+    def set_job_info(self):
+        if isinstance(self.input_dict['inteqp']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['inteqp']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['inteqp']['job_info'])
 
-number_val_bands_fine {int(self.input.inteqp.val_bands_fine)}
-number_cond_bands_fine {int(self.input.inteqp.cond_bands_fine)}
+    def set_inputs_str(self):
+        # Base.
+        input_inteqp_dict: dict = {
+            'maps': {
+                'number_val_bands_coarse': self.input_dict['inteqp']['num_val_bands'],
+                'number_cond_bands_coarse': self.input_dict['dftelbands']['num_cond_bands'],
+                'number_val_bands_fine': self.input_dict['inteqp']['num_val_bands'] - 1,
+                'number_cond_bands_fine': self.input_dict['dftelbands']['num_cond_bands'],
+                'degeneracy_check_override': '',
+                'use_symmetries_coarse_grid': '',
+                'no_symmetries_fine_grid': '',
+            },
+        }
 
-use_symmetries_coarse_grid
-no_symmetries_fine_grid
-{self.input.inteqp.extra_args if self.input.inteqp.extra_args is not None else ""}
-'''
-        
+        # Additions.
+        args_dict = self.input_dict['inteqp']['args']
+        args_type = self.input_dict['inteqp']['args_type']
+        input_inteqp_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_inteqp_dict
+        )
+
+        # Write.
+        self.input_inteqp: str = BgwInputFile.write_general(input_inteqp_dict)
+
+    def set_jobs_str(self):
         self.job_inteqp = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.inteqp.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-ln -sf {self.input.inteqp.wfn_co_link} ./WFN_co 
-ln -sf {self.input.inteqp.wfn_fi_link} ./WFN_fi 
+ln -sf {self.input_dict['inteqp']['wfnco_link']} ./WFN_co 
+ln -sf {self.input_dict['inteqp']['wfnfi_link']} ./WFN_fi 
 ln -sf ./eqp1.dat ./eqp_co.dat 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.inteqp.job_desc)}inteqp.cplx.x &> inteqp.inp.out 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}inteqp.cplx.x &> inteqp.inp.out 
 mv bandstructure.dat bandstructure_inteqp.dat 
 '''
 

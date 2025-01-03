@@ -1,7 +1,11 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.jobs.bgw import BgwInputFile
 #endregion
 
 #region: Variables.
@@ -17,34 +21,56 @@ class EpsilonJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_epsilon = \
-f'''# Qpoints 
-{self.input.epsilon.get_qgrid_str(self.input.wfn, self.input.wfnq.qshift)}
+    def set_job_info(self):
+        if isinstance(self.input_dict['eps']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['eps']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['eps']['job_info'])
 
-# Bands
-number_bands {self.input.epsilon.bands}
-degeneracy_check_override
+    def set_inputs_str(self):
+        # Base.
+        input_epsilon_dict: dict = {
+            'maps': {
+                'number_bands': self.input_dict['eps']['num_cond_bands'] + self.input_dict['total_valence_bands'],
+                'degeneracy_check_override': '',
+                'epsilon_cutoff': self.input_dict['eps']['cutoff'],
+                'use_wfn_hdf5': '',
+            },
+            'blocks': {
+                'qpoints': self.input.eps.get_qgrid_str(self.input.wfn, self.input_dict['wfnq']['qshift'])
+            }
+        }
 
-# G-Cutoff. 
-epsilon_cutoff {self.input.epsilon.cutoff}
+        # Additions.
+        args_dict = self.input_dict['eps']['args']
+        args_type = self.input_dict['eps']['args_type']
+        input_epsilon_dict = BgwInputFile.update_dict(
+            args_dict,
+            args_type,
+            input_epsilon_dict
+        )
 
-# Options
+        # Write.
+        self.input_epsilon: str = BgwInputFile.write_general(input_epsilon_dict)
 
-# IO. 
-use_wfn_hdf5
-
-# Extra args.
-{self.input.epsilon.extra_args if self.input.epsilon.extra_args is not None else ""}
-'''
-        
+    def set_jobs_str(self):
         self.job_epsilon = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.epsilon.job_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-ln -sf {self.input.epsilon.wfn_link} ./WFN.h5 
-ln -sf {self.input.epsilon.wfnq_link} ./WFNq.h5 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.epsilon.job_desc)}epsilon.cplx.x &> epsilon.inp.out 
+ln -sf {self.input_dict['eps']['wfnlink']} ./WFN.h5 
+ln -sf {self.input_dict['eps']['wfnqlink']} ./WFNq.h5 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}epsilon.cplx.x &> epsilon.inp.out 
 '''
 
         self.jobs = [

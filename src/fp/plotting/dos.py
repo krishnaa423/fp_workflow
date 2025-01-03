@@ -37,7 +37,7 @@ class DosPlot:
         ax.set_xlabel('Energy (eV)')
         ax.set_ylabel('DOS')
         ax.set_title('DOS')
-        if ylim is not None: ax.set_ylim(bottom=ylim[0], top=ylim[1])
+        if ylim  is not None: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         fig.savefig(save_filename)
         if show: plt.show()
 #endregion

@@ -2,7 +2,7 @@
 import subprocess
 import time 
 import os 
-from fp.inputs.input_main import *
+from fp.inputs.input_main import Input
 #endregion
 
 #region: Variables.
@@ -18,7 +18,7 @@ def run_and_wait_command(script, input: Input, total_time, skip_scheduler=False)
     print(f'Starting {script}.', flush=True)
     ps_result = None
     if skip_scheduler:
-        ps_result = subprocess.run(f'{input.scheduler.get_sched_submit()}{script}')
+        ps_result = subprocess.run(f'{scheduler.get_sched_submit()}{script}')
     else:
         ps_result = subprocess.run(f'{script}')
     stop_time = time.time()

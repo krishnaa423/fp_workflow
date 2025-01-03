@@ -1,7 +1,8 @@
 #region: Modules.
-from fp.inputs.input_main import *
-from fp.io.strings import *
-from fp.flows.run import *
+from fp.inputs.input_main import Input
+from fp.io.strings import write_str_2_f
+from fp.flows.run import run_and_wait_command
+import os 
 #endregion
 
 #region: Variables.
@@ -25,7 +26,7 @@ prefix='struct'
 pseudo_dir='./pseudos'
 calculation='bands'
 tprnfor=.true. 
-{self.input.wannier.extra_control_args if self.input.wannier.extra_control_args is not None else ""}
+{self.input.wannier.extra_control_args if self.input.wannier.extra_control_args  is not None else ""}
 /
 
 &SYSTEM
@@ -36,11 +37,11 @@ nbnd={self.input.wannier.num_bands}
 ecutwfc={self.input.scf.ecutwfc}
 {"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
 {"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wannier.extra_system_args if self.input.wannier.extra_system_args is not None else ""}
+{self.input.wannier.extra_system_args if self.input.wannier.extra_system_args  is not None else ""}
 /
 
 &ELECTRONS
-{self.input.wannier.extra_electrons_args if self.input.wannier.extra_electrons_args is not None else ""}
+{self.input.wannier.extra_electrons_args if self.input.wannier.extra_electrons_args  is not None else ""}
 /
 
 &CELL
@@ -63,9 +64,9 @@ ATOMIC_POSITIONS angstrom
         
         self.job_wfnwan = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.wannier.job_wfnwan_desc)}
+{self.scheduler.get_sched_header(self.input.wannier.job_wfnwan_desc)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wfnwan_desc)}pw.x < wfnwan.in &> wfnwan.in.out 
+{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wfnwan_desc)}pw.x < wfnwan.in &> wfnwan.in.out 
 '''
         
         self.input_wan = \
@@ -97,9 +98,9 @@ write_u_matrices = .true.
         
         self.job_wanpp = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.wannier.job_wan_desc)}
+{self.scheduler.get_sched_header(self.input.wannier.job_wan_desc)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.input.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} -pp wan &> wan.win.pp.out
+{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} -pp wan &> wan.win.pp.out
 '''
         
         self.input_pw2wan = \
@@ -116,16 +117,16 @@ scdm_proj=.true.
         
         self.job_pw2wan = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.wannier.job_pw2wan_desc)}
+{self.scheduler.get_sched_header(self.input.wannier.job_pw2wan_desc)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.wannier.job_pw2wan_desc)}pw2wannier90.x < pw2wan.in &> pw2wan.in.out 
+{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_pw2wan_desc)}pw2wannier90.x < pw2wan.in &> pw2wan.in.out 
 '''
         
         self.job_wan = \
 f'''#!/bin/bash
-{self.input.scheduler.get_sched_header(self.input.wannier.job_wan_desc)}
+{self.scheduler.get_sched_header(self.input.wannier.job_wan_desc)}
 
-{self.input.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.input.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} wan  &> wan.win.out 
+{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} wan  &> wan.win.out 
 '''
         
         self.jobs = [

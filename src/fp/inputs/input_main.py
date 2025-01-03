@@ -1,107 +1,80 @@
-#region: Modules.
-from fp.inputs.atoms import *
-from fp.inputs.scf import *
-from fp.inputs.relax import *
-from fp.inputs.dfpt import *
-from fp.inputs.phbands import *
-from fp.inputs.phdos import *
-from fp.inputs.phmodes import *
-from fp.inputs.dos import *
-from fp.inputs.dftelbands import *
-from fp.inputs.kpdos import *
-from fp.inputs.wannier import *
-from fp.inputs.wfngeneral import *
-from fp.inputs.epw import *
-from fp.inputs.epsilon import *
-from fp.inputs.sigma import *
-from fp.inputs.inteqp import *
-from fp.inputs.kernel import *
-from fp.inputs.abs import *
-from fp.inputs.bseq import *
-from fp.inputs.esf import *
-from fp.inputs.xctph import *
-from fp.inputs.xctpol import *
+#region modules
+from fp.inputs.abs import PlotxctInput
+from fp.inputs.atoms import AtomsInput
+from fp.inputs.bseq import BseqInput
+from fp.inputs.dftelbands import DftelbandsInput
+from fp.inputs.epsilon import EpsilonInput
+from fp.inputs.epw import EpwInput
+from fp.inputs.phbands import PhbandsInput
+from fp.inputs.relax import RelaxInput
+from fp.inputs.scf import ScfInput
+from fp.inputs.sigma import SigmaInput
+from fp.inputs.wannier import WannierInput
+from fp.inputs.wfngeneral import WfnGeneralInput
+#endregions
 
-from fp.schedulers import *
-#endregion
+#region variables
+#endregions
 
-#region: Variables.
-#endregion
+#region functions
+#endregions
 
-#region: Functions.
-#endregion
-
-#region: Classes.
+#region classes
 class Input:
     def __init__(
         self,
-        scheduler: Scheduler,
-        atoms: AtomsInput,
-
-        relax: RelaxInput,
-        scf: ScfInput,
-
-        dfpt: DfptInput,
-        phbands: PhbandsInput,
-        phdos: PhdosInput,
-        phmodes: PhmodesInput,
-        
-        dos: DosInput,
-        dftelbands: DftelbandsInput,
-        kpdos: KpdosInput,
-        wannier: WannierInput,
-        
-        wfn: WfnGeneralInput,
-        epw: EpwInput,
-        wfnq: WfnGeneralInput,
-        wfnfi: WfnGeneralInput,
-        wfnqfi: WfnGeneralInput,
-        
-        epsilon: EpsilonInput,
-        sigma: SigmaInput,
-        inteqp: InteqpInput,
-        kernel: KernelInput,
-        absorption: AbsorptionInput,
-        plotxct: PlotxctInput,
-        bseq: BseqInput,
-        
-        xctph: XctPhInput,
-        esf: EsfInput,
-        xctpol: XctPolInput,
+        input_dict: dict=None,
+        atoms: AtomsInput=None,
+        relax: RelaxInput=None,
+        scf: ScfInput=None,
+        phbands: PhbandsInput=None,
+        dftelbands: DftelbandsInput=None,
+        wannier: WannierInput=None,
+        wfn: WfnGeneralInput=None,
+        epw: EpwInput=None,
+        wfnq: WfnGeneralInput=None,
+        wfnfi: WfnGeneralInput=None,
+        wfnqfi: WfnGeneralInput=None,
+        eps: EpsilonInput=None,
+        sig: SigmaInput=None,
+        plotxct: PlotxctInput=None,
+        bseq: BseqInput=None,
+        **kwargs,
     ):
-        self.scheduler: Scheduler = scheduler
-        self.atoms: AtomsInput = atoms 
-
-        self.relax: RelaxInput = relax 
+        self.input_dict: dict = input_dict
+        self.atoms: AtomsInput = atoms
+        self.relax: RelaxInput = relax
         self.scf: ScfInput = scf
-
-        self.dfpt: DfptInput = dfpt
         self.phbands: PhbandsInput = phbands
-        self.phdos: PhdosInput = phdos
-        self.phmodes: PhmodesInput = phmodes
-
-        self.dos: DosInput = dos
         self.dftelbands: DftelbandsInput = dftelbands
-        self.kpdos: KpdosInput = kpdos
         self.wannier: WannierInput = wannier
-        
         self.wfn: WfnGeneralInput = wfn
         self.epw: EpwInput = epw
         self.wfnq: WfnGeneralInput = wfnq
         self.wfnfi: WfnGeneralInput = wfnfi
         self.wfnqfi: WfnGeneralInput = wfnqfi
-
-        self.epsilon: EpsilonInput = epsilon
-        self.sigma: SigmaInput = sigma
-        self.inteqp: InteqpInput = inteqp
-        self.kernel: KernelInput = kernel
-        self.absorption: AbsorptionInput = absorption
+        self.eps: EpsilonInput = eps
+        self.sig: SigmaInput = sig
         self.plotxct: PlotxctInput = plotxct
         self.bseq: BseqInput = bseq
-        
-        self.xctph: XctPhInput = xctph
-        self.esf: EsfInput = esf
 
-        # self.pol: PolInput = pol
-        self.xctpol: XctPolInput = xctpol
-#endregion
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def update_qe_args_dict(self, args_dict: dict, args_type: str, qedict_to_update: dict):
+        if args_dict is not None:
+            if args_type=='override':
+                qedict_to_update = args_dict.copy()
+            if args_type=='extra':
+                if 'namelists' in args_dict:
+                    for key, value in args_dict['namelists'].items():
+                        if qedict_to_update.get('namelists') is None: qedict_to_update['namelists'] = {}
+                        if qedict_to_update.get('namelists', {}).get(key) is None: qedict_to_update['namelists'][key] = {}
+                        qedict_to_update['namelists'][key].update(args_dict['namelists'][key])
+                if 'blocks' in args_dict:
+                    if qedict_to_update.get('blocks') is None: qedict_to_update['blocks'] = {}
+                    qedict_to_update['blocks'].update(args_dict['blocks'])
+
+        return qedict_to_update
+
+#endregions

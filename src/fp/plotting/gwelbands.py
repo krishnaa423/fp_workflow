@@ -45,7 +45,7 @@ class GwelbandsPlot:
     def save_plot(self, save_filename, show=False, ylim=None, offset=None):
         # Get some data. 
         self.get_data()
-        if offset is not None: self.eqp += offset 
+        if offset  is not None: self.eqp += offset 
         path_special_points = self.fullgridflow.path_special_points
         path_segment_npoints = self.fullgridflow.path_segment_npoints
 

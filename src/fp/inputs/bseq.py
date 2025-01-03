@@ -1,9 +1,6 @@
 #region: Modules.
 import numpy as np 
-from fp.schedulers import *
-from fp.inputs.atoms import *
-from fp.inputs.kernel import *
-from fp.inputs.abs import *
+from fp.inputs.atoms import AtomsInput
 from fp.structure.kpts import Kgrid
 #endregion
 
@@ -17,14 +14,10 @@ from fp.structure.kpts import Kgrid
 class BseqInput:
     def __init__(
         self,
-        atoms,
-        Qdim,
-        job_desc
+        input_dict: dict,
     ):
-        self.atoms: AtomsInput = atoms
-        self.Qdim: np.ndarray = np.array(Qdim).astype(dtype='i4')
-        self.job_desc: JobProcDesc = job_desc
+        self.input_dict: dict = input_dict
 
-    def get_Qpts(self):
-        return Kgrid(self.atoms, self.Qdim, is_reduced=False).get_kpts()
+    def get_Qpts(self, atoms_input: AtomsInput):
+        return Kgrid(atoms_input, self.input_dict['bseq']['Qdim'], is_reduced=False).get_kpts()
 #endregion

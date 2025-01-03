@@ -64,7 +64,7 @@
 #         self.observers = []
 #         self.nsteps = 0
 
-#         if trajectory is not None:
+#         if trajectory  is not None:
 #             if isinstance(trajectory, str):
 #                 trajectory = PickleTrajectory(trajectory, 'w', atoms)
 #             self.attach(trajectory)
@@ -154,14 +154,14 @@
 #         fmax = sqrt((forces**2).sum(axis=1).max())
 #         e = self.atoms.get_potential_energy()
 #         T = time.localtime()
-#         if self.logfile is not None:
+#         if self.logfile  is not None:
 #             name = self.__class__.__name__
 #             self.logfile.write('%s: %3d  %02d:%02d:%02d %15.6f %12.4f\n' %
 #                                (name, self.nsteps, T[3], T[4], T[5], e, fmax))
 #             self.logfile.flush()
         
 #     def dump(self, data):
-#         if rank == 0 and self.restart is not None:
+#         if rank == 0 and self.restart  is not None:
 #             pickle.dump(data, open(self.restart, 'wb'), protocol=2)
 
 #     def load(self):
@@ -316,7 +316,7 @@
 #         #         n_negative
 #         #     )
 #         #     print(msg, flush=True)
-#         #     if self.logfile is not None:
+#         #     if self.logfile  is not None:
 #         #         self.logfile.write(msg)
 #         #         self.logfile.flush()
 
@@ -421,7 +421,7 @@
 
 #     # def dump(self, data):
 #     #     # # TODO: 
-#     #     # if rank == 0 and self.restart is not None:
+#     #     # if rank == 0 and self.restart  is not None:
 #     #     #     pickle.dump(data, open(self.restart, 'wb'), protocol=2)
 #     #     self.dump_hdf5(data)
 
