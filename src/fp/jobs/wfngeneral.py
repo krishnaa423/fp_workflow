@@ -189,9 +189,9 @@ f'''#!/bin/bash
 '''
 
         self.jobs = [
-            'job_wfn.sh',
-            'job_wfn_pw2bgw.sh',
-            'job_parabands.sh',
+            './job_wfn.sh',
+            './job_wfn_pw2bgw.sh',
+            './job_parabands.sh',
         ]
 
     def create(self):
@@ -203,9 +203,8 @@ f'''#!/bin/bash
         write_str_2_f(f'job_parabands.sh', self.job_parabands)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_wfn.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_wfn_pw2bgw.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_parabands.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 
@@ -383,8 +382,8 @@ wfn2hdf.x BIN WFNq_coo WFNq_coo.h5
         write_str_2_f(f'job_wfnq_pw2bgw.sh', self.job_wfnq_pw2bgw)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_wfnq.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_wfnq_pw2bgw.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 
@@ -548,8 +547,8 @@ wfn2hdf.x BIN WFN_fii WFN_fii.h5
         write_str_2_f(f'job_wfnfi_pw2bgw.sh', self.job_wfnfi_pw2bgw)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_wfnfi.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_wfnfi_pw2bgw.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 
@@ -713,8 +712,8 @@ wfn2hdf.x BIN WFNq_fii WFNq_fii.h5
         write_str_2_f(f'job_wfnqfi_pw2bgw.sh', self.job_wfnqfi_pw2bgw)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_wfnqfi.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_wfnqfi_pw2bgw.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

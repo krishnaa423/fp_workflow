@@ -41,14 +41,15 @@ echo "Done printing\n"
 '''
 
         self.jobs = [
-            'job_esfxctph.sh',
+            './job_esfxctph.sh',
         ]
 
     def create(self):
         write_str_2_f('job_esfxctph.sh', self.job_esfxctph)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_esfxctph.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

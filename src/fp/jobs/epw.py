@@ -95,7 +95,7 @@ cp ./tmp/*epb* ./save/
 '''
         
         self.jobs = [
-            'job_epw.sh',
+            './job_epw.sh',
         ]
 
     def create(self):
@@ -103,7 +103,8 @@ cp ./tmp/*epb* ./save/
         write_str_2_f('job_epw.sh', self.job_epw)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_epw.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

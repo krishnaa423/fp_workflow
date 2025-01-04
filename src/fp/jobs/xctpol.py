@@ -43,7 +43,7 @@ python3 script_xctpol.py &> script_xctpol.out
 '''
 
         self.jobs = [
-            'job_xctpol.sh',
+            './job_xctpol.sh',
         ]
 
     def create(self):
@@ -51,7 +51,8 @@ python3 script_xctpol.py &> script_xctpol.out
         write_str_2_f('job_xctpol.sh', self.job_xctpol)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_xctpol.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

@@ -141,8 +141,8 @@ wfn2hdf.x BIN WFN_dftelbands WFN_dftelbands.h5
 '''
         
         self.jobs = [
-            'job_dftelbands.sh',
-            'job_dftelbands_pw2bgw.sh',
+            './job_dftelbands.sh',
+            './job_dftelbands_pw2bgw.sh',
         ]
 
     def create(self):

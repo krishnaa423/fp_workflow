@@ -69,7 +69,7 @@ f'''#!/bin/bash
 {self.scheduler.get_sched_mpi_prefix(self.job_info)}dynmat.x < dynmat.in &> dynmat.in.out 
 '''
         self.jobs = [
-            'job_dynmat.sh',
+            './job_dynmat.sh',
         ]
 
     def create(self):
@@ -77,7 +77,8 @@ f'''#!/bin/bash
         write_str_2_f('job_dynmat.sh', self.job_dynmat)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_dynmat.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

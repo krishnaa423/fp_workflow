@@ -70,7 +70,7 @@ f'''#!/bin/bash
 '''
         
         self.jobs = [
-            'job_kpdos.sh',
+            './job_kpdos.sh',
         ]
 
     def create(self):
@@ -78,7 +78,8 @@ f'''#!/bin/bash
         write_str_2_f('job_kpdos.sh', self.job_kpdos)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_kpdos.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

@@ -74,7 +74,7 @@ ln -sf {self.input_dict['eps']['wfnqlink']} ./WFNq.h5
 '''
 
         self.jobs = [
-            'job_epsilon.sh',
+            './job_epsilon.sh',
         ]
 
     def create(self):
@@ -82,7 +82,8 @@ ln -sf {self.input_dict['eps']['wfnqlink']} ./WFNq.h5
         write_str_2_f('job_epsilon.sh', self.job_epsilon)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_epsilon.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 
@@ -112,4 +113,5 @@ ln -sf {self.input_dict['eps']['wfnqlink']} ./WFNq.h5
         os.system('rm -rf epsilon.inp.out')
         
         os.system('rm -rf checkbz.log')
+
 #endregion

@@ -35,7 +35,7 @@ class BseqJob:
             self.job_info = JobProcDesc(**self.input_dict['bseq']['job_info'])
 
         self.jobs = [
-            'job_bseq.sh',
+            './job_bseq.sh',
         ]
 
     def get_plotxct_strings(self, Qpt):
@@ -325,7 +325,8 @@ done
         
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_bseq.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

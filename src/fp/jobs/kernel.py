@@ -80,7 +80,7 @@ ln -sf {self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
 '''
 
         self.jobs = [
-            'job_kernel.sh',
+            './job_kernel.sh',
         ]
 
     def create(self):
@@ -88,7 +88,8 @@ ln -sf {self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
         write_str_2_f('job_kernel.sh', self.job_kernel)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_kernel.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

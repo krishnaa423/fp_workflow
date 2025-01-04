@@ -116,8 +116,8 @@ f'''#!/bin/bash
 {self.scheduler.get_sched_mpi_prefix(self.job_info)}dos.x -pd .true. < dos.in &> dos.in.out 
 '''
         self.jobs = [
-            'job_wfndos.sh',
-            'job_dos.sh'
+            './job_wfndos.sh',
+            './job_dos.sh'
         ]
 
     def create(self):

@@ -77,7 +77,7 @@ ln -sf {self.input_dict['sig']['wfninner_link']} ./WFN_inner.h5
 '''
         
         self.jobs = [
-            'job_sigma.sh',
+            './job_sigma.sh',
         ]
 
     def create(self):
@@ -85,7 +85,8 @@ ln -sf {self.input_dict['sig']['wfninner_link']} ./WFN_inner.h5
         write_str_2_f('job_sigma.sh', self.job_sigma)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_sigma.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

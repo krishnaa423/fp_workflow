@@ -51,27 +51,37 @@ class FlowManage:
         for step in self.list_of_steps:
             step.create()
 
-    def run(self, total_time=0.0, start_job=None, stop_job=None):
+    def run(self, total_time=0.0, start_idx=None, stop_idx=None):
         assert len(self.list_of_steps)>=1 , 'List of steps must have atleast one element.'
         
         total_time: float = total_time
 
-        job_list = []
+        job_info_string = ''
+        job_list= []
+        dir_list=  []
+        job_idx_counter = 0
         for step in self.list_of_steps:
-            for job in step.jobs:
-                job_list.append(job)
+            for job_info in step.jobs:
+                if isinstance(job_info, list): # Has directory and then script.
+                    dir_list.append(job_info[0])
+                    job_list.append(job_info[1])
+                    job_info_string += f'#idx: {job_idx_counter}, dir: {job_info[0]}, script: {job_info[1]}\n'
+                else:
+                    dir_list.append('./')
+                    job_list.append(job_info)
+                    job_info_string += f'#idx: {job_idx_counter}, dir: {'./'}, script: {job_info}\n'
+                job_idx_counter += 1
 
-        print(f'job_list: {job_list}\n\n\n', flush=True)
+        print(f'JOB_INFO:\n{job_info_string}\n\n', flush=True)
 
-        start_idx = job_list.index(start_job) if start_job else 0
-        stop_idx = job_list.index(stop_job)+1 if stop_job else len(job_list)
-
+        start_idx = start_idx if start_idx is not None else 0
+        stop_idx = stop_idx if stop_idx is not None else (job_idx_counter - 1)
         print(f'start_idx: {start_idx}, start_job: {job_list[start_idx]}\n\n\n', flush=True)
-        print(f'stop_idx: {stop_idx-1}, stop_job: {job_list[stop_idx-1]}\n\n\n', flush=True)
+        print(f'stop_idx: {stop_idx}, stop_job: {job_list[stop_idx]}\n\n\n', flush=True)
 
         total_time = 0.0
-        for job in job_list[start_idx:stop_idx]:
-            total_time = run_and_wait_command(f'./{job}', self.list_of_steps[0].input, total_time)
+        for dest_dir, job in zip(dir_list[start_idx:stop_idx+1], job_list[start_idx:stop_idx+1]):
+            total_time = run_and_wait_command(f'{job}', self.list_of_steps[0].input, total_time, dest_dir=dest_dir)
 
         # Write the total workflow run time. 
         print(f'Done whole worflow in {total_time:15.10f} seconds.\n\n', flush=True)
@@ -82,11 +92,27 @@ class FlowManage:
 
     def get_job_all_script(
             self, 
-            start_job, 
-            stop_job, 
+            start_idx=None, 
+            stop_idx=None, 
             flowfile='flowmanage.pkl',
         ):
         assert len(self.list_of_steps)>=1, 'There should be atleast one job step.'
+
+        job_info_string = ''
+        job_list= []
+        dir_list=  []
+        job_idx_counter = 0
+        for step in self.list_of_steps:
+            for job_info in step.jobs:
+                if isinstance(job_info, list): # Has directory and then script.
+                    dir_list.append(job_info[0])
+                    job_list.append(job_info[1])
+                    job_info_string += f'#idx: {job_idx_counter}, dir: {job_info[0]}, script: {job_info[1]}\n'
+                else:
+                    dir_list.append('./')
+                    job_list.append(job_info)
+                    job_info_string += f'#idx: {job_idx_counter}, dir: {'./'}, script: {job_info}\n'
+                job_idx_counter += 1
 
         output = \
 f'''#!/usr/bin/env python3
@@ -95,21 +121,24 @@ from fp.flows.flow_manage import FlowManage
 import os
 from fp.io.pkl import load_obj
 
-start_job='{start_job}'
-stop_job='{stop_job}'
+# List of jobs:
+{job_info_string}
+
+start_idx={start_idx if start_idx is not None else 0}
+stop_idx={stop_idx if stop_idx is not None else job_idx_counter-1}
 
 flow: FlowManage = load_obj('{flowfile}')
-flow.run(total_time=0, start_job=start_job, stop_job=stop_job)
+flow.run(total_time=0, start_idx=start_idx, stop_idx=stop_idx)
 '''
 
         return output 
 
-    def create_job_all_script(self, start_job, stop_job, flowfile_to_read='flowmanage.pkl'):
+    def create_job_all_script(self, start_idx=None, stop_idx=None, flowfile_to_read='flowmanage.pkl'):
         write_str_2_f(
             'job_all.sh', 
             self.get_job_all_script(
-                start_job, 
-                stop_job, 
+                start_idx, 
+                stop_idx, 
                 flowfile_to_read,
             )
         )

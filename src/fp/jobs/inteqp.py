@@ -76,7 +76,7 @@ mv bandstructure.dat bandstructure_inteqp.dat
 '''
 
         self.jobs = [
-            'job_inteqp.sh',   
+            './job_inteqp.sh',   
         ]
 
     def create(self):
@@ -84,7 +84,8 @@ mv bandstructure.dat bandstructure_inteqp.dat
         write_str_2_f('job_inteqp.sh', self.job_inteqp)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_inteqp.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

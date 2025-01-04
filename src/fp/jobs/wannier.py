@@ -130,10 +130,10 @@ f'''#!/bin/bash
 '''
         
         self.jobs = [
-            'job_wfnwan.sh',
-            'job_wanpp.sh',
-            'job_pw2wan.sh',
-            'job_wan.sh',
+            './job_wfnwan.sh',
+            './job_wanpp.sh',
+            './job_pw2wan.sh',
+            './job_wan.sh',
         ]
 
     def create(self):
@@ -146,10 +146,8 @@ f'''#!/bin/bash
         write_str_2_f('job_wan.sh', self.job_wan)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_wfnwan.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_wanpp.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_pw2wan.sh', self.input, total_time)
-        total_time = run_and_wait_command('./job_wan.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

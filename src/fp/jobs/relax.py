@@ -16,6 +16,7 @@ from fp.io.strings import write_str_2_f
 from fp.io.pkl import load_obj
 from fp.inputs.atoms import AtomsInput
 from typing import List
+import os
 #endregions
 
 #region variables
@@ -50,11 +51,12 @@ class RelaxUpdater:
         if self.files is None: return
 
         for file in self.files:
-            pw_dict: dict = self.get_pw(file)
-            pw_dict['blocks']['cell_parameters'] = self.atoms_input.get_qe_scf_cell()
-            pw_dict['blocks']['atomic_positions'] = self.atoms_input.get_qe_scf_atomic_positions()
-            pw_writer = QePwInputFile(pw_dict, self.input_dict)
-            write_str_2_f(file, pw_writer.get_input_str())
+            if os.path.isfile(file):
+                pw_dict: dict = self.get_pw(file)
+                pw_dict['blocks']['cell_parameters'] = self.atoms_input.get_qe_scf_cell()
+                pw_dict['blocks']['atomic_positions'] = self.atoms_input.get_qe_scf_atomic_positions()
+                pw_writer = QePwInputFile(pw_dict, self.input_dict)
+                write_str_2_f(file, pw_writer.get_input_str())
     
 #endregions
 
@@ -74,6 +76,7 @@ class RelaxJob:
         self,
         input: Input,
     ):
+        
         self.input: Input = input
         self.input_dict: dict = self.input.input_dict
         self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
@@ -175,7 +178,7 @@ cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
 '''
     
         self.jobs = [
-            'job_relax.sh',
+            './job_relax.sh',
         ]
 
     def create(self):
@@ -184,7 +187,8 @@ cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
         write_str_2_f('update_from_relax.sh', update_from_relax_file_content)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_relax.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

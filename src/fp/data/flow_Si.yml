@@ -152,11 +152,12 @@ atoms:
   pseudos:
     # doping:
     #   - mixing_atoms: ['Si', 'Ag']
-    #     replacement_atom: ['Ag']
+    #     replacement_atom: 'Ag'
     #     fraction: 0.2
-    # - atom: 'Cs'
-    #   source_fileloc: './Cs-Na.upf'
-    #   dest_filename: 'Cs.upf'
+    # override:
+    #   - atom: 'Cs'
+    #     source_fileloc: './Cs-Na.upf'
+    #     dest_filename: 'Cs.upf'
 
 # paths. 
 path:
@@ -176,6 +177,14 @@ relax:
   args_type: 'extra'  # Options are 'override' or 'extra'
   args:
   job_info: 'single_task'
+  update_files: # Update relax output to these files if they exist.
+    - scf.in
+    - wfndos.in
+    - dftelbands.in
+    - wfn.in
+    - wfnq.in
+    - wfnfi.in
+    - wfnqfi.in
 
 # scf. 
 scf:
@@ -482,54 +491,54 @@ esd:
 
 # convergence.
 convergence:
+  add_to_job_list: false
+  copy_additional:    # glob patterns to copy.
+    - 'atoms.xsf'
+    # - 'read_cell_parameters.txt'
+    # - 'read_atomic_positions.txt'
   dft:
-    - cutoff: 10.0
-      kdim: [2, 2, 2]
-      job_info: 'single_task'
-    - cutoff: 20.0
-      kdim: [2, 2, 2]
-      job_info: 'single_task'
-    - cutoff: 20.0
-      kdim: [3, 3, 3]
-      job_info: 'single_task'
+    - scf:
+        cutoff: 10.0
+        kdim: [2, 2, 2]
+    - scf:
+        cutoff: 20.0
+        kdim: [2, 2, 2]
+  dfpt:
+    - scf:
+        kdim: [2, 2, 2]
+      dfpt:
+        qdim: [2, 2, 2]
+        conv_threshold: '1.0d-14'
+    - scf:
+        kdim: [2, 2, 2]
+      dfpt:
+        qdim: [2, 2, 2]
+        conv_threshold: '1.0d-16'
   gw:
-    - eps_cutoff: 5.0
-      sig_cutoff: 5.0
-      kdim: [2, 2, 2]
-      reuse:
-        dft:
-          idx: 0
-          inodes:
-            - './tmp'
-        gw:
-      job_info: 'single_task'
-    - eps_cutoff: 10.0
-      sig_cutoff: 10.0
-      kdim: [2, 2, 2]
-      reuse:
-        dft:
-          idx: 0
-          inodes:
-            - 'tmp'
-        gw:
-          idx: 0
-          inodes:
-            - 'WFN_coo.h5'
-            - 'WFNq_coo.h5'
-      job_info: 'single_task'
+    # - scf:
+    #     kdim: [2, 2, 2]
+    #   eps:
+    #     cutoff: 5.0
+    #   sig:
+    #     cutoff: 5.0
+    # - scf:
+    #     kdim: [2, 2, 2]
+    #   eps:
+    #     cutoff: 10.0
+    #   sig:
+    #     cutoff: 10.0
+    #   reuse:
+    #     turn_off_jobs:
+    #       - ScfJob
+    #       - WfnJob
+    #       - WfnqJob
+    #     copy_files:
+    #       - folder: gw
+    #         idx: 0
+    #         files:
+    #           - 'WFN_coo.h5'
+    #           - 'WFNq_coo.h5'
   bse:
-    - num_cond_bands:
-        coarse: 2
-        fine: 2
-      num_val_bands:
-        coarse: 2
-        fine: 2
-      reuse:
-        gw:
-          idx: 0
-          inodes:
-            - 'WFN_coo.h5'
-            - 'WFNq_coo.h5'
-            - 'WFN_fii.h5'
-            - 'WFNq_fii.h5'
-      job_info: 'single_task'
+    # - abs:
+    #     num_cond_bands: 2
+    #     num_val_bands: 2

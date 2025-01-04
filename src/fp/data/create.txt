@@ -26,6 +26,7 @@ from fp.jobs.abs import PlotxctJob
 from fp.jobs.bseq import BseqJob
 from fp.jobs.xctph import XctPhJob
 # from fp.jobs.xctpol import XctPolJob
+from fp.jobs.convergence import ConvergenceJob
 from ase import Atoms
 from ase.io import read, write
 import numpy as np
@@ -37,14 +38,13 @@ import os
 
 #region functions
 def main():
-    fullgridflow = FullGridFlow.from_yml('flow.yml')
-    flowmanage = fullgridflow.get_flowmanage([
-        # RelaxJob,
+    list_of_steps = [
+        RelaxJob,
         ScfJob,
         # ScfAbacusJob,
         # MdJob,
         # MdAbacusJob,
-        DfptJob,
+        # DfptJob,
         # PhfinitediffJob,
         # PhbandsJob,
         # PhdosJob,
@@ -54,35 +54,43 @@ def main():
         # DftelbandsJob,
         # KpdosJob,
         # WannierJob,
-        WfnJob,
-        EpwJob,
+        # WfnJob,
+        # EpwJob,
         # ElphJob,
-        WfnqJob,
+        # WfnqJob,
         # WfnfiJob,
         # WfnqfiJob,
-        EpsilonJob,
-        SigmaJob,
+        # EpsilonJob,
+        # SigmaJob,
         # InteqpJob,
-        KernelJob,
-        AbsorptionJob,
-        PlotxctJob,
-        BseqJob,
-        XctPhJob,
+        # KernelJob,
+        # AbsorptionJob,
+        # PlotxctJob,
+        # BseqJob,
+        # XctPhJob,
         # EsfJob,
         # XctPolJob,
         # SteJob,
         # EsdJob,
+        ConvergenceJob,
         ## VCA doping stuff. Can't for now, as there is a fractional electrons bug. 
         ## copy relax stuff. 
         ## supercell path. 
         ## pyscf, abacus, gpaw.
         ## understand pseudo generation. 
         ## debug the removing ./tmp issue.
-    ])
-    flowmanage.create_jobs()
-    flowmanage.create_job_all_script(start_job='job_scf.sh', stop_job='job_xctph.sh')
-    fullgridflow.create_interactive()
-    os.system('chmod u+x *.sh')
+    ]
+
+    FullGridFlow.create_from_list(
+        source_flowfile=None,
+        source_input_dict=FullGridFlow.from_yml('./flow.yml').input_dict,
+        list_of_steps=list_of_steps,
+        dest_directory='./',
+        create_interactive=True,
+        copy_additional=[],
+        # start_idx=0,
+        # stop_idx=-1,
+    )
 #endregions
 
 #region classes

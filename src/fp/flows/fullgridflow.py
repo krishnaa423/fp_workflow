@@ -23,6 +23,7 @@ from fp.flows.flow_manage import FlowManage
 from fp.io.pkl import save_obj, load_obj
 from fp.structure.kpath import KPath
 from fp.schedulers.scheduler import Scheduler
+import os 
 #endregion
 
 #region: Variables.
@@ -42,6 +43,55 @@ class FullGridFlow:
     
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    @staticmethod
+    def create_from_list(
+        dest_directory: str,
+        list_of_steps: list,
+        start_idx: str = None,
+        stop_idx: str = None,
+        source_flowfile: str = None,
+        source_input_dict: dict = None,
+        copy_additional: List[str] = None,
+        create_interactive: bool = False,
+    ):
+        # Args parse.
+        a = source_flowfile is not None
+        b = source_input_dict is not None
+        assert (a or b) and not (a and b), 'Only flowfile or input_dict must be present'
+        if source_flowfile is not None:
+            source_input_dict = FullGridFlow.from_yml(source_flowfile).input_dict
+        
+        # Get directory.
+        current_directory = os.getcwd()
+
+        # Copy.
+        os.system(f'mkdir -p {dest_directory}')
+        if copy_additional is not None:
+            if len(copy_additional)>=0:
+                for item in copy_additional:
+                    os.system(f'cp -r {item} {dest_directory}/')
+
+        os.chdir(dest_directory)
+        fullgridflow: FullGridFlow = FullGridFlow.from_dict(source_input_dict)
+        flowmanage: FlowManage = fullgridflow.get_flowmanage(list_of_steps)
+        flowmanage.create_jobs()
+        flowmanage.create_job_all_script(
+            start_idx=start_idx,
+            stop_idx=stop_idx,
+        )
+        if create_interactive: fullgridflow.create_interactive()
+        os.system('chmod u+x *.sh')
+        os.chdir(current_directory)
+
+    @staticmethod
+    def from_dict(input_dict: dict):
+        fullgridflow: FullGridFlow = FullGridFlow(input_dict=input_dict)
+
+        return fullgridflow
+
+    def to_yml(self, filename: str):
+        with open(filename, 'w') as f: yaml.safe_dump(self.input_dict, f)
 
     @staticmethod
     def from_yml(filename):

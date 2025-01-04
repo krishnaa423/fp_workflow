@@ -97,7 +97,7 @@ mv bandstructure.dat bandstructure_absorption.dat
 '''
 
         self.jobs = [
-            'job_absorption.sh',
+            './job_absorption.sh',
         ]
 
     def create(self):
@@ -105,7 +105,8 @@ mv bandstructure.dat bandstructure_absorption.dat
         write_str_2_f('job_absorption.sh', self.job_absorption)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_absorption.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 
@@ -218,7 +219,7 @@ rm -rf *.a3Dr
 '''
 
         self.jobs = [
-            'job_plotxct.sh'
+            './job_plotxct.sh'
         ]
 
     def create(self):
@@ -226,7 +227,8 @@ rm -rf *.a3Dr
         write_str_2_f('job_plotxct.sh', self.job_plotxct)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_plotxct.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

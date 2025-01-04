@@ -96,7 +96,7 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
 '''
     
         self.jobs = [
-            'job_scf.sh',
+            './job_scf.sh',
         ]
 
     def create(self):
@@ -104,7 +104,8 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
         write_str_2_f('job_scf.sh', self.job_scf)
 
     def run(self, total_time):
-        total_time = run_and_wait_command('./job_scf.sh', self.input, total_time)
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
 
         return total_time
 

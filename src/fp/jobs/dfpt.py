@@ -85,7 +85,7 @@ class DfptJob:
 
     def set_jobs_str(self):
         self.jobs = [
-            'job_dfpt.sh',
+            './job_dfpt.sh',
         ]
 
         self.job_dfpt = \
