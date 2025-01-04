@@ -8,6 +8,61 @@ from fp.jobs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.
+update_from_relax_file_content = '''#!/usr/bin/env python3
+
+#region modules
+from fp.jobs.qepw import QePwInputFile
+from fp.io.strings import write_str_2_f
+from fp.io.pkl import load_obj
+from fp.inputs.atoms import AtomsInput
+from typing import List
+#endregions
+
+#region variables
+#endregions
+
+#region functions
+def main():
+    relax_updater = RelaxUpdater()
+    relax_updater.update()
+#endregions
+
+#region classes
+class RelaxUpdater:
+    def __init__(self):
+        # Read from input_dict.
+        self.input_dict: dict = load_obj('./input_dict.pkl')
+        self.input_dict['atoms']['read']['cell']['file'] = 'relaxed_cell_parameters.txt'
+        self.input_dict['atoms']['read']['positions']['file'] = 'relaxed_atomic_positions.txt'
+
+        # Vars across methods.
+        self.atoms_input: AtomsInput = AtomsInput(self.input_dict)
+
+        # Files to update.
+        self.files: List[str] = self.input_dict.get('relax', {}).get('update_files')
+
+    def get_pw(self, filename: str) -> dict:
+        with open(filename, 'r') as f: file_content = f.read()
+        
+        return QePwInputFile.read_pw(file_content)
+
+    def update(self):
+        if self.files is None: return
+
+        for file in self.files:
+            pw_dict: dict = self.get_pw(file)
+            pw_dict['blocks']['cell_parameters'] = self.atoms_input.get_qe_scf_cell()
+            pw_dict['blocks']['atomic_positions'] = self.atoms_input.get_qe_scf_atomic_positions()
+            pw_writer = QePwInputFile(pw_dict, self.input_dict)
+            write_str_2_f(file, pw_writer.get_input_str())
+    
+#endregions
+
+#region main
+main()
+#endregions
+
+'''
 #endregion
 
 #region: Functions.
@@ -114,6 +169,9 @@ cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
 # Copy the end atomic positions and cell parameters (if vc-relax).
 {save_final_cell_parameters_str}
 {save_final_atomic_positions_str}
+
+# Update from relax.
+./update_from_relax.sh
 '''
     
         self.jobs = [
@@ -123,6 +181,7 @@ cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
     def create(self):
         write_str_2_f('relax.in', self.input_relax)
         write_str_2_f('job_relax.sh', self.job_relax)
+        write_str_2_f('update_from_relax.sh', update_from_relax_file_content)
 
     def run(self, total_time):
         total_time = run_and_wait_command('./job_relax.sh', self.input, total_time)
@@ -143,6 +202,7 @@ cp ./tmp/struct.save/data-file-schema.xml ./relax.xml
     def remove(self):
         os.system('rm -rf relax.in')
         os.system('rm -rf job_relax.sh')
+        os.system('rm -rf update_from_relax.sh')
         
         os.system('rm -rf ./tmp')
         os.system('rm -rf relax.in.out')

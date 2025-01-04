@@ -64,7 +64,7 @@ class FullGridFlow:
             atoms=self.input.atoms.atoms, 
             is_fr=self.input_dict['scf']['is_spinorbit'], 
             xc_type=self.input_dict['scf']['xc_type'], 
-            override_files=self.input_dict['atoms']['pseudos'],
+            pseudos_dict=self.input_dict['atoms']['pseudos'],
         )
 
     def create_max_val(self):
@@ -80,7 +80,6 @@ class FullGridFlow:
         # self.Kpath, self.Gpath = self.kpath_obj.get_sc_path(self.sc_grid)
 
     def create_input(self):
-        
         # Components. 
         atoms = AtomsInput(self.input_dict)
         write('flow_struct.xsf', atoms.atoms)

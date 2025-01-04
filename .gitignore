@@ -1,4 +1,5 @@
 /build
 /dist
 fp_workflow.egg-info/
-/tests
+/examples
+.DS_Store

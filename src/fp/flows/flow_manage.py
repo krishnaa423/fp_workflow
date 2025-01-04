@@ -21,7 +21,7 @@ class FlowManage:
         self.list_of_steps: list = list_of_steps
 
     @staticmethod
-    def create_pseudos(atoms: Atoms, is_fr: bool=False, xc_type: str='pbe', override_files: dict=None):
+    def create_pseudos(atoms: Atoms, is_fr: bool=False, xc_type: str='pbe', pseudos_dict: dict=None):
         # Flags. 
         sr_fr_str = 'fr' if is_fr else 'sr'
 
@@ -38,9 +38,12 @@ class FlowManage:
             os.system(f'cp {source_file} {dest_file}')
 
         # Override pseudos.
-        if override_files is not None:
-            for item in override_files:
-                os.system(f'cp {item["source_fileloc"]} ./pseudos/{item["dest_filename"]}')
+        if pseudos_dict is not None:
+            if pseudos_dict.get('override') is not None:
+                for item in pseudos_dict['override']:
+                    os.system(f'cp {item["source_fileloc"]} ./pseudos/{item["dest_filename"]}')
+
+        # Generate and add doped pseudopotentials if needed.
 
     def create_jobs(self):
         assert len(self.list_of_steps)>=1, 'Number of steps/jobs should be greater than 0.'
@@ -129,7 +132,5 @@ f'''#!/bin/bash
         if interactive: os.system('rm -rf ./job_interactive.sh')
         if fmt_files: os.system('rm -rf *.fmt')
         if xsf: os.system('rm -rf *.xsf')
-
-        
-                     
+                
 #endregion
