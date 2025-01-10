@@ -1,4 +1,5 @@
 #region modules
+from pathlib import Path
 from setuptools import setup, find_packages
 from Cython.Build import cythonize
 #endregions
@@ -7,10 +8,14 @@ from Cython.Build import cythonize
 #endregions
 
 #region functions
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 setup(
     name='fp_workflow',
-    version='2.2.1',
+    version='2.2.2',
     description='First priciples workflow and utilities',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Krishnaa Vadivel',
     author_email='krishnaa.vadivel@yale.edu',
     requires=[

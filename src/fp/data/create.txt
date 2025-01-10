@@ -4,6 +4,7 @@ from fp.flows.flow_manage import FlowManage
 from fp.jobs.relax import RelaxJob
 from fp.jobs.scf import ScfJob, ScfAbacusJob
 from fp.jobs.dfpt import DfptJob
+from fp.jobs.phonopy import PhonopyJob
 from fp.jobs.phbands import PhbandsJob
 from fp.jobs.phdos import PhdosJob
 from fp.jobs.phmodes import PhmodesJob
@@ -41,12 +42,12 @@ def main():
     list_of_steps = [
         RelaxJob,
         ScfJob,
-        ScfAbacusJob,
+        # ScfAbacusJob,
         # MdJob,
         # MdAbacusJob,
-        # DfptJob,
-        # PhfinitediffJob,
-        # PhbandsJob,
+        DfptJob,
+        PhonopyJob,
+        PhbandsJob,
         # PhdosJob,
         # PhmodesJob,
         # DosJob,

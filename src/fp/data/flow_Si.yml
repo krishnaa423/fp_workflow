@@ -172,10 +172,10 @@ path:
     - 'L'
     - 'G'
     - 'X'
-    - 'W'
-    - 'L'
-    - 'K'
-    - 'G'
+    # - 'W'
+    # - 'L'
+    # - 'K'
+    # - 'G'
   npoints_segment: 20
 
 # relax. 
