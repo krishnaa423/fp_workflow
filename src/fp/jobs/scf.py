@@ -70,22 +70,23 @@ nkpt = int(root.findall('.//nks')[0].text)
 input: Input = load_obj('./input.pkl')
 flowmanage: FlowManage = load_obj('./flowmanage.pkl')
 
-if DfptJob in flowmanage.list_of_steps:
-    # Update.
-    dfpt: DfptJob = DfptJob(input)
-    job_info: JobProcDesc = dfpt.job_info
-    job_info.ni = nkpt 
-    input.input_dict['dfpt']['job_info'] = {
-        'nodes': job_info.nodes,
-        'ntasks': job_info.ntasks,
-        'time': job_info.time,
-        'ni': job_info.ni,
-        'nk': job_info.nk,
-    }
+for list_step in flowmanage.list_of_steps:
+    if isinstance(list_step, DfptJob):
+        # Update.
+        dfpt: DfptJob = DfptJob(input)
+        job_info: JobProcDesc = dfpt.job_info
+        job_info.ni = nkpt 
+        input.input_dict['dfpt']['job_info'] = {
+            'nodes': job_info.nodes,
+            'ntasks': job_info.ntasks,
+            'time': job_info.time,
+            'ni': job_info.ni,
+            'nk': job_info.nk,
+        }
 
-    # Write.
-    dfpt: DfptJob = DfptJob(input)
-    dfpt.create()
+        # Write.
+        dfpt: DfptJob = DfptJob(input)
+        dfpt.create()
 
 #endregions
 '''

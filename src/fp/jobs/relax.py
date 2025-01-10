@@ -11,12 +11,14 @@ from fp.inputs.qepw import QePwInputFile, IbravType
 update_from_relax_file_content = '''#!/usr/bin/env python3
 
 #region modules
-from fp.jobs.qepw import QePwInputFile
+from fp.inputs.qepw import QePwInputFile
 from fp.io.strings import write_str_2_f
 from fp.io.pkl import load_obj
 from fp.inputs.atoms import AtomsInput
 from typing import List
 import os
+from fp.flows.flow_manage import FlowManage
+from fp.jobs.phonopy import PhonopyJob
 #endregions
 
 #region variables
@@ -32,9 +34,11 @@ def main():
 class RelaxUpdater:
     def __init__(self):
         # Read from input_dict.
+        self.input: Input = load_obj('./input.pkl')
         self.input_dict: dict = load_obj('./input_dict.pkl')
         self.input_dict['atoms']['read']['cell']['file'] = 'relaxed_cell_parameters.txt'
         self.input_dict['atoms']['read']['positions']['file'] = 'relaxed_atomic_positions.txt'
+        self.flowmanage: FlowManage = load_obj('./flowmanage.pkl')
 
         # Vars across methods.
         self.atoms_input: AtomsInput = AtomsInput(self.input_dict)
@@ -53,10 +57,17 @@ class RelaxUpdater:
         for file in self.files:
             if os.path.isfile(file):
                 pw_dict: dict = self.get_pw(file)
-                pw_dict['blocks']['cell_parameters'] = self.atoms_input.get_qe_scf_cell()
                 pw_dict['blocks']['atomic_positions'] = self.atoms_input.get_qe_scf_atomic_positions()
+                pw_dict['blocks']['cell_parameters'] = self.atoms_input.get_qe_scf_cell()
                 pw_writer = QePwInputFile(pw_dict, self.input_dict)
                 write_str_2_f(file, pw_writer.get_input_str())
+
+        
+        # Update phonopy.
+        for list_step in self.flowmanage.list_of_steps:
+            if isinstance(list_step, PhonopyJob):
+                PhonopyJob(self.input).create()
+            
     
 #endregions
 
