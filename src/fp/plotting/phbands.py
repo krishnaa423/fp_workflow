@@ -4,6 +4,7 @@ import numpy as np
 from fp.io.pkl import load_obj
 from fp.structure.kpath import KPath
 from fp.flows.fullgridflow import FullGridFlow
+from fp.inputs.input_main import Input
 #endregion
 
 #region: Variables.
@@ -18,11 +19,11 @@ class PhbandsPlot:
         self,
         phbands_filename,
         bandpathpkl_filename,
-        fullgridflow_filename,
+        input_filename,
     ):
         self.phbands_filename = phbands_filename
         self.bandpathpkl_filename = bandpathpkl_filename
-        self.fullgridflow_filename = fullgridflow_filename
+        self.input_filename = input_filename
 
         self.num_bands: int = None 
         self.phbands: np.ndarray = None 
@@ -35,13 +36,13 @@ class PhbandsPlot:
 
         self.num_bands = self.phbands.shape[1]
         self.kpath = load_obj(self.bandpathpkl_filename)
-        self.fullgridflow = load_obj(self.fullgridflow_filename)
+        self.input: Input = load_obj(self.input_filename)
         
     def save_plot(self, save_filename, show=False, ylim=None):
         # Get some data. 
         self.get_data()
-        path_special_points = self.fullgridflow.path_special_points
-        path_segment_npoints = self.fullgridflow.path_segment_npoints
+        path_special_points = self.input.input_dict['path']['special_points']
+        path_segment_npoints = self.input.input_dict['path']['npoints_segment']
 
         plt.style.use('bmh')
         fig = plt.figure()

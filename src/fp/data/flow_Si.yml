@@ -233,39 +233,59 @@ abacus:
   calculations: 
     - basis: 'lcao'
       type: 'scf'
-      out_files:
-        - 'basis'
-        - 'wavefunction'
-        - 'overlap'
-        - 'hamiltonian'
-        - 'kinetic_energy'
-        - 'potential_energy'
-        - 'xc'
       args_type: 'extra'
       args:
         input:
+          out_chg: 1
+          out_wfc_lcao: 1
         structure:
         kpts:
       
-  
-
 # gpaw.
 gpaw:
-  scf:
-  nscf:
-  dos:
-  pdos:
-  elbands:
-  kpdos:
-  wfn:
-  gw:
-  bse:
+  common:
+    kdim:
+      - 2
+      - 2
+      - 2
+    cutoff: 20.0
+    scf_threshold: '1e-4'
+    is_spinorbit: false
+    abacus_exec:                # If provided, set it, else default is abacus.
+    job_info: 'single_task'
+  calculations: 
+    - basis: 'lcao'
+      type: 'scf'
+      args_type: 'extra'
+      args:
+        input:
+          out_chg: 1
+          out_wfc_lcao: 1
+        structure:
+        kpts:
 
 # pyscf.
 pyscf:
-  scf:
-  nscf:
-  gw:
+  common:
+    kdim:
+      - 2
+      - 2
+      - 2
+    cutoff: 20.0
+    scf_threshold: '1e-4'
+    is_spinorbit: false
+    abacus_exec:                # If provided, set it, else default is abacus.
+    job_info: 'single_task'
+  calculations: 
+    - basis: 'lcao'
+      type: 'scf'
+      args_type: 'extra'
+      args:
+        input:
+          out_chg: 1
+          out_wfc_lcao: 1
+        structure:
+        kpts:
 
 # dfpt, phbands, phdos, phmodes. 
 dfpt:
