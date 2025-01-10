@@ -482,8 +482,8 @@ class QePwInputFile:
         if 'cell' in self.qeinpdict['namelists']: output += self.get_cell()
         if 'occupations' in self.qeinpdict['blocks']: output += self.get_occupations()
         if 'atomic_species' in self.qeinpdict['blocks']: output += self.get_atomic_species()
-        if 'cell_parameters' in self.qeinpdict['blocks']: output += self.get_cell_parameters()
         if 'atomic_positions' in self.qeinpdict['blocks']: output += self.get_atomic_positions()
+        if 'cell_parameters' in self.qeinpdict['blocks']: output += self.get_cell_parameters()
         if 'kpoints' in self.qeinpdict['blocks']: output += self.get_kpoints()
 
         return output

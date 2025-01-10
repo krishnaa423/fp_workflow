@@ -4,7 +4,7 @@ from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.inputs.qepw import QePwInputFile, IbravType
 from pkg_resources import resource_filename
 #endregion
 
@@ -36,6 +36,18 @@ class DfptJob:
             )
         else:
             self.job_info = JobProcDesc(**self.input_dict['dfpt']['job_info'])
+
+        # Set to the max multiple.
+        # TODO: nk.  
+        if self.job_info.ni is not None:
+            ntasks = self.job_info.ntasks
+            ni = self.job_info.ni
+            if ntasks % ni != 0:
+                updated_ntasks = ( ntasks // ni ) * ni 
+                # Let it not be zero.
+                if updated_ntasks == 0: updated_ntasks = 1
+                # Set job_info tasks.
+                self.job_info.ntasks = updated_ntasks
 
         self.job_recover_info = JobProcDesc(
             nodes=self.job_info.nodes,

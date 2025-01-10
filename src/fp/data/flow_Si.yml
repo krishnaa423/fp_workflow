@@ -11,6 +11,7 @@ scheduler:
       job-name: 'struct_job'
       mail-type: 'all'
       mail-user: 'krishnaa.vadivel@yale.edu'
+    header_commands:
     mpi: 'srun'
     launch: 'sbatch'
     options:
@@ -38,6 +39,7 @@ scheduler:
       job-name: 'struct_job'
       mail-type: 'all'
       mail-user: 'krishnaa.vadivel@yale.edu'
+    header_commands:
     mpi: 'srun'
     launch: 'sbatch'
     options:
@@ -65,6 +67,7 @@ scheduler:
       job-name: 'struct_job'
       mail-type: 'all'
       mail-user: 'krishnaa.vadivel@yale.edu'
+    header_commands:
     mpi: 'srun'
     launch: 'sbatch'
     options:
@@ -86,7 +89,11 @@ scheduler:
       threads_per_core: 1
       gpus:
     header:
-    mpi: 'mpirun'
+    header_commands: |
+      # Necessary for running some docker aliases that I have.
+      shopt -s expand_aliases
+      alias abacus="docker run --rm -v ./:/scratch -v ~/.abacus:/root/.abacus -w /scratch krishnaa42342/fp:testing-arm64 abacus"
+    mpi: ''     # Could be mpirun.
     launch: ''
     options:
       is_interactive: true
@@ -198,17 +205,8 @@ scf:
   args_type: 'extra'
   args:
   job_info: 'single_task'
-scf_abacus:
-  kdim:
-    - 2
-    - 2
-    - 2
-  cutoff: 20.0
-  basis: 'pw'
-  is_spinorbit: false
-  args_type: 'extra'
-  args:
-  job_info: 'single_task'
+  update_files:
+    - 'job_dfpt.sh'
 
 # md.
 md:
@@ -222,8 +220,34 @@ md_abacus:
 
 # abacus.
 abacus:
-  scf:
-  md:
+  common:
+    kdim:
+      - 2
+      - 2
+      - 2
+    cutoff: 20.0
+    scf_threshold: '1e-4'
+    is_spinorbit: false
+    abacus_exec:                # If provided, set it, else default is abacus.
+    job_info: 'single_task'
+  calculations: 
+    - basis: 'lcao'
+      type: 'scf'
+      out_files:
+        - 'basis'
+        - 'wavefunction'
+        - 'overlap'
+        - 'hamiltonian'
+        - 'kinetic_energy'
+        - 'potential_energy'
+        - 'xc'
+      args_type: 'extra'
+      args:
+        input:
+        structure:
+        kpts:
+      
+  
 
 # gpaw.
 gpaw:

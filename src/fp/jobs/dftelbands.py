@@ -5,7 +5,7 @@ from fp.flows.run import run_and_wait_command
 from fp.structure.kpath import KPath
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.inputs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.

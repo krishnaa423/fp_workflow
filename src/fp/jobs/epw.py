@@ -4,7 +4,7 @@ from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.jobs.qepw import QePwInputFile
+from fp.inputs.qepw import QePwInputFile
 #endregion
 
 #region: Variables.

@@ -4,8 +4,8 @@ from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.jobs.qepw import QePwInputFile, IbravType
-from fp.jobs.bgw import BgwInputFile
+from fp.inputs.qepw import QePwInputFile, IbravType
+from fp.inputs.bgw import BgwInputFile
 #endregion
 
 #region: Variables.

@@ -4,7 +4,7 @@ from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.inputs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.
@@ -103,4 +103,5 @@ f'''#!/bin/bash
         
         os.system('rm -rf struct.dyn*')
         os.system('rm -rf struct_phmodes.axsf')
+
 #endregion

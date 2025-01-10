@@ -8,7 +8,7 @@ import math
 import subprocess
 from fp.schedulers.scheduler import Scheduler, JobProcDesc
 import fp.schedulers as schedulers
-from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.inputs.qepw import QePwInputFile, IbravType
 #endregion
 
 #region: Variables.

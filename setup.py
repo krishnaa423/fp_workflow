@@ -9,7 +9,7 @@ from Cython.Build import cythonize
 #region functions
 setup(
     name='fp_workflow',
-    version='2.2.0',
+    version='2.2.1',
     description='First priciples workflow and utilities',
     author='Krishnaa Vadivel',
     author_email='krishnaa.vadivel@yale.edu',

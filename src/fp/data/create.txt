@@ -2,7 +2,7 @@
 from fp.flows.fullgridflow import FullGridFlow
 from fp.flows.flow_manage import FlowManage
 from fp.jobs.relax import RelaxJob
-from fp.jobs.scf import ScfJob
+from fp.jobs.scf import ScfJob, ScfAbacusJob
 from fp.jobs.dfpt import DfptJob
 from fp.jobs.phbands import PhbandsJob
 from fp.jobs.phdos import PhdosJob
@@ -41,7 +41,7 @@ def main():
     list_of_steps = [
         RelaxJob,
         ScfJob,
-        # ScfAbacusJob,
+        ScfAbacusJob,
         # MdJob,
         # MdAbacusJob,
         # DfptJob,
@@ -72,13 +72,7 @@ def main():
         # XctPolJob,
         # SteJob,
         # EsdJob,
-        ConvergenceJob,
-        ## VCA doping stuff. Can't for now, as there is a fractional electrons bug. 
-        ## copy relax stuff. 
-        ## supercell path. 
-        ## pyscf, abacus, gpaw.
-        ## understand pseudo generation. 
-        ## debug the removing ./tmp issue.
+        # ConvergenceJob,
     ]
 
     FullGridFlow.create_from_list(

@@ -316,4 +316,57 @@ class AtomsInput:
 
         return output
 
+    def get_abacus_atomic_species(self):
+        output = []
+        
+        for atm_num in np.unique(self.atoms.get_atomic_numbers()):
+            output.append([
+                chemical_symbols[atm_num],
+                float(atomic_masses[atm_num]),
+                f'{chemical_symbols[atm_num]}.upf'
+            ])
+
+        return output 
+
+    def get_abacus_orbitals(self):
+        output = []
+        
+        for atm_num in np.unique(self.atoms.get_atomic_numbers()):
+            output.append([
+                f'{chemical_symbols[atm_num]}.orb'
+            ])
+
+        return output 
+
+    def get_abacus_cell(self):
+        # Assuming cell units is Angstrom. Not changing this for abacus.
+        output = []
+
+        cell_array = self.atoms.get_cell()
+
+        for row in cell_array:
+            output.append([
+                float(row[0]),
+                float(row[1]),
+                float(row[2]),
+            ])
+
+        return output
+
+    def get_abacus_atomic_positions(self):
+        output = []
+
+        pos_array = self.atoms.get_positions()
+        atm_numbers = self.atoms.get_atomic_numbers()
+
+        for atm_number, coord in zip(atm_numbers, pos_array):
+            output.append([
+                chemical_symbols[atm_number],
+                float(coord[0]),
+                float(coord[1]),
+                float(coord[2]),
+            ])
+
+        return output
+
 #endregion

@@ -58,12 +58,22 @@ class Scheduler:
 
         return Scheduler(sched_dict=input_dict['scheduler'][key])
 
+    def add_header_commands(self):
+        output = ''
+        if self.sched_dict.get('header_commands') is not None:
+            output += '\n'
+            output += f'{self.sched_dict['header_commands']}'
+            output += '\n'
+
+        return output 
+    
     def get_sched_header(self, job_desc: JobProcDesc):
         header = ''
 
         # Return if it is in interactive mode.
         if self.sched_dict.get('options', {}).get('is_interactive') is not None:
             if self.sched_dict['options']['is_interactive']:
+                header += self.add_header_commands()
                 return header
             
         if self.sched_dict.get('header') is not None:
@@ -73,14 +83,17 @@ class Scheduler:
         header += f"#{self.sched_dict['launch'].upper()} --nodes={job_desc.nodes}\n"
         header += f"#{self.sched_dict['launch'].upper()} --time={job_desc.time}\n"
 
-        return header
+        header += self.add_header_commands()
 
+        return header
 
     def get_sched_mpi_prefix(self, job_desc: JobProcDesc):
         prefix = ''
 
         # If there is no mpi, just return empty string.
         if self.sched_dict.get('mpi') is None:
+            return prefix
+        if self.sched_dict['mpi']=='':
             return prefix
 
         prefix += f"{self.sched_dict['mpi']} "
@@ -94,6 +107,12 @@ class Scheduler:
     
     def get_sched_mpi_infix(self, job_desc: JobProcDesc):
         infix = ''
+
+        # If there is no mpi, just return empty string.
+        if self.sched_dict.get('mpi') is None:
+            return infix
+        if self.sched_dict['mpi']=='':
+            return infix
 
         if job_desc.nk is not None:
             infix += f' -nk {job_desc.nk}'

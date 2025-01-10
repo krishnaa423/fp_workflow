@@ -4,7 +4,10 @@ from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.jobs.qepw import QePwInputFile, IbravType
+from fp.inputs.qepw import QePwInputFile, IbravType
+from fp.inputs.abacus import AbacusInputFile
+from importlib.util import find_spec
+from typing import List 
 #endregion
 
 #region: Variables.
@@ -36,7 +39,59 @@ class ScfJob:
         else:
             self.job_info = JobProcDesc(**self.input_dict['scf']['job_info'])
 
+    def set_update_files(self):
+        self.input_update_dfpt: str = '''
+#region modules
+import xml.etree.ElementTree as ET
+from io import StringIO
+from fp.io.pkl import load_obj
+from fp.inputs.input_main import Input
+from fp.jobs.dfpt import DfptJob
+from fp.schedulers.scheduler import JobProcDesc
+from fp.flows.flow_manage import FlowManage
+#endregions
+
+#region variables
+#endregions
+
+#region functions
+#endregions
+
+#region classes
+#endregions
+
+#region main
+# Read kpts.
+with open('./scf.xml', 'r') as f:
+    root = ET.parse(f).getroot()
+nkpt = int(root.findall('.//nks')[0].text)
+
+# Read input.
+input: Input = load_obj('./input.pkl')
+flowmanage: FlowManage = load_obj('./flowmanage.pkl')
+
+if DfptJob in flowmanage.list_of_steps:
+    # Update.
+    dfpt: DfptJob = DfptJob(input)
+    job_info: JobProcDesc = dfpt.job_info
+    job_info.ni = nkpt 
+    input.input_dict['dfpt']['job_info'] = {
+        'nodes': job_info.nodes,
+        'ntasks': job_info.ntasks,
+        'time': job_info.time,
+        'ni': job_info.ni,
+        'nk': job_info.nk,
+    }
+
+    # Write.
+    dfpt: DfptJob = DfptJob(input)
+    dfpt.create()
+
+#endregions
+'''
+
     def set_inputs_str(self):
+        self.set_update_files()
         #Base. 
         input_scf_dict: dict = {
             'namelists': {
@@ -85,7 +140,15 @@ class ScfJob:
         # Get string. 
         self.input_scf: str = QePwInputFile(input_scf_dict, self.input_dict).get_input_str()
 
+    def get_update_job_cmd(self) -> str:
+        output = ''
+        if 'job_dfpt.sh' in self.input.input_dict['scf']['update_files']:
+            output = 'python3 update_dfpt_from_scf.py\n'
+
+        return output
+
     def set_jobs_str(self):
+        update_output_str: str = self.get_update_job_cmd()
         self.job_scf: str = \
 f'''#!/bin/bash
 {self.scheduler.get_sched_header(self.job_info)}
@@ -93,13 +156,19 @@ f'''#!/bin/bash
 {self.scheduler.get_sched_mpi_prefix(self.job_info)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_info)} < scf.in &> scf.in.out
 
 cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
+{update_output_str}
 '''
     
         self.jobs = [
             './job_scf.sh',
         ]
 
+    def create_update_files(self):
+        if 'job_dfpt.sh' in self.input.input_dict['scf']['update_files']:
+            write_str_2_f('update_dfpt_from_scf.py', self.input_update_dfpt)
+
     def create(self):
+        self.create_update_files()
         write_str_2_f('scf.in', self.input_scf)
         write_str_2_f('job_scf.sh', self.job_scf)
 
@@ -125,9 +194,133 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
     def remove(self):
         os.system('rm -rf scf.in')
         os.system('rm -rf job_scf.sh')
+        os.system('rm -rf update_dfpt_from_scf.py')
         
         os.system('rm -rf ./tmp')
         os.system('rm -rf scf.in.out')
         os.system('rm -rf scf.xml')
         os.system('rm -rf pseudos')
+
+class ScfAbacusJob:
+    def __init__(
+        self,
+        input: Input,
+    ):
+        self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.abacus_dict_list: List[dict] = [] 
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
+    
+    def set_job_info(self):
+        if isinstance(self.input_dict['abacus']['common']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['abacus']['common']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['abacus']['common']['job_info'])
+
+    def add_out_files(self, abacus_dict: dict, calc_idx: int):
+        pass
+
+    def set_inputs_str(self):
+        self.abacus_input_list: List[str] = []
+        self.abacus_stru: str = None
+        self.abacus_kpt: str = None 
+        for calc_idx, calc_dict in enumerate(self.input_dict['abacus']['calculations']):
+            # Base.
+            abacus_dict  = {
+                'input': {
+                    'suffix': 'struct',
+                    'ntype': self.input.atoms.get_ntyp(),
+                    'pseudo_dir': './abacus_pseudos',
+                    'orbital_dir': './abacus_orbitals',
+                    'ecutwfc': self.input_dict['abacus']['common']['cutoff'],
+                    'scf_thr': self.input_dict['abacus']['common']['scf_threshold'],
+                    'basis_type': calc_dict['basis'],
+                    'calculation': 'scf',
+                },
+                'structure': {
+                    'atomic_species': self.input.atoms.get_abacus_atomic_species(),
+                    'numerical_orbital': self.input.atoms.get_abacus_orbitals(),
+                    'lattice_constant': [[1.8897259886]],       # value of 1 angstrom in bohr.
+                    'lattice_vectors': self.input.atoms.get_abacus_cell(),
+                    'atomic_positions': self.input.atoms.get_abacus_atomic_positions(),
+                },
+                'kpts': self.input_dict['abacus']['common']['kdim']
+            }
+            
+            # Update.
+            self.add_out_files(abacus_dict, calc_idx)
+            # TODO: spinorbit.
+            # TODO: update args.
+
+            # Write.
+            abacus_generator: AbacusInputFile = AbacusInputFile(abacus_dict)
+            self.abacus_input_list.append(abacus_generator.get_input_str())
+            self.abacus_stru = abacus_generator.get_stru_str()
+            self.abacus_kpt = abacus_generator.get_kpt_str()
+            self.abacus_dict_list.append(abacus_dict)
+
+    def set_jobs_str(self):
+        abacus_run_string = ''
+
+        for input_idx in range(len(self.abacus_input_list)):
+            abacus_run_string += f'cp INPUT{input_idx} INPUT\n'
+            abacus_run_string += f'{self.scheduler.get_sched_mpi_prefix(self.job_info)}abacus &> abacus.out\n'
+
+        self.job_abacus: str = \
+f'''#!/bin/bash
+{self.scheduler.get_sched_header(self.job_info)}
+
+
+{abacus_run_string}
+'''
+
+        self.jobs = [
+            './job_abacus.sh',
+        ]
+
+    def create(self):
+        AbacusInputFile(self.abacus_dict_list[0]).copy_pseudos_and_orbitals()
+        write_str_2_f('STRU', self.abacus_stru)
+        write_str_2_f('KPT', self.abacus_kpt)
+        for input_idx, abacus_input in enumerate(self.abacus_input_list):
+            write_str_2_f(f'INPUT{input_idx}', abacus_input)
+        write_str_2_f('./job_abacus.sh', self.job_abacus)
+
+    def run(self, total_time):
+        for job in self.jobs:
+            total_time = run_and_wait_command(job, self.input, total_time)
+
+        return total_time
+
+    def save(self, folder):
+        inodes = [
+            'INPUT',
+            'STRU',
+            'KPT',
+            'job_abacus.sh',
+            'OUT.struct',
+        ] 
+
+        for inode in inodes:
+            os.system(f'cp -r ./{inode} {folder}')
+
+    def remove(self):
+        os.system('rm -rf abacus_pseudos')
+        os.system('rm -rf abacus_orbitals')
+        os.system('rm -rf INPUT*')
+        os.system('rm -rf STRU')
+        os.system('rm -rf KPT')
+        os.system('rm -rf job_abacus.sh')
+
+        os.system('rm -rf abacus.out')
+        os.system('rm -rf OUT.*')
+        os.system('rm -rf time.json')
+
 #endregion
