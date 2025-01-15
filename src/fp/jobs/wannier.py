@@ -3,6 +3,12 @@ from fp.inputs.input_main import Input
 from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
+from fp.schedulers.scheduler import JobProcDesc, Scheduler
+from fp.inputs.qepw import QePwInputFile, IbravType
+from fp.inputs.wannier import WannierWinFile
+from importlib.util import find_spec
+from typing import List 
+from fp.structure.kpts import Kgrid
 #endregion
 
 #region: Variables.
@@ -18,115 +24,129 @@ class WannierJob:
         input: Input,
     ):
         self.input: Input = input
+        self.input_dict: dict = self.input.input_dict
+        self.scheduler: Scheduler = Scheduler.from_input_dict(self.input_dict)
+        self.job_info: JobProcDesc = None
+        self.set_job_info()
+        self.set_inputs_str()
+        self.set_jobs_str()
 
-        self.input_wfnwan = \
-f'''&CONTROL
-outdir='./tmp'
-prefix='struct'
-pseudo_dir='./pseudos'
-calculation='bands'
-tprnfor=.true. 
-{self.input.wannier.extra_control_args if self.input.wannier.extra_control_args  is not None else ""}
-/
+    def set_job_info(self):
+        if isinstance(self.input_dict['wannier']['job_info'], str):
+            self.job_info = JobProcDesc.from_job_id(
+                self.input_dict['wannier']['job_info'],
+                self.input_dict,
+            )
+        else:
+            self.job_info = JobProcDesc(**self.input_dict['wannier']['job_info'])
 
-&SYSTEM
-ibrav=0
-ntyp={self.input.atoms.get_ntyp()}
-nat={self.input.atoms.get_nat()}
-nbnd={self.input.wannier.num_bands}
-ecutwfc={self.input.scf.ecutwfc}
-{"" if self.input.scf.is_spinorbit else "!"}noncolin=.true.
-{"" if self.input.scf.is_spinorbit else "!"}lspinorb=.true. 
-{self.input.wannier.extra_system_args if self.input.wannier.extra_system_args  is not None else ""}
-/
+    def update_args(self):
+        #TODO.
+        pass
 
-&ELECTRONS
-{self.input.wannier.extra_electrons_args if self.input.wannier.extra_electrons_args  is not None else ""}
-/
+    def set_inputs_str(self):
+        #Base. 
+        kpts = Kgrid(self.input.atoms, self.input_dict['wannier']['kdim']).get_kpts()
+        self.input_wfnwan_dict: dict = {
+            'namelists': {
+                'control': {
+                    'outdir': './tmp',
+                    'prefix': 'struct',
+                    'pseudo_dir': './pseudos',
+                    'calculation': 'bands',
+                    'tprnfor': True,
+                },
+                'system': {
+                    'ibrav': IbravType(self.input_dict).get_idx(),
+                    'ntyp': self.input.atoms.get_ntyp(),
+                    'nat': self.input.atoms.get_nat(),
+                    'nbnd': self.input_dict['total_valence_bands'] + self.input_dict['wannier']['num_cond_bands'],
+                    'ecutwfc': self.input_dict['scf']['cutoff'],
+                },
+                'electrons': {},
+                'ions': {},
+                'cell': {},
+            },
+            'blocks': {
+                'atomic_species': self.input.atoms.get_qe_scf_atomic_species(),
+                'cell_parameters': self.input.atoms.get_qe_scf_cell(),
+                'atomic_positions': self.input.atoms.get_qe_scf_atomic_positions(),
+                'kpoints': kpts,
+            },
+            'kpoints_type': 'crystal',   # Options are 'automatic', 'crystal' and 'crystal_b'. 
+            'cell_units': self.input_dict['atoms']['write_cell_units'],
+            'position_units': self.input_dict['atoms']['write_position_units'],
+        }
+        self.input_wan_dict: dict = {
+            'maps': {
+                'mp_grid': self.input_dict['wannier']['kdim'],
+                'num_bands': self.input_dict['total_valence_bands'] + self.input_dict['wannier']['num_cond_bands'],
+                'num_wann': self.input_dict['total_valence_bands'] + self.input_dict['wannier']['num_cond_bands'],
+                'auto_projections': '.true.',
+                'wannier_plot': '.true.',
+                'write_hr': '.true.',
+                'write_u_matrices': '.true.',
+            },
+            'blocks': {
+                'unit_cell_cart': self.input.atoms.get_wan_cell(),
+                'atoms_cart': self.input.atoms.get_wan_atomic_positions(),
+                'kpoints': kpts,
+            }
+        }
+        self.input_pw2wan_dict: dict = {
+            'namelists': {
+                'inputpp': {
+                    'outdir': "'./tmp'",
+                    'prefix': "'struct'",
+                    'seedname': "'wan'",
+                    'write_amn': '.true.',
+                    'write_mmn': '.true.',
+                    'write_unk': '.true.',
+                    'scdm_proj': '.true.',
+                }
+            }
+        }
 
-&CELL
-/
+        # Additions.
+        #spinorbit.
+        if self.input_dict['scf']['is_spinorbit']:
+            self.input_wfnwan_dict['namelists']['system']['noncolin'] = True
+            self.input_wfnwan_dict['namelists']['system']['lspinorb'] = True
+        #override or extra. 
+        self.update_args()
 
-&IONS
-/
+        # Get string. 
+        self.input_wfnwan: str = QePwInputFile(self.input_wfnwan_dict, self.input_dict).get_input_str()
+        self.input_wan: str = WannierWinFile.write_general(self.input_wan_dict)
+        self.input_pw2wan: str = QePwInputFile.write_general(self.input_pw2wan_dict)
 
-CELL_PARAMETERS angstrom
-{self.input.atoms.get_scf_cell()}
-
-ATOMIC_SPECIES
-{self.input.atoms.get_qe_scf_atomic_species()}
-
-ATOMIC_POSITIONS angstrom 
-{self.input.atoms.get_qe_scf_atomic_positions()}
-
-{self.input.wannier.get_kpoints_qe()}
-'''
-        
+    def set_jobs_str(self):
         self.job_wfnwan = \
 f'''#!/bin/bash
-{self.scheduler.get_sched_header(self.input.wannier.job_wfnwan_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wfnwan_desc)}pw.x < wfnwan.in &> wfnwan.in.out 
-'''
-        
-        self.input_wan = \
-f'''# Structure. 
-{self.input.wannier.get_unit_cell_cart()}
-
-{self.input.wannier.get_atoms_cart()}
-
-# kpoints. 
-{self.input.wannier.get_mpgrid()}
-
-{self.input.wannier.get_kpoints()}
-
-# Bands. 
-num_bands = {self.input.wannier.num_bands}
-num_wann = {self.input.wannier.num_wann}
-
-# Options. 
-auto_projections = .true. 
-
-# Output. 
-wannier_plot = .true. 
-write_hr = .true.
-write_u_matrices = .true. 
-
-# Extra args.
-{self.input.wannier.extra_args if self.input.wannier.extra_args else ""}
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}pw.x < wfnwan.in &> wfnwan.in.out 
 '''
         
         self.job_wanpp = \
 f'''#!/bin/bash
-{self.scheduler.get_sched_header(self.input.wannier.job_wan_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} -pp wan &> wan.win.pp.out
-'''
-        
-        self.input_pw2wan = \
-f'''&INPUTPP
-outdir='./tmp'
-prefix='struct'
-seedname='wan'
-write_amn=.true.
-write_mmn=.true.
-write_unk=.true.
-scdm_proj=.true.
-/
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}wannier90.x {self.scheduler.get_sched_mpi_infix(self.job_info)} -pp wan &> wan.win.pp.out
 '''
         
         self.job_pw2wan = \
 f'''#!/bin/bash
-{self.scheduler.get_sched_header(self.input.wannier.job_pw2wan_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_pw2wan_desc)}pw2wannier90.x < pw2wan.in &> pw2wan.in.out 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}pw2wannier90.x < pw2wan.in &> pw2wan.in.out 
 '''
         
         self.job_wan = \
 f'''#!/bin/bash
-{self.scheduler.get_sched_header(self.input.wannier.job_wan_desc)}
+{self.scheduler.get_sched_header(self.job_info)}
 
-{self.scheduler.get_sched_mpi_prefix(self.input.wannier.job_wan_desc)}wannier90.x {self.scheduler.get_sched_mpi_infix(self.input.wannier.job_wan_desc)} wan  &> wan.win.out 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}wannier90.x {self.scheduler.get_sched_mpi_infix(self.job_info)} wan  &> wan.win.out 
 '''
         
         self.jobs = [
@@ -178,4 +198,5 @@ f'''#!/bin/bash
         os.system('rm -rf job_wanpp.sh')
         os.system('rm -rf job_pw2wan.sh')
         os.system('rm -rf job_wan.sh')
+
 #endregion

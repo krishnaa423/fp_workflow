@@ -9,7 +9,6 @@ from fp.inputs.phbands import PhbandsInput
 from fp.inputs.relax import RelaxInput
 from fp.inputs.scf import ScfInput
 from fp.inputs.sigma import SigmaInput
-from fp.inputs.wannier import WannierInput
 from fp.inputs.wfngeneral import WfnGeneralInput
 #endregions
 
@@ -29,7 +28,6 @@ class Input:
         scf: ScfInput=None,
         phbands: PhbandsInput=None,
         dftelbands: DftelbandsInput=None,
-        wannier: WannierInput=None,
         wfn: WfnGeneralInput=None,
         epw: EpwInput=None,
         wfnq: WfnGeneralInput=None,
@@ -47,7 +45,6 @@ class Input:
         self.scf: ScfInput = scf
         self.phbands: PhbandsInput = phbands
         self.dftelbands: DftelbandsInput = dftelbands
-        self.wannier: WannierInput = wannier
         self.wfn: WfnGeneralInput = wfn
         self.epw: EpwInput = epw
         self.wfnq: WfnGeneralInput = wfnq
@@ -61,6 +58,64 @@ class Input:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    @staticmethod
+    def from_dict(input_dict: dict):
+        # Components. 
+        atoms = AtomsInput(input_dict)
+        
+        relax = RelaxInput(input_dict)
+        scf = ScfInput(input_dict)
+        phbands = PhbandsInput(
+            input_dict=input_dict, 
+            atoms=atoms.atoms
+        )
+        dftelbands = DftelbandsInput(input_dict)
+        wfn = WfnGeneralInput(
+            input_dict=input_dict,
+            atoms_input=atoms,
+            wfn_type='wfn',
+        )
+        epw = EpwInput(input_dict)
+        wfnq = WfnGeneralInput(
+            input_dict=input_dict,
+            atoms_input=atoms,
+            wfn_type='wfnq',
+        )
+        wfnfi = WfnGeneralInput(
+            input_dict=input_dict,
+            atoms_input=atoms,
+            wfn_type='wfnfi',
+        )
+        wfnqfi = WfnGeneralInput(
+            input_dict=input_dict,
+            atoms_input=atoms,
+            wfn_type='wfnqfi',
+        )
+        eps = EpsilonInput(input_dict)
+        sig = SigmaInput(input_dict)
+        plotxct = PlotxctInput(input_dict)
+        bseq = BseqInput(input_dict)
+
+        input = Input(
+            input_dict=input_dict,
+            atoms=atoms,
+            relax=relax,
+            scf=scf,
+            phbands=phbands,
+            dftelbands=dftelbands,
+            wfn=wfn,
+            epw=epw,
+            wfnq=wfnq,
+            wfnfi=wfnfi,
+            wfnqfi=wfnqfi,
+            eps=eps,
+            sig=sig,
+            plotxct=plotxct,
+            bseq=bseq,
+        )
+
+        return input
+    
     def update_qe_args_dict(self, args_dict: dict, args_type: str, qedict_to_update: dict):
         if args_dict is not None:
             if args_type=='override':

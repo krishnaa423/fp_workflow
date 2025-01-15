@@ -55,39 +55,54 @@ from fp.flows.flow_manage import FlowManage
 #endregions
 
 #region functions
+def main():
+    scf_updater = ScfUpdater()
+    scf_updater.update()
 #endregions
 
 #region classes
+class ScfUpdater:
+    def __init__(self):
+        self.nk: int = None
+        self.input: Input = None
+        self.flowmanage: FlowManage = None
+        
+    def read_nk(self):
+        with open('./scf.xml', 'r') as f: 
+            root = ET.parse(f).getroot()
+        self.nk = int(root.findall('.//nks')[0].text)
+    
+    def read_input_and_flow(self):
+        self.input = load_obj('./input.pkl')
+        self.flowmanage = load_obj('./flowmanage.pkl')
+
+    def update(self):
+        # Read.
+        self.read_nk()
+        self.read_input_and_flow()
+
+        for list_step in self.flowmanage.list_of_steps:
+            if isinstance(list_step, DfptJob):
+                # Update.
+                dfpt: DfptJob = DfptJob(self.input)
+                job_info: JobProcDesc = dfpt.job_info
+                job_info.ni = self.nk
+                self.input.input_dict['dfpt']['job_info'] = {
+                    'nodes': job_info.nodes,
+                    'ntasks': job_info.ntasks,
+                    'time': job_info.time,
+                    'ni': job_info.ni,
+                    'nk': job_info.nk,
+                }
+        
+                # Write.
+                dfpt: DfptJob = DfptJob(self.input)
+                dfpt.create()
+        
 #endregions
 
 #region main
-# Read kpts.
-with open('./scf.xml', 'r') as f:
-    root = ET.parse(f).getroot()
-nkpt = int(root.findall('.//nks')[0].text)
-
-# Read input.
-input: Input = load_obj('./input.pkl')
-flowmanage: FlowManage = load_obj('./flowmanage.pkl')
-
-for list_step in flowmanage.list_of_steps:
-    if isinstance(list_step, DfptJob):
-        # Update.
-        dfpt: DfptJob = DfptJob(input)
-        job_info: JobProcDesc = dfpt.job_info
-        job_info.ni = nkpt 
-        input.input_dict['dfpt']['job_info'] = {
-            'nodes': job_info.nodes,
-            'ntasks': job_info.ntasks,
-            'time': job_info.time,
-            'ni': job_info.ni,
-            'nk': job_info.nk,
-        }
-
-        # Write.
-        dfpt: DfptJob = DfptJob(input)
-        dfpt.create()
-
+main()
 #endregions
 '''
 

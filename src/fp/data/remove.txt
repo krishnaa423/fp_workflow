@@ -1,10 +1,10 @@
 #region modules
 from fp.flows.flow_manage import FlowManage
 from fp.io.pkl import load_obj
-#endregions
+#endregion
 
 #region variables
-#endregions
+#endregion
 
 #region functions
 def main():
@@ -14,12 +14,12 @@ def main():
         interactive=True, 
         fmt_files=True
     )
-#endregions
+#endregion
 
 #region classes
-#endregions
+#endregion
 
 #region main
 if __name__=='__main__':
     main()
-#endregions
+#endregion

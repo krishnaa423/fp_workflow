@@ -58,8 +58,8 @@ class BseqJob:
             input_plotxct_dict['maps']['spinor'] = ''
             input_plotxct_dict['maps']['hole_spin'] = 1
             input_plotxct_dict['maps']['electron_spin'] = 2
-        args_dict = self.input_dict['abs']['args']
-        args_type = self.input_dict['abs']['args_type']
+        args_dict = self.input_dict['plotxct']['args']
+        args_type = self.input_dict['plotxct']['args_type']
         input_plotxct_dict = BgwInputFile.update_dict(
             args_dict,
             args_type,
@@ -180,7 +180,7 @@ f'''#!/bin/bash
 ln -sf ../../epsmat.h5 ./
 ln -sf ../../eps0mat.h5 ./
 ln -sf ../../eqp1.dat eqp_co.dat 
-ln -sf ../../bsemat.h5 ./
+#ln -sf ../../bsemat.h5 ./
 ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5 
 ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5 
 ln -sf ../../{self.input_dict['abs']['wfnfi_link']} WFN_fi.h5 
@@ -263,7 +263,6 @@ ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
 f'''ln -sf ../../epsmat.h5 ./
 ln -sf ../../eps0mat.h5 ./
 ln -sf ../../eqp1.dat eqp_co.dat 
-ln -sf ../../bsemat.h5 ./
 ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5 
 ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5 
 ln -sf ../../{self.input_dict['abs']['wfnfi_link']} WFN_fi.h5 
@@ -321,8 +320,6 @@ done
     def create(self):
         self.create_inputs_bseq()
         self.create_job_bseq()
-
-        
 
     def run(self, total_time):
         for job in self.jobs:

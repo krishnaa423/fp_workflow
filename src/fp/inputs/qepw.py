@@ -144,7 +144,7 @@ NAME: /[a-zA-Z_0-9!]+/
         output_list: list = []
         
         for list_item in input_list:
-            filtered_list = [self.value_filter(item) for item in list_item.split(sep=' ') if item != '']
+            filtered_list = [self.value_filter(item.strip()) for item in list_item.split(sep=' ') if item.strip() != '']
             if len(filtered_list)>0:
                 if len(filtered_list)==6:   # case of K_POINTS automatic \n <> <> <> 0 0 0
                     output_list.append(filtered_list[:3])
@@ -180,6 +180,11 @@ NAME: /[a-zA-Z_0-9!]+/
                 # Accounting for cases like [[2, 2, 2]]
                 if len(block_value)==1 and isinstance(block_value[0], list):
                     block_value = block_value[0]
+                if isinstance(block_value[0], list) and len(block_value[0])==1:
+                    del block_value[0]
+                for row_idx, row in enumerate(block_value):
+                    if isinstance(row, list) and isinstance(row[-1], str):
+                        block_value[row_idx][-1] = row[-1].lstrip('!')
 
             # Add block entry.
             blocks[block_key] = block_value

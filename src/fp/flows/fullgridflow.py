@@ -10,7 +10,6 @@ from fp.inputs.relax import RelaxInput
 from fp.inputs.scf import ScfInput
 from fp.inputs.phbands import PhbandsInput
 from fp.inputs.dftelbands import DftelbandsInput
-from fp.inputs.wannier import WannierInput
 from fp.inputs.wfngeneral import WfnGeneralInput
 from fp.inputs.epw import EpwInput
 from fp.inputs.epsilon import EpsilonInput
@@ -130,65 +129,10 @@ class FullGridFlow:
         # self.Kpath, self.Gpath = self.kpath_obj.get_sc_path(self.sc_grid)
 
     def create_input(self):
-        # Components. 
-        atoms = AtomsInput(self.input_dict)
-        write('flow_struct.xsf', atoms.atoms)
-        relax = RelaxInput(self.input_dict)
-        scf = ScfInput(self.input_dict)
-        phbands = PhbandsInput(
-            input_dict=self.input_dict, 
-            atoms=atoms.atoms
-        )
-        dftelbands = DftelbandsInput(self.input_dict)
-        wannier = WannierInput(
-            input_dict=self.input_dict,
-            atoms_input=atoms,
-        )
-        wfn = WfnGeneralInput(
-            input_dict=self.input_dict,
-            atoms_input=atoms,
-            wfn_type='wfn',
-        )
-        epw = EpwInput(self.input_dict)
-        wfnq = WfnGeneralInput(
-            input_dict=self.input_dict,
-            atoms_input=atoms,
-            wfn_type='wfnq',
-        )
-        wfnfi = WfnGeneralInput(
-            input_dict=self.input_dict,
-            atoms_input=atoms,
-            wfn_type='wfnfi',
-        )
-        wfnqfi = WfnGeneralInput(
-            input_dict=self.input_dict,
-            atoms_input=atoms,
-            wfn_type='wfnqfi',
-        )
-        eps = EpsilonInput(self.input_dict)
-        sig = SigmaInput(self.input_dict)
-        plotxct = PlotxctInput(self.input_dict)
-        bseq = BseqInput(self.input_dict)
-
-        # Aggregate.
-        self.input: Input = Input(
-            input_dict=self.input_dict,
-            atoms=atoms,
-            relax=relax,
-            scf=scf,
-            phbands=phbands,
-            dftelbands=dftelbands,
-            wannier=wannier,
-            wfn=wfn,
-            epw=epw,
-            wfnq=wfnq,
-            wfnfi=wfnfi,
-            wfnqfi=wfnqfi,
-            eps=eps,
-            sig=sig,
-            plotxct=plotxct,
-            bseq=bseq,
-        )
+        self.input = Input.from_dict(self.input_dict)
+        
+    def save_input(self):
+        write('flow_struct.xsf', self.input.atoms.atoms)
         save_obj(self.input_dict, 'input_dict.pkl')
         save_obj(self.input, 'input.pkl')
 
@@ -197,6 +141,7 @@ class FullGridFlow:
         self.create_pseudos()
         self.create_kpath()
         self.create_max_val()
+        self.save_input()
 
     def get_flowmanage(self, list_of_step_classes: list) -> FlowManage:
         self.build_steps()

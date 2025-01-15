@@ -92,7 +92,8 @@ scheduler:
     header_commands: |
       # Necessary for running some docker aliases that I have.
       shopt -s expand_aliases
-      alias abacus="docker run --rm -v ./:/scratch -v ~/.abacus:/root/.abacus -w /scratch krishnaa42342/fp:testing-arm64 abacus"
+      alias abacus="docker run --rm -v ./:/scratch -w /scratch krishnaa42342/fp:testing-arm64 abacus"
+      alias wannier90.x="docker run --rm -v ./:/scratch -w /scratch krishnaa42342/fp:testing-arm64 wannier90.x"
     mpi: ''     # Could be mpirun.
     launch: ''
     options:
@@ -186,8 +187,10 @@ relax:
   job_info: 'single_task'
   update_files: # Update relax output to these files if they exist.
     - scf.in
+    - md.in
     - wfndos.in
     - dftelbands.in
+    - wfnwan.in
     - wfn.in
     - wfnq.in
     - wfnfi.in
@@ -207,13 +210,13 @@ scf:
   job_info: 'single_task'
   update_files:
     - 'job_dfpt.sh'
+    # - 'job_epw.sh'      # TODO: change the parameters for epw run too based on the k-points.
 
 # md.
 md:
-  args_type: 'extra'
-  args:
-  job_info: 'single_task'
-md_abacus:
+  time_step: 20     # 20 a.u. a.u = 48 as.  
+  number_steps: 100
+  temperature: 300
   args_type: 'extra'
   args:
   job_info: 'single_task'
@@ -354,8 +357,13 @@ wannier:
     - 2
     - 2
     - 2
+  num_cond_bands: 10
+  num_val_bands: 10
   args_type: 'extra'
   args:
+    wfnwan:
+    wan:
+    pw2wan:
   job_info: 'single_task'
 
 # wfn. reates WFN_coo, WFN_parabands.h5.
@@ -469,6 +477,8 @@ inteqp:
 ker:
   args_type: 'extra' # Options are 'override' or 'extra'
   args:
+    maps:
+      dont_check_norms: ''
   job_info: 'single_task'
 abs:
   Qshift: [0.0, 0.0, 0.0]
@@ -485,6 +495,8 @@ abs:
   wfnqfi_link: 'WFN_parabands.h5'
   args_type: 'extra' # Options are 'override' or 'extra'
   args:
+    maps:
+      dont_check_norms: ''
   job_info: 'single_task'
 
 # plotxct. 

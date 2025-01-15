@@ -369,4 +369,22 @@ class AtomsInput:
 
         return output
 
+    def get_wan_cell(self):
+        output = []
+        output.append(['Ang'])
+        
+        for row in self.atoms.cell:
+            output.append(row)
+
+        return output 
+
+    def get_wan_atomic_positions(self):
+        output = []
+        output.append(['Ang'])
+
+        for atom, pos in zip(self.atoms.get_chemical_symbols(), self.atoms.get_positions()):
+            output.append([atom, *pos])
+
+        return output 
+
 #endregion

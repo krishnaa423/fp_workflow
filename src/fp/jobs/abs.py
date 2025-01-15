@@ -194,8 +194,8 @@ class PlotxctJob:
             input_plotxct_dict['maps']['spinor'] = ''
             input_plotxct_dict['maps']['hole_spin'] = 1
             input_plotxct_dict['maps']['electron_spin'] = 2
-        args_dict = self.input_dict['abs']['args']
-        args_type = self.input_dict['abs']['args_type']
+        args_dict = self.input_dict['plotxct']['args']
+        args_type = self.input_dict['plotxct']['args_type']
         input_plotxct_dict = BgwInputFile.update_dict(
             args_dict,
             args_type,

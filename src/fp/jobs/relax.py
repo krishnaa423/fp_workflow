@@ -19,6 +19,8 @@ from typing import List
 import os
 from fp.flows.flow_manage import FlowManage
 from fp.jobs.phonopy import PhonopyJob
+from fp.jobs.wannier import WannierJob
+from fp.inputs.input_main import Input
 #endregions
 
 #region variables
@@ -34,18 +36,22 @@ def main():
 class RelaxUpdater:
     def __init__(self):
         # Read from input_dict.
-        self.input: Input = load_obj('./input.pkl')
         self.input_dict: dict = load_obj('./input_dict.pkl')
-        self.input_dict['atoms']['read']['cell']['file'] = 'relaxed_cell_parameters.txt'
-        self.input_dict['atoms']['read']['positions']['file'] = 'relaxed_atomic_positions.txt'
         self.flowmanage: FlowManage = load_obj('./flowmanage.pkl')
 
         # Vars across methods.
-        self.atoms_input: AtomsInput = AtomsInput(self.input_dict)
+        self.input: Input = None
+        self.update_input()
+        self.atoms_input = self.input.atoms
 
         # Files to update.
         self.files: List[str] = self.input_dict.get('relax', {}).get('update_files')
 
+    def update_input(self):
+        self.input_dict['atoms']['read']['cell']['file'] = 'relaxed_cell_parameters.txt'
+        self.input_dict['atoms']['read']['positions']['file'] = 'relaxed_atomic_positions.txt'
+        self.input: Input = Input.from_dict(self.input_dict)
+    
     def get_pw(self, filename: str) -> dict:
         with open(filename, 'r') as f: file_content = f.read()
         
@@ -67,7 +73,8 @@ class RelaxUpdater:
         for list_step in self.flowmanage.list_of_steps:
             if isinstance(list_step, PhonopyJob):
                 PhonopyJob(self.input).create()
-            
+            if isinstance(list_step, WannierJob):
+                WannierJob(self.input).create()
     
 #endregions
 

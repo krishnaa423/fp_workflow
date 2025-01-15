@@ -371,8 +371,8 @@ wfn2hdf.x BIN WFNq_coo WFNq_coo.h5
 '''
 
         self.jobs = [
-            'job_wfnq.sh',
-            'job_wfnq_pw2bgw.sh',
+            './job_wfnq.sh',
+            './job_wfnq_pw2bgw.sh',
         ]
 
     def create(self):
@@ -536,8 +536,8 @@ wfn2hdf.x BIN WFN_fii WFN_fii.h5
 '''
 
         self.jobs = [
-            'job_wfnfi.sh',
-            'job_wfnfi_pw2bgw.sh',
+            './job_wfnfi.sh',
+            './job_wfnfi_pw2bgw.sh',
         ]
 
     def create(self):
@@ -701,8 +701,8 @@ wfn2hdf.x BIN WFNq_fii WFNq_fii.h5
 '''
 
         self.jobs = [
-            'job_wfnqfi.sh',
-            'job_wfnqfi_pw2bgw.sh',
+            './job_wfnqfi.sh',
+            './job_wfnqfi_pw2bgw.sh',
         ]
 
     def create(self):

@@ -2,7 +2,9 @@
 from fp.flows.fullgridflow import FullGridFlow
 from fp.flows.flow_manage import FlowManage
 from fp.jobs.relax import RelaxJob
-from fp.jobs.scf import ScfJob, ScfAbacusJob
+from fp.jobs.scf import ScfJob
+from fp.jobs.md import MdJob
+from fp.jobs.abacus import AbacusJob
 from fp.jobs.dfpt import DfptJob
 from fp.jobs.phonopy import PhonopyJob
 from fp.jobs.phbands import PhbandsJob
@@ -32,35 +34,36 @@ from ase import Atoms
 from ase.io import read, write
 import numpy as np
 import os
-#endregions
+#endregion
 
 #region variables
-#endregions
+#endregion
 
 #region functions
 def main():
     list_of_steps = [
         RelaxJob,
         ScfJob,
-        # ScfAbacusJob,
-        # MdJob,
-        # MdAbacusJob,
-        DfptJob,
-        PhonopyJob,
-        PhbandsJob,
+        # AbacusJob,
+        # GpawJob,
+        # PyscfJob,
+        # DfptJob,
+        # PhbandsJob,
         # PhdosJob,
         # PhmodesJob,
-        # DosJob,
-        # PdosJob,
         # DftelbandsJob,
         # KpdosJob,
-        # WannierJob,
+        # DosJob,
+        # PdosJob,
+        WannierJob,
         # WfnJob,
         # EpwJob,
         # ElphJob,
         # WfnqJob,
         # WfnfiJob,
         # WfnqfiJob,
+        # PhonopyJob,
+        # MdJob,
         # EpsilonJob,
         # SigmaJob,
         # InteqpJob,
@@ -77,8 +80,8 @@ def main():
     ]
 
     FullGridFlow.create_from_list(
-        source_flowfile=None,
-        source_input_dict=FullGridFlow.from_yml('./flow.yml').input_dict,
+        source_flowfile='./flow.yml',
+        source_input_dict=None,
         list_of_steps=list_of_steps,
         dest_directory='./',
         create_interactive=True,
@@ -86,12 +89,12 @@ def main():
         # start_idx=0,
         # stop_idx=-1,
     )
-#endregions
+#endregion
 
 #region classes
-#endregions
+#endregion
 
 #region main
 if __name__=='__main__':
     main()
-#endregions
+#endregion
