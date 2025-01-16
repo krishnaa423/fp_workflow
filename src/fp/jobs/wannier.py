@@ -41,8 +41,38 @@ class WannierJob:
             self.job_info = JobProcDesc(**self.input_dict['wannier']['job_info'])
 
     def update_args(self):
-        #TODO.
-        pass
+        # wfnwan.
+        if self.input_dict.get('wannier', {}).get('args', {}).get('wfnwan') is not None:
+            match self.input_dict['wannier']['args_type']:
+                case 'extra':
+                    if self.input_dict['wannier']['args']['wfnwan'].get('namelists') is not None:
+                        for key, value in self.input_dict['wannier']['args']['wfnwan']['namelists'].items():
+                            self.input_wfnwan_dict['namelists'][key].update(value)
+                    if self.input_dict['wannier']['args']['wfnwan'].get('blocks') is not None:
+                        self.input_wfnwan_dict['blocks'].update(self.input_dict['wannier']['args']['wfnwan']['blocks'])
+                case 'override':
+                    self.input_wfnwan_dict = self.input_dict['wannier']['args']['wfnwan']
+
+        # wan.
+        if self.input_dict.get('wannier', {}).get('args', {}).get('wan') is not None:
+            match self.input_dict['wannier']['args_type']:
+                case 'extra':
+                    if self.input_dict['wannier']['args']['wan'].get('maps') is not None:
+                        self.input_wan_dict['maps'].update(self.input_dict['wannier']['args']['wan']['maps'])
+                    if self.input_dict['wannier']['args']['wan'].get('blocks') is not None:
+                        self.input_wan_dict['blocks'].update(self.input_dict['wannier']['args']['wan']['blocks'])
+                case 'override':
+                    self.input_wan_dict = self.input_dict['wannier']['args']['wan']
+
+        # pw2wan.
+        if self.input_dict.get('wannier', {}).get('args', {}).get('pw2wan') is not None:
+            match self.input_dict['wannier']['args_type']:
+                case 'extra':
+                    if self.input_dict['wannier']['args']['pw2wan'].get('namelists') is not None:
+                        for key, value in self.input_dict['wannier']['args']['pw2wan']['namelists'].items():
+                            self.input_pw2wan_dict['namelists'][key].update(value)
+                case 'override':
+                    self.input_pw2wan_dict = self.input_dict['wannier']['args']['pw2wan']
 
     def get_exclude_bands(self):
         exclude_bands = None
@@ -128,6 +158,7 @@ class WannierJob:
         if self.input_dict['scf']['is_spinorbit']:
             self.input_wfnwan_dict['namelists']['system']['noncolin'] = True
             self.input_wfnwan_dict['namelists']['system']['lspinorb'] = True
+            self.input_wan_dict['maps']['spinors'] = '.true.'
         #override or extra. 
         self.update_args()
 
