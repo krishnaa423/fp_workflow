@@ -1,21 +1,19 @@
-#region: Modules.
+#region modules
 from fp.inputs.input_main import Input
 from fp.io.strings import write_str_2_f
 from fp.flows.run import run_and_wait_command
 import os 
 from fp.schedulers.scheduler import JobProcDesc, Scheduler
-from fp.inputs.qepw import QePwInputFile, IbravType
-from fp.inputs.bgw import BgwInputFile
 #endregion
 
-#region: Variables.
+#region variables
 #endregion
 
-#region: Functions.
+#region functions
 #endregion
 
-#region: Classes.
-class XctPhJob:
+#region classes
+class ElphJob:
     def __init__(
         self,
         input: Input,
@@ -29,18 +27,18 @@ class XctPhJob:
         self.set_jobs_str()
 
     def set_job_info(self):
-        if isinstance(self.input_dict['xctph']['job_info'], str):
+        if isinstance(self.input_dict['elph']['job_info'], str):
             self.job_info = JobProcDesc.from_job_id(
-                self.input_dict['xctph']['job_info'],
+                self.input_dict['elph']['job_info'],
                 self.input_dict,
             )
         else:
-            self.job_info = JobProcDesc(**self.input_dict['xctph']['job_info'])
-    
+            self.job_info = JobProcDesc(**self.input_dict['elph']['job_info'])
+
     def set_inputs_str(self):
-        self.input_xctph: str = '''
+        self.input_elph: str = '''
 #region modules
-from xctph.xctph import Xctph
+from xctph.elph import Elph
 #endregion
 
 #region variables
@@ -48,9 +46,9 @@ from xctph.xctph import Xctph
 
 #region functions
 def main():
-    xctph: Xctph = Xctph()
-    xctph.calc()
-    xctph.write()
+    elph: Elph = Elph()
+    elph.read()
+    elph.write()
 #endregion
 
 #region classes
@@ -62,24 +60,24 @@ main()
 '''
 
     def set_jobs_str(self):
-        self.job_xctph = \
+        self.job_elph = \
 f'''#!/bin/bash
 {self.scheduler.get_sched_header(self.job_info)}
 
-rm -rf xctph.out
-touch xctph.out
-exec &> xctph.out
+rm -rf elph.out
+touch elph.out
+exec &> elph.out
 
-{self.scheduler.get_sched_mpi_infix(self.job_info)}python3 script_xctph.py &> script_xctph.py.out
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}python3 script_elph.py &> script_elph.py.out 
 '''
-
+        
         self.jobs = [
-            './job_xctph.sh',
+            './job_elph.sh',
         ]
 
     def create(self):
-        write_str_2_f('script_xctph.py', self.input_xctph)
-        write_str_2_f('job_xctph.sh', self.job_xctph)
+        write_str_2_f('script_elph.py', self.input_elph)
+        write_str_2_f('job_elph.sh', self.job_elph)
 
     def run(self, total_time):
         for job in self.jobs:
@@ -89,28 +87,17 @@ exec &> xctph.out
 
     def save(self, folder):
         inodes = [
-            'job_xctph.sh',
-            'xct.h5',
-            'eph*.h5',
-            'xctph*.h5',
+            'elph.h5',
         ] 
 
         for inode in inodes:
             os.system(f'cp -r ./{inode} {folder}')
 
     def remove(self):
-        inodes = [
-            'script_xctph.py',
-            'job_xctph.sh',
+        os.system('rm -rf ./script_elph.py')
+        os.system('rm -rf ./job_elph.sh')
 
-            'xct.h5',
-            'eph*.h5',
-            'xctph*.h5',
-            'xctph.out',
-            'script_xctph.py.out'
-        ] 
-
-        for inode in inodes:
-            os.system(f'rm -rf ./{inode}')
-
+        os.system('rm -rf ./script_elph.py.out')
+        os.system('rm -rf ./elph.h5')
+        os.system('rm -rf ./elph.out')
 #endregion
