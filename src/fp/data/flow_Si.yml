@@ -358,7 +358,7 @@ wannier:
     - 2
     - 2
   num_cond_bands: 10
-  num_val_bands: 10
+  num_val_bands: 4
   args_type: 'extra'
   args:
     wfnwan:

@@ -167,6 +167,8 @@ f'''#!/bin/bash
 {self.scheduler.get_sched_header(self.job_info)}
 
 {self.scheduler.get_sched_mpi_prefix(self.job_info)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_info)} < wfn.in &> wfn.in.out 
+
+cp ./tmp/struct.xml ./wfn.xml
 '''
 
         self.job_wfn_pw2bgw = \
@@ -367,6 +369,7 @@ f'''#!/bin/bash
 
 {self.scheduler.get_sched_mpi_prefix(self.job_pw2bgw_info)}pw2bgw.x -pd .true. < wfnq_pw2bgw.in &> wfnq_pw2bgw.in.out 
 cp ./tmp/WFNq_coo ./
+cp ./tmp/struct.xml ./wfnq.xml
 wfn2hdf.x BIN WFNq_coo WFNq_coo.h5 
 '''
 
@@ -524,6 +527,8 @@ f'''#!/bin/bash
 {self.scheduler.get_sched_header(self.job_info)}
 
 {self.scheduler.get_sched_mpi_prefix(self.job_info)}pw.x {self.scheduler.get_sched_mpi_infix(self.job_info)} < wfnfi.in &> wfnfi.in.out 
+
+cp ./tmp/struct.xml ./wfnfi.xml
 '''
 
         self.job_wfnfi_pw2bgw = \
@@ -697,6 +702,7 @@ f'''#!/bin/bash
 
 {self.scheduler.get_sched_mpi_prefix(self.job_pw2bgw_info)}pw2bgw.x -pd .true. < wfnqfi_pw2bgw.in &> wfnqfi_pw2bgw.in.out 
 cp ./tmp/WFNq_fii ./
+cp ./tmp/struct.xml ./wfnqfi.xml
 wfn2hdf.x BIN WFNq_fii WFNq_fii.h5 
 '''
 

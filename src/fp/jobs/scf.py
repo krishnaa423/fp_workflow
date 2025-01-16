@@ -40,13 +40,15 @@ class ScfJob:
             self.job_info = JobProcDesc(**self.input_dict['scf']['job_info'])
 
     def set_update_files(self):
-        self.input_update_dfpt: str = '''
+        self.input_update_qpts: str = '''
+
 #region modules
 import xml.etree.ElementTree as ET
 from io import StringIO
-from fp.io.pkl import load_obj
+from fp.io.pkl import load_obj, save_obj
 from fp.inputs.input_main import Input
 from fp.jobs.dfpt import DfptJob
+from fp.jobs.epw import EpwJob
 from fp.schedulers.scheduler import JobProcDesc
 from fp.flows.flow_manage import FlowManage
 #endregions
@@ -81,8 +83,11 @@ class ScfUpdater:
         self.read_nk()
         self.read_input_and_flow()
 
+        update_files: list = self.input.input_dict['scf']['update_files']
+
         for list_step in self.flowmanage.list_of_steps:
-            if isinstance(list_step, DfptJob):
+            # dfpt.
+            if 'job_dfpt.sh' in update_files and isinstance(list_step, DfptJob):
                 # Update.
                 dfpt: DfptJob = DfptJob(self.input)
                 job_info: JobProcDesc = dfpt.job_info
@@ -98,6 +103,27 @@ class ScfUpdater:
                 # Write.
                 dfpt: DfptJob = DfptJob(self.input)
                 dfpt.create()
+                save_obj(self.input, 'input_qpt_update.pkl')
+            
+            # epw.
+            if 'job_epw.sh' in update_files and isinstance(list_step, EpwJob):
+                # Update.
+                epw: EpwJob = EpwJob(self.input)
+                job_info: JobProcDesc = epw.job_info
+                job_info.ntasks = self.nk
+                job_info.nk = self.nk
+                self.input.input_dict['epw']['job_info'] = {
+                    'nodes': job_info.nodes,
+                    'ntasks': job_info.ntasks,
+                    'time': job_info.time,
+                    'ni': job_info.ni,
+                    'nk': job_info.nk,
+                }
+
+                # Write.
+                epw: EpwJob = EpwJob(self.input)
+                epw.create()
+                save_obj(self.input, 'input_qpt_update.pkl')
         
 #endregions
 
@@ -159,7 +185,7 @@ main()
     def get_update_job_cmd(self) -> str:
         output = ''
         if 'job_dfpt.sh' in self.input.input_dict['scf']['update_files']:
-            output = 'python3 update_dfpt_from_scf.py\n'
+            output = 'python3 update_numqpts_from_scf.py\n'
 
         return output
 
@@ -180,8 +206,8 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
         ]
 
     def create_update_files(self):
-        if 'job_dfpt.sh' in self.input.input_dict['scf']['update_files']:
-            write_str_2_f('update_dfpt_from_scf.py', self.input_update_dfpt)
+        if self.input.input_dict.get('scf', {}).get('update_files') is not None:
+            write_str_2_f('update_numqpts_from_scf.py', self.input_update_qpts)
 
     def create(self):
         self.create_update_files()
@@ -210,7 +236,8 @@ cp ./tmp/struct.save/data-file-schema.xml ./scf.xml
     def remove(self):
         os.system('rm -rf scf.in')
         os.system('rm -rf job_scf.sh')
-        os.system('rm -rf update_dfpt_from_scf.py')
+        os.system('rm -rf update_numqpts_from_scf.py')
+        os.system('rm -rf input_qpt_update.pkl')
         
         os.system('rm -rf ./tmp')
         os.system('rm -rf scf.in.out')

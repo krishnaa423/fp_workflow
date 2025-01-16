@@ -37,15 +37,16 @@ class DfptJob:
         else:
             self.job_info = JobProcDesc(**self.input_dict['dfpt']['job_info'])
 
-        # Set to the max multiple.
-        # TODO: nk.  
+        # Set to the max multiple for ntasks w.r.t. ni. 
+        # TODO: nk. Currently only image parallelization through -ni flag. 
         if self.job_info.ni is not None:
             ntasks = self.job_info.ntasks
             ni = self.job_info.ni
-            if ntasks % ni != 0:
+            if ntasks < ni: 
+                ntasks = ni
+                self.job_info.ntasks = ntasks 
+            elif ntasks % ni != 0:
                 updated_ntasks = ( ntasks // ni ) * ni 
-                # Let it not be zero.
-                if updated_ntasks == 0: updated_ntasks = 1
                 # Set job_info tasks.
                 self.job_info.ntasks = updated_ntasks
 
@@ -152,4 +153,5 @@ python3 ./create_save.py
         os.system('rm -rf out*')
         os.system('rm -rf ./save')
         os.system('rm -rf struct.dyn*')
+
 #endregion
