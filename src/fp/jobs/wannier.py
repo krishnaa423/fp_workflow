@@ -44,6 +44,21 @@ class WannierJob:
         #TODO.
         pass
 
+    def get_exclude_bands(self):
+        exclude_bands = None
+        total_valence_bands = self.input_dict['total_valence_bands']
+        num_cond_bands = self.input_dict['wannier']['num_cond_bands']
+        num_val_bands = self.input_dict['wannier']['num_val_bands']
+
+        # We will only exclude valence bands, since conduction bands in wfnwan.in and wan.win are set to  
+        #always match. 
+        if total_valence_bands > num_val_bands:
+            exclude_bands = [
+                (1, total_valence_bands - num_val_bands),
+            ]
+
+        return exclude_bands
+
     def set_inputs_str(self):
         #Base. 
         kpts = Kgrid(self.input.atoms, self.input_dict['wannier']['kdim']).get_kpts()
@@ -80,8 +95,9 @@ class WannierJob:
         self.input_wan_dict: dict = {
             'maps': {
                 'mp_grid': self.input_dict['wannier']['kdim'],
-                'num_bands': self.input_dict['total_valence_bands'] + self.input_dict['wannier']['num_cond_bands'],
-                'num_wann': self.input_dict['total_valence_bands'] + self.input_dict['wannier']['num_cond_bands'],
+                'num_bands': self.input_dict['wannier']['num_val_bands']+ self.input_dict['wannier']['num_cond_bands'],
+                'exclude_bands': self.get_exclude_bands(),
+                'num_wann': self.input_dict['wannier']['num_val_bands'] + self.input_dict['wannier']['num_cond_bands'],
                 'auto_projections': '.true.',
                 'wannier_plot': '.true.',
                 'write_hr': '.true.',

@@ -92,7 +92,7 @@ scheduler:
     header_commands: |
       # Necessary for running some docker aliases that I have.
       shopt -s expand_aliases
-      alias abacus="docker run --rm -v ./:/scratch -v ~/.abacus:/root/.abacus -w /scratch krishnaa42342/fp:testing-arm64 abacus"
+      alias abacus="docker run --rm -v ./:/scratch -w /scratch krishnaa42342/fp:testing-arm64 abacus"
     mpi: ''     # Could be mpirun.
     launch: ''
     options:
@@ -191,11 +191,16 @@ relax:
   type: 'vcrelax'  # Options are: relax, vcrelax, cdft-relax, cdft-vcrelax.  
   args_type: 'extra'  # Options are 'override' or 'extra'
   args:
+    namelists:
+      control:
+        forc_conv_thr: 1.0e-6
+        nstep: 100
   job_info: 'para'
   update_files: # Update relax output to these files if they exist.
     - scf.in
     - wfndos.in
     - dftelbands.in
+    - wfnwan.in
     - wfn.in
     - wfnq.in
     - wfnfi.in
@@ -204,12 +209,12 @@ relax:
 # scf. 
 scf:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   cutoff: 60.0
-  is_spinorbit: false
-  xc_type: 'lda'
+  is_spinorbit: true
+  xc_type: 'pbe'
   args_type: 'extra'
   args:
   job_info: 'para'
@@ -230,9 +235,9 @@ md_abacus:
 abacus:
   common:
     kdim:
-      - 2
-      - 2
-      - 2
+      - 9
+      - 9
+      - 9
     cutoff: 20.0
     scf_threshold: '1e-4'
     is_spinorbit: false
@@ -278,9 +283,9 @@ pyscf:
 # dfpt, phbands, phdos, phmodes. 
 dfpt:
   qdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   conv_threshold: '1.0d-16'
   args_type: 'extra'
   args:
@@ -293,9 +298,9 @@ phbands:
   job_info: 'single_task'
 phdos:
   qdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   q2r_args_type: 'extra'
   q2r_args:
   matdyn_args_type: 'extra'
@@ -339,9 +344,9 @@ kpdos:
   job_info: 'para'
 wannier:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   args_type: 'extra'
   args:
   job_info: 'para'
@@ -349,9 +354,9 @@ wannier:
 # wfn. reates WFN_coo, WFN_parabands.h5.
 wfn:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   sym: false
   num_cond_bands: 2
   num_parabands_cond_bands: 2001
@@ -381,9 +386,9 @@ wfnq:
     - 0.000
     - 0.001
   kdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   sym: false
   num_cond_bands: 2
   args_type: 'extra'
@@ -396,9 +401,9 @@ wfnq:
 # wfnfi. Creates WFN_fii, WFN_fii.h5.
 wfnfi:
   kdim:
-   - 2
-   - 2
-   - 2
+    - 9
+    - 9
+    - 9
   sym: false
   num_cond_bands: 2
   args_type: 'extra'
@@ -411,9 +416,9 @@ wfnfi:
 # wfnqfi. Creates WFNq_fii, WFNq_fii.h5.
 wfnqfi:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 9
+    - 9
+    - 9
   sym: false
   num_cond_bands: 2
   args_type: 'extra'
