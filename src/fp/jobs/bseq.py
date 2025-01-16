@@ -293,25 +293,25 @@ touch ./bseq.out
 for (( i=$start; i<$stop; i++ )); do
     cd {folder_variable}
 
-    echo -e "\\n\\n\\n" >> ../../bseq.out
+    echo -e "\\n\\n\\n" >> ./bseq.out
 
-    echo "Running {kpt_variable} th kpoint" >> ../../bseq.out
-    echo "Entering folder {folder_variable}" >> ../../bseq.out
+    echo "Running {kpt_variable} th kpoint" >> ./bseq.out
+    echo "Entering folder {folder_variable}" >> ./bseq.out
     
-    echo "Starting kernel for {folder_variable}" >> ../../bseq.out
+    echo "Starting kernel for {folder_variable}" >> ./bseq.out
 {kernel_commands}
-    echo "Done kernel for {folder_variable}" >> ../../bseq.out
+    echo "Done kernel for {folder_variable}" >> ./bseq.out
 
-    echo "Starting absorption for {folder_variable}" >> ../../bseq.out
+    echo "Starting absorption for {folder_variable}" >> ./bseq.out
 {absorption_commands}
-    echo "Done absorption for {folder_variable}" >> ../../bseq.out
+    echo "Done absorption for {folder_variable}" >> ./bseq.out
 
-    echo "Starting plotxct for {folder_variable}" >> ../../bseq.out
+    echo "Starting plotxct for {folder_variable}" >> ./bseq.out
 {plotxct_commands}
-    echo "Done plotxct for {folder_variable}" >> ../../bseq.out
+    echo "Done plotxct for {folder_variable}" >> ./bseq.out
     cd ../../
 
-    echo "Exiting folder {folder_variable}" >> ../../bseq.out
+    echo "Exiting folder {folder_variable}" >> ./bseq.out
 done
 '''
 
