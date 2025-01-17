@@ -72,7 +72,7 @@ class EpwJob:
 
         # Additions.
         exclude_bands_str = self.input.epw.get_skipped_bands_str()
-        if exclude_bands_str is not None: input_epw_dict['namelists']['bands_skipped'] = exclude_bands_str
+        if exclude_bands_str is not None: input_epw_dict['namelists']['inputepw']['bands_skipped'] = exclude_bands_str
         args_dict = self.input_dict['epw']['args']
         args_type = self.input_dict['epw']['args_type']
         input_epw_dict = self.input.update_qe_args_dict(

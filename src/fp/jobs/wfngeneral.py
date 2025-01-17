@@ -236,6 +236,7 @@ f'''#!/bin/bash
         os.system('rm -rf job_parabands.sh')
         
         os.system('rm -rf ./tmp')
+        os.system('rm -rf ./wfn.xml')
         os.system('rm -rf ./WFN_coo')
         os.system('rm -rf ./WFN_parabands.h5')
         os.system('rm -rf ./RHO')
@@ -407,6 +408,7 @@ wfn2hdf.x BIN WFNq_coo WFNq_coo.h5
         os.system('rm -rf job_wfnq_pw2bgw.sh')
         
         os.system('rm -rf ./tmp')
+        os.system('rm -rf ./wfnq.xml')
         os.system('rm -rf WFNq_coo')
         os.system('rm -rf WFNq_coo.h5')
         os.system('rm -rf wfnq.in.out')
@@ -574,6 +576,7 @@ wfn2hdf.x BIN WFN_fii WFN_fii.h5
         os.system('rm -rf job_wfnfi_pw2bgw.sh')
         
         os.system('rm -rf ./tmp')
+        os.system('rm -rf ./wfnfi.xml')
         os.system('rm -rf WFN_fii')
         os.system('rm -rf WFN_fii.h5')
         os.system('rm -rf wfnfi.in.out')
@@ -740,6 +743,7 @@ wfn2hdf.x BIN WFNq_fii WFNq_fii.h5
         os.system('rm -rf job_wfnqfi_pw2bgw.sh')
         
         os.system('rm -rf ./tmp')
+        os.system('rm -rf ./wfnqfi.xml')
         os.system('rm -rf WFNq_fii')
         os.system('rm -rf WFNq_fii.h5')
         os.system('rm -rf wfnqfi.in.out')

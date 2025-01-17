@@ -91,39 +91,41 @@ class ScfUpdater:
                 # Update.
                 dfpt: DfptJob = DfptJob(self.input)
                 job_info: JobProcDesc = dfpt.job_info
-                job_info.ni = self.nk
-                self.input.input_dict['dfpt']['job_info'] = {
-                    'nodes': job_info.nodes,
-                    'ntasks': job_info.ntasks,
-                    'time': job_info.time,
-                    'ni': job_info.ni,
-                    'nk': job_info.nk,
-                }
-        
-                # Write.
-                dfpt: DfptJob = DfptJob(self.input)
-                dfpt.create()
-                save_obj(self.input, 'input_qpt_update.pkl')
+                if job_info.ni is None:
+                    job_info.ni = self.nk
+                    self.input.input_dict['dfpt']['job_info'] = {
+                        'nodes': job_info.nodes,
+                        'ntasks': job_info.ntasks,
+                        'time': job_info.time,
+                        'ni': job_info.ni,
+                        'nk': job_info.nk,
+                    }
+            
+                    # Write.
+                    dfpt: DfptJob = DfptJob(self.input)
+                    dfpt.create()
+                    save_obj(self.input, 'input_qpt_update.pkl')
             
             # epw.
             if 'job_epw.sh' in update_files and isinstance(list_step, EpwJob):
                 # Update.
                 epw: EpwJob = EpwJob(self.input)
                 job_info: JobProcDesc = epw.job_info
-                job_info.ntasks = self.nk
-                job_info.nk = self.nk
-                self.input.input_dict['epw']['job_info'] = {
-                    'nodes': job_info.nodes,
-                    'ntasks': job_info.ntasks,
-                    'time': job_info.time,
-                    'ni': job_info.ni,
-                    'nk': job_info.nk,
-                }
+                if job_info.ni is None:
+                    job_info.ntasks = self.nk
+                    job_info.nk = self.nk
+                    self.input.input_dict['epw']['job_info'] = {
+                        'nodes': job_info.nodes,
+                        'ntasks': job_info.ntasks,
+                        'time': job_info.time,
+                        'ni': job_info.ni,
+                        'nk': job_info.nk,
+                    }
 
-                # Write.
-                epw: EpwJob = EpwJob(self.input)
-                epw.create()
-                save_obj(self.input, 'input_qpt_update.pkl')
+                    # Write.
+                    epw: EpwJob = EpwJob(self.input)
+                    epw.create()
+                    save_obj(self.input, 'input_qpt_update.pkl')
         
 #endregions
 
