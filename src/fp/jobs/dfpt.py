@@ -74,6 +74,7 @@ class DfptJob:
                     'nq2': self.input_dict['dfpt']['qdim'][1],
                     'nq3': self.input_dict['dfpt']['qdim'][2],
                     'fildyn': "'struct.dyn'",
+                    'tr2_ph': self.input_dict['dfpt']['conv_threshold'],
                     'fildvscf': "'dvscf'",
                 }
             }

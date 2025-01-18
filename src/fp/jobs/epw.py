@@ -89,7 +89,7 @@ class EpwJob:
 f'''#!/bin/bash
 {self.scheduler.get_sched_header(self.job_info)}
 
-{self.scheduler.get_sched_mpi_prefix(self.job_info)}{self.input_dict['epw']['exec_loc']} < epw.in {self.scheduler.get_sched_mpi_infix(self.job_info)} &> epw.in.out 
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}{self.input_dict['epw']['exec_loc']} {self.scheduler.get_sched_mpi_infix(self.job_info)} < epw.in  &> epw.in.out 
 cp ./wfn.xml ./save/wfn.xml
 cp ./input_qpt_update.pkl ./save/input.pkl
 cp ./tmp/*epb* ./save/
