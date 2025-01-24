@@ -18,6 +18,7 @@ from fp.jobs.wannier import WannierJob
 from fp.jobs.wfngeneral import WfnJob
 from fp.jobs.wfngeneral import WfnqJob
 from fp.jobs.epw import EpwJob
+from fp.jobs.elph import ElphJob
 from fp.jobs.wfngeneral import WfnfiJob
 from fp.jobs.wfngeneral import WfnqfiJob
 from fp.jobs.epsilon import EpsilonJob
@@ -28,6 +29,7 @@ from fp.jobs.abs import AbsorptionJob
 from fp.jobs.abs import PlotxctJob
 from fp.jobs.bseq import BseqJob
 from fp.jobs.xctph import XctPhJob
+from fp.jobs.ste import SteJob
 # from fp.jobs.xctpol import XctPolJob
 from fp.jobs.convergence import ConvergenceJob
 from ase import Atoms
@@ -44,37 +46,37 @@ def main():
     list_of_steps = [
         RelaxJob,
         ScfJob,
-        # AbacusJob,
+        AbacusJob,
         # GpawJob,
         # PyscfJob,
-        # DfptJob,
-        # PhbandsJob,
-        # PhdosJob,
-        # PhmodesJob,
-        # DftelbandsJob,
-        # KpdosJob,
-        # DosJob,
-        # PdosJob,
+        DfptJob,
+        PhbandsJob,
+        PhdosJob,
+        PhmodesJob,
+        DftelbandsJob,
+        KpdosJob,
+        DosJob,
+        PdosJob,
         WannierJob,
-        # WfnJob,
-        # EpwJob,
-        # ElphJob,
-        # WfnqJob,
+        WfnJob,
+        EpwJob,
+        ElphJob,
+        WfnqJob,
         # WfnfiJob,
         # WfnqfiJob,
-        # PhonopyJob,
+        PhonopyJob,
         # MdJob,
-        # EpsilonJob,
-        # SigmaJob,
-        # InteqpJob,
-        # KernelJob,
-        # AbsorptionJob,
-        # PlotxctJob,
-        # BseqJob,
-        # XctPhJob,
+        EpsilonJob,
+        SigmaJob,
+        InteqpJob,
+        KernelJob,
+        AbsorptionJob,
+        PlotxctJob,
+        BseqJob,
+        XctPhJob,
         # EsfJob,
         # XctPolJob,
-        # SteJob,
+        SteJob,
         # EsdJob,
         # ConvergenceJob,
     ]

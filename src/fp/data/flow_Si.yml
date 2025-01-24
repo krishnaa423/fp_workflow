@@ -131,6 +131,7 @@ job_types:
   para_epwk:
     nodes: 1
     ntasks: 1
+    nk: 1
     time: "00:45"
 
 # atoms. 
@@ -210,7 +211,6 @@ scf:
   job_info: 'single_task'
   update_files:
     - 'job_dfpt.sh'
-    # - 'job_epw.sh'      # TODO: change the parameters for epw run too based on the k-points.
 
 # md.
 md:
@@ -387,11 +387,13 @@ wfn:
   job_pw2bgw_info: 'single_task'
   job_parabands_info: 'single_task'
 
-# epw. 
+# epw, elph.
 epw:
   exec_loc: 'epw.x' # Options include: '$APP/qe-cpu/bin/epw.x'.
   args_type: 'extra'  # Options are 'override' or 'extra'
   args: 
+  job_info: 'para_epwk'
+elph:
   job_info: 'single_task'
 
 # wfnq. Creates WFNq_coo, WFNq_coo.h5.
@@ -527,12 +529,17 @@ bseq:
 # xctph, xctpol, ste, esf, esd. 
 xctph:
   num_evecs: 10
-  job_info: 'single_task'
+  job_info:
+    nodes: 1
+    ntasks: 6
+    time: 01:45:00 
 xctpol:
+  temp: 300
   max_error: 0.1
   max_steps: 10
   job_info: 'single_task'
 ste:
+  temp: 300
   max_error: 0.1
   max_steps: 10
   job_info: 'single_task'

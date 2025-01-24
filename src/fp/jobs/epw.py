@@ -133,4 +133,5 @@ cp ./tmp/*epb* ./save/
         os.system('rm -rf vmedata.fmt')
         os.system('rm -rf crystal.fmt')
         os.system('rm -rf epw.in.out')
+        os.system('rm -rf epw.out')
 #endregion
