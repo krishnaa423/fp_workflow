@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 import re 
 import glob 
-from fp.flows.fullgridflow import FullGridFlow
+from fp.inputs.input_main import Input
 from fp.io.pkl import load_obj
 from fp.structure.kpath import KPath
 from scipy.interpolate import griddata
@@ -12,6 +12,7 @@ from typing import List, Dict, Tuple
 import h5py 
 import copy
 from scipy import spatial
+from ase.units import Ry 
 #endregion
 
 #region: Variables.
@@ -60,13 +61,13 @@ def find_kpt(ktargets, klist):
 class XctphPlot:
     def __init__(
         self,
-        xctph_filename: str,
-        phbands_filename: str,
-        fullgridflow_filename: str,
-        bandpatkpkl_filename: str,
+        xctph_filename: str = 'xctph.h5',
+        phbands_filename: str = 'struct.freq.gp',
+        bandpathpkl_filename: str = 'bandpath.pkl',
+        input_filename: str = 'fullgridflow.pkl',
         xctph_mult_factor: float=1.0,
-        xct_state: int=0,   # 0 based index. 
         xct_Qpt_idx: int=0, # 0 based index. 
+        xct_state: int=0,   # 0 based index. 
     ):
         '''
         Inputs:
@@ -75,8 +76,8 @@ class XctphPlot:
         '''
         self.xctph_filename: str = xctph_filename
         self.phbands_filename: str = phbands_filename
-        self.fullgridflow_filename: str = fullgridflow_filename
-        self.bandpathpkl_filename: str = bandpatkpkl_filename
+        self.bandpathpkl_filename: str = bandpathpkl_filename
+        self.input_filename: str = input_filename
         self.xctph_mult_factor: float = xctph_mult_factor
         self.xct_state: int = xct_state
         self.xct_Qpt_idx: int = xct_Qpt_idx
@@ -84,9 +85,9 @@ class XctphPlot:
         # Additional data created. 
         self.num_bands: int = None 
         self.phbands: np.ndarray = None 
-        self.fullgridflow: FullGridFlow = load_obj(self.fullgridflow_filename) 
         self.kpath: KPath = None 
-        
+        self.input: Input = load_obj(self.input_filename) 
+        self.input_dict: dict = self.input.input_dict
         self.xctph_interpolated: np.ndarray = None 
 
     def get_phbands_data(self):
@@ -97,8 +98,8 @@ class XctphPlot:
         self.kpath = load_obj(self.bandpathpkl_filename)
 
     def get_xctph_gridded(self, xctph_values, kpts_flat):
-        kgrid_size = self.fullgridflow.wfn.kdim
-        xctph_gridded = np.zeros(kgrid_size)
+        kgrid_size = np.array(self.input_dict['wfn']['kdim'], dtype='i4')
+        xctph_gridded = np.zeros(shape=kgrid_size)
         for x_idx in range(kgrid_size[0]):
             for y_idx in range(kgrid_size[1]):
                 for z_idx in range(kgrid_size[2]):
@@ -124,17 +125,16 @@ class XctphPlot:
         return kpts_gridded.reshape(-1, 3), xctph_gridded.reshape(-1, 1)
 
     def get_xctph_data(self):
-        ryau2eva = 13.6057039763/0.529177
         xctph: np.ndarray = None 
         qpts: np.ndarray = None 
         with h5py.File(self.xctph_filename, 'r') as r:
-            xctph = np.abs(r['xctph'][
+            xctph = np.abs(r['xctph_eh'][
                 self.xct_state,
                 self.xct_state,
                 self.xct_Qpt_idx,
                 :,
                 :
-            ]*ryau2eva)
+            ]*Ry)
             qpts = r['qpts'][:]
         
         kpath_pts = self.kpath.get_kpts()
@@ -147,41 +147,28 @@ class XctphPlot:
             # self.xctph_interpolated[:, mode] = griddata(qpts, xctph[mode, :], kpath_pts, method='linear')*self.xctph_mult_factor
             self.xctph_interpolated[:, mode] = griddata(kpts_gridded, xctph_gridded, kpath_pts, method='linear').reshape(-1)*self.xctph_mult_factor
 
-    def save_plot(self, save_filename, show=False, ylim=None):
+    def save_plot(self, save_filename='xctph.png', show=False, ylim=None):
         # Get some data. 
         self.get_phbands_data()
         self.get_xctph_data()
-        path_special_points = self.fullgridflow.path_special_points
-        path_segment_npoints = self.fullgridflow.path_segment_npoints
+        path_special_points = self.kpath.path_special_points
+        path_segment_npoints = self.kpath.path_segment_npoints
 
         plt.style.use('bmh')
         fig = plt.figure()
         ax = fig.add_subplot()
 
         # Set xaxis based on segments or total npoints. 
-        if path_segment_npoints:
-            ax.plot(self.phbands, color='blue')
-            xaxis = np.arange(self.phbands.shape[0]).reshape(-1, 1)
-            num_modes = self.phbands.shape[1]
-            xaxis = np.repeat(xaxis, num_modes, axis=1)
-            ax.scatter(xaxis, self.phbands, s=self.xctph_interpolated, color='red')
-            ax.yaxis.grid(False)  
-            ax.set_xticks(
-                ticks=np.arange(len(path_special_points))*path_segment_npoints,
-                labels=path_special_points,
-            )
-        else:
-            xaxis, special_points, special_labels = self.kpath.bandpath.get_linear_kpoint_axis()    
-            ax.plot(xaxis, self.phbands, color='blue')
-            xaxis = xaxis.reshape(-1, 1)
-            num_modes = self.phbands.shape[1]
-            xaxis = np.repeat(xaxis, num_modes, axis=1)
-            ax.scatter(xaxis, self.phbands, s=self.xctph_interpolated, color='red')
-            ax.yaxis.grid(False) 
-            ax.set_xticks(
-                ticks=special_points,
-                labels=special_labels,
-            )
+        ax.plot(self.phbands, color='blue')
+        xaxis = np.arange(self.phbands.shape[0]).reshape(-1, 1)
+        num_modes = self.phbands.shape[1]
+        xaxis = np.repeat(xaxis, num_modes, axis=1)
+        ax.scatter(xaxis, self.phbands, s=self.xctph_interpolated, color='red')
+        ax.yaxis.grid(False)  
+        ax.set_xticks(
+            ticks=np.arange(len(path_special_points))*path_segment_npoints,
+            labels=path_special_points,
+        )
 
         # Set some labels. 
         ax.set_title(f'Phonon bands and xctph coupling for xct={self.xct_state} and Qpt={self.xct_Qpt_idx}')

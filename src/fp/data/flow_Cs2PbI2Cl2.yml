@@ -92,7 +92,7 @@ scheduler:
     header_commands: |
       # Necessary for running some docker aliases that I have.
       shopt -s expand_aliases
-      alias abacus="docker run --rm -v ./:/scratch -v ~/.abacus:/root/.abacus -w /scratch krishnaa42342/fp:testing-arm64 abacus"
+      alias abacus="docker run --rm -v ./:/scratch -w /scratch krishnaa42342/fp:testing-arm64 abacus"
     mpi: ''     # Could be mpirun.
     launch: ''
     options:
@@ -129,40 +129,33 @@ job_types:
     time: "01:45:00"
   para_epwk:
     nodes: 1
-    ntasks: 1
+    ntasks: 8
+    nk: 8
     time: "01:45:00"
 
 # atoms. 
 atoms:
-  # file: 'atoms.xsf'
+  file: 'atoms.cif'
   write_cell_units: 'angstrom' # Options are 'angstrom', 'bohr', 'alat'
   write_position_units: 'angstrom' # Options are 'angstrom', 'bohr', 'crystal', 'alat'
   read:
     cell:
-      units: 'alat'   # Options are 'angstrom', 'bohr', 'alat'
-      alat_info:
-        ibrav: 'fcc'
-        A: 10.48
-        # B: 1.2
-        # C: 1.2
-      vectors:
-        - [1.0, 0.0, 0.0]
-        - [0.0, 1.0, 0.0]
-        - [0.0, 0.0, 1.0]
+      units: 'angstrom'   # Options are 'angstrom', 'bohr', 'alat'
+      # alat_info:
+      #   ibrav: 'fcc'
+      #   A: 10.48
+      #   # B: 1.2
+      #   # C: 1.2
+      # vectors:
+      #   - [1.0, 0.0, 0.0]
+      #   - [0.0, 1.0, 0.0]
+      #   - [0.0, 0.0, 1.0]
       # file: 'relaxed_cell_parameters.txt'  # TODO: Read relaxed_cell_parameters with alat change under vcrelax.
     positions:
-      units: 'crystal'  # Options are 'angstrom', 'bohr', 'crystal', 'alat'.
-      vectors:
-        - ['Cs', 0.25, 0.25, 0.25]
-        - ['Cs', 0.75, 0.75, 0.75]
-        - ['Ag', 0.50, 0.50, 0.50]
-        - ['In', 0.00, 0.00, 0.00]
-        - ['Cl', 0.25, 0.25, 0.75]
-        - ['Cl', 0.25, 0.75, 0.25]
-        - ['Cl', 0.75, 0.25, 0.25]
-        - ['Cl', 0.25, 0.75, 0.75]
-        - ['Cl', 0.75, 0.25, 0.75]
-        - ['Cl', 0.75, 0.75, 0.25]
+      units: 'angstrom'  # Options are 'angstrom', 'bohr', 'crystal', 'alat'.
+      # vectors:
+      #   - ['Cs', 0.25, 0.25, 0.25]
+      #   - ['Cs', 0.75, 0.75, 0.75]
       # file: 'relaxed_atomic_positions.txt'
   pseudos:
     # doping:
@@ -177,13 +170,9 @@ atoms:
 # paths. 
 path:
   special_points:
-    - 'L'
+    - 'M'
     - 'G'
     - 'X'
-    # - 'W'
-    # - 'L'
-    # - 'K'
-    # - 'G'
   npoints_segment: 20
 
 # relax. 
@@ -191,11 +180,17 @@ relax:
   type: 'vcrelax'  # Options are: relax, vcrelax, cdft-relax, cdft-vcrelax.  
   args_type: 'extra'  # Options are 'override' or 'extra'
   args:
+    namelists:
+      control:
+        forc_conv_thr: 1.0e-6
+      cell:
+        cell_dofree: '2Dxy'
   job_info: 'para'
   update_files: # Update relax output to these files if they exist.
     - scf.in
     - wfndos.in
     - dftelbands.in
+    - wfnwan.in
     - wfn.in
     - wfnq.in
     - wfnfi.in
@@ -208,8 +203,8 @@ scf:
     - 2
     - 2
   cutoff: 60.0
-  is_spinorbit: false
-  xc_type: 'lda'
+  is_spinorbit: true
+  xc_type: 'pbe'
   args_type: 'extra'
   args:
   job_info: 'para'
@@ -326,7 +321,7 @@ pdos:
 
 # dftelbands, kpdos, wannier. Creates WFN_dftelbands, WFN_dftelbands.h5.
 dftelbands:
-  num_cond_bands: 2
+  num_cond_bands: 4
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'
@@ -342,8 +337,13 @@ wannier:
     - 2
     - 2
     - 2
+  num_cond_bands: 4
+  num_val_bands: 4
   args_type: 'extra'
   args:
+    wfnwan:
+    wan:
+    pw2wan:
   job_info: 'para'
 
 # wfn. reates WFN_coo, WFN_parabands.h5.
@@ -353,7 +353,7 @@ wfn:
     - 2
     - 2
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 4
   num_parabands_cond_bands: 2001
   args_type: 'extra'            # Options are 'override' or 'extra'
   args:
@@ -373,6 +373,8 @@ epw:
   args_type: 'extra'  # Options are 'override' or 'extra'
   args: 
   job_info: 'para_epwk'
+elph:
+  job_info: 'single_task'
 
 # wfnq. Creates WFNq_coo, WFNq_coo.h5.
 wfnq:
@@ -385,7 +387,7 @@ wfnq:
     - 2
     - 2
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 4
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'     # Options are 'override' or 'extra'
@@ -400,7 +402,7 @@ wfnfi:
    - 2
    - 2
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 4
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'     # Options are 'override' or 'extra'
@@ -415,7 +417,7 @@ wfnqfi:
     - 2
     - 2
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 4
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'     # Options are 'override' or 'extra'
@@ -461,7 +463,7 @@ ker:
 abs:
   Qshift: [0.0, 0.0, 0.0]
   num_val_bands: 4
-  num_cond_bands: 10
+  num_cond_bands: 4
   num_evecs: 10
   pol_dir:
     - 0.000
@@ -509,6 +511,7 @@ xctpol:
   max_steps: 10
   job_info: 'single_task'
 ste:
+  temp: 300
   max_error: 0.1
   max_steps: 10
   job_info: 'single_task'

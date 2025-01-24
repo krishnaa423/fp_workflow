@@ -123,7 +123,7 @@ class PhonopyJob:
 
         output += ' " '
 
-        output += f' --band-points={len(sc_labels)*npoints_segment} '
+        output += f' --band-points={npoints_segment} '
 
         return output
 

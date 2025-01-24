@@ -13,13 +13,13 @@ import matplotlib.pyplot as plt
 class BseSpectrumPlot:
     def __init__(
         self,
-        eh_filename,
-        noeh_filename,
+        eh_filename: str ='absorption_eh.dat',
+        noeh_filename: str = 'absorption_noeh.dat',
     ):
         self.eh_filename = eh_filename
         self.noeh_filename = noeh_filename
 
-    def save_plot(self, save_filename, show=False):
+    def save_plot(self, save_filename='absorption.png', show=False):
         abs_eh_data = np.loadtxt(self.eh_filename, dtype='f8', skiprows=4)
         abs_noeh_data = np.loadtxt(self.noeh_filename, dtype='f8', skiprows=4)
         
