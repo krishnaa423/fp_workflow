@@ -55,9 +55,6 @@ class KernelJob:
         }
 
         # Additions.
-        #spinorbit.
-        if self.input_dict['scf']['is_spinorbit']:
-            input_kernel_dict['maps']['spinor'] = ''
         args_dict = self.input_dict['ker']['args']
         args_type = self.input_dict['ker']['args_type']
         input_kernel_dict = BgwInputFile.update_dict(
