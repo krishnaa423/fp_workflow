@@ -30,7 +30,7 @@ class EpwInput:
                 temp = (1, total_val_bands - abs_val_bands)
                 bands_skipped.append(temp)
 
-            if abs_cond_bands!= wfn_cond:
+            if abs_cond_bands!= wfn_cond and abs_cond_bands < wfn_cond:
                 temp = (total_val_bands+ abs_cond_bands + 1, wfn_cond + total_val_bands)
                 bands_skipped.append(temp)
 

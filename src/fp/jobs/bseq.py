@@ -252,31 +252,31 @@ mv bandstructure.dat bandstructure_absorption.dat
 
 
         kernel_commands = \
-f'''ln -sf ../../epsmat.h5 ./
-ln -sf ../../eps0mat.h5 ./
-ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5
-ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
-{self.scheduler.get_sched_mpi_prefix(self.job_info)}kernel.cplx.x &> kernel.inp.out
+f'''    ln -sf ../../epsmat.h5 ./
+    ln -sf ../../eps0mat.h5 ./
+    ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5
+    ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5
+    {self.scheduler.get_sched_mpi_prefix(self.job_info)}kernel.cplx.x &> kernel.inp.out
 '''
         
         absorption_commands = \
-f'''ln -sf ../../epsmat.h5 ./
-ln -sf ../../eps0mat.h5 ./
-ln -sf ../../eqp1.dat eqp_co.dat 
-ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5 
-ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5 
-ln -sf ../../{self.input_dict['abs']['wfnfi_link']} WFN_fi.h5 
-ln -sf ../../{self.input_dict['abs']['wfnqfi_link']} WFNq_fi.h5 
-{self.scheduler.get_sched_mpi_prefix(self.job_info)}absorption.cplx.x &> absorption.inp.out
-mv bandstructure.dat bandstructure_absorption.dat
+f'''    ln -sf ../../epsmat.h5 ./
+    ln -sf ../../eps0mat.h5 ./
+    ln -sf ../../eqp1.dat eqp_co.dat 
+    ln -sf ../../{self.input_dict['abs']['wfnco_link']} WFN_co.h5 
+    ln -sf ../../{self.input_dict['abs']['wfnqco_link']} WFNq_co.h5 
+    ln -sf ../../{self.input_dict['abs']['wfnfi_link']} WFN_fi.h5 
+    ln -sf ../../{self.input_dict['abs']['wfnqfi_link']} WFNq_fi.h5 
+    {self.scheduler.get_sched_mpi_prefix(self.job_info)}absorption.cplx.x &> absorption.inp.out
+    mv bandstructure.dat bandstructure_absorption.dat
 '''
         
         plotxct_commands = \
-f'''ln -sf ../../{self.input_dict['plotxct']['wfnfi_link']} WFN_fi.h5 
-ln -sf ../../{self.input_dict['plotxct']['wfnqfi_link']} WFNq_fi.h5 
-{self.scheduler.get_sched_mpi_prefix(self.job_info)}plotxct.cplx.x &> plotxct.inp.out 
-volume.py ../../scf.in espresso *.a3Dr a3dr plotxct_elec.xsf xsf false abs2 true 
-rm -rf *.a3Dr
+f'''    ln -sf ../../{self.input_dict['plotxct']['wfnfi_link']} WFN_fi.h5 
+    ln -sf ../../{self.input_dict['plotxct']['wfnqfi_link']} WFNq_fi.h5 
+    {self.scheduler.get_sched_mpi_prefix(self.job_info)}plotxct.cplx.x &> plotxct.inp.out 
+    volume.py ../../scf.in espresso *.a3Dr a3dr plotxct_elec.xsf xsf false abs2 true 
+    rm -rf *.a3Dr
 '''
         
         folder_variable = '${folders[$i]}'
@@ -288,30 +288,33 @@ f'''
 rm -rf ./bseq.out
 touch ./bseq.out
 
+LOG_FILE="$(pwd)/bseq.out"
+exec &> "$LOG_FILE"
+
 {self.bseq_for_xctph_link_str}
 
 for (( i=$start; i<$stop; i++ )); do
     cd {folder_variable}
 
-    echo -e "\\n\\n\\n" >> ./bseq.out
+    echo -e "\\n\\n\\n"
 
-    echo "Running {kpt_variable} th kpoint" >> ./bseq.out
-    echo "Entering folder {folder_variable}" >> ./bseq.out
+    echo "Running {kpt_variable} th kpoint"
+    echo "Entering folder {folder_variable}"
     
-    echo "Starting kernel for {folder_variable}" >> ./bseq.out
+    echo "Starting kernel for {folder_variable}"
 {kernel_commands}
-    echo "Done kernel for {folder_variable}" >> ./bseq.out
+    echo "Done kernel for {folder_variable}"
 
-    echo "Starting absorption for {folder_variable}" >> ./bseq.out
+    echo "Starting absorption for {folder_variable}"
 {absorption_commands}
-    echo "Done absorption for {folder_variable}" >> ./bseq.out
+    echo "Done absorption for {folder_variable}"
 
-    echo "Starting plotxct for {folder_variable}" >> ./bseq.out
+    echo "Starting plotxct for {folder_variable}"
 {plotxct_commands}
-    echo "Done plotxct for {folder_variable}" >> ./bseq.out
+    echo "Done plotxct for {folder_variable}"
     cd ../../
 
-    echo "Exiting folder {folder_variable}" >> ./bseq.out
+    echo "Exiting folder {folder_variable}"
 done
 '''
 
