@@ -13,6 +13,8 @@ import h5py
 import copy
 from scipy import spatial
 from ase.units import Ry 
+import numpy as np 
+from typing import List, Union
 #endregion
 
 #region: Variables.
@@ -67,7 +69,7 @@ class XctphPlot:
         input_filename: str = 'fullgridflow.pkl',
         xctph_mult_factor: float=1.0,
         xct_Qpt_idx: int=0, # 0 based index. 
-        xct_state: int=0,   # 0 based index. 
+        plot_xct_state: int = 0,
     ):
         '''
         Inputs:
@@ -79,8 +81,8 @@ class XctphPlot:
         self.bandpathpkl_filename: str = bandpathpkl_filename
         self.input_filename: str = input_filename
         self.xctph_mult_factor: float = xctph_mult_factor
-        self.xct_state: int = xct_state
         self.xct_Qpt_idx: int = xct_Qpt_idx
+        self.plot_xct_state: int = plot_xct_state
 
         # Additional data created. 
         self.num_bands: int = None 
@@ -127,32 +129,82 @@ class XctphPlot:
     def get_xctph_data(self):
         xctph: np.ndarray = None 
         qpts: np.ndarray = None 
+        kpts = self.kpath.get_kpts()
+        num_kpath_pts = kpts.shape[0]
         with h5py.File(self.xctph_filename, 'r') as r:
-            xctph = np.abs(r['xctph_eh'][
-                self.xct_state,
-                self.xct_state,
-                self.xct_Qpt_idx,
-                :,
-                :
-            ]*Ry)
-            qpts = r['qpts'][:]
-        
-        kpath_pts = self.kpath.get_kpts()
+            num_xct_states = r['xctph_eh'].shape[0]
+            num_modes = r['xctph_eh'].shape[3]
+        self.xctph_interpolated = np.zeros(shape=(num_kpath_pts, num_modes, num_xct_states))
 
-        num_kpath_pts = kpath_pts.shape[0]
-        num_modes = xctph.shape[0]
-        self.xctph_interpolated = np.zeros(shape=(num_kpath_pts, num_modes)) 
-        for mode in range(num_modes):
-            kpts_gridded, xctph_gridded = self.get_xctph_gridded(xctph[mode, :], qpts)
-            # self.xctph_interpolated[:, mode] = griddata(qpts, xctph[mode, :], kpath_pts, method='linear')*self.xctph_mult_factor
-            self.xctph_interpolated[:, mode] = griddata(kpts_gridded, xctph_gridded, kpath_pts, method='linear').reshape(-1)*self.xctph_mult_factor
+        for xct_state_index in range(num_xct_states):
+            with h5py.File(self.xctph_filename, 'r') as r:
+                xctph = np.abs(r['xctph_eh'][
+                    xct_state_index,
+                    xct_state_index,
+                    self.xct_Qpt_idx,
+                    :,
+                    :
+                ]*Ry)
+                qpts = r['qpts'][:]
+        
+            kpath_pts = self.kpath.get_kpts()
+
+            num_kpath_pts = kpath_pts.shape[0]
+            num_modes = xctph.shape[0]
+            for mode in range(num_modes):
+                kpts_gridded, xctph_gridded = self.get_xctph_gridded(xctph[mode, :], qpts)
+                # self.xctph_interpolated[:, mode] = griddata(qpts, xctph[mode, :], kpath_pts, method='linear')*self.xctph_mult_factor
+                self.xctph_interpolated[:, mode, xct_state_index] = griddata(kpts_gridded, xctph_gridded, kpath_pts, method='linear').reshape(-1)*self.xctph_mult_factor
+
+    def save_data(self):
+        # Get some data. 
+        self.get_phbands_data()
+        self.get_xctph_data()
+        kpts = self.kpath.get_kpts()
+
+        # Save data. 
+        kpt_axis = np.tile(np.arange(kpts.shape[0]).reshape(-1, 1), reps=(self.phbands.shape[1], 1))
+        # Write: kpt, pheigs, xctph_interpolated. 
+        num_kpts = self.phbands.shape[0]
+        num_bands = self.phbands.shape[1]
+        num_xct_states = self.xctph_interpolated.shape[-1]
+        phbands = self.phbands.T.flatten()
+        xctph = np.transpose(self.xctph_interpolated, axes=(1, 0, 2)).reshape(-1, self.xctph_interpolated.shape[-1])
+        with open('plot_xctph.csv', 'w') as w:
+            for row in range(kpt_axis.shape[0]):
+                if row!=0 and row%num_kpts==0:
+                    w.write('\n')
+                w.write(f'{kpt_axis[row, 0]}, ')
+                for xct_state in range(num_xct_states):
+                    w.write(f'{xctph[row, xct_state]}, ')
+                w.write(f'{phbands[row]} ')
+                w.write('\n')
 
     def save_plot(self, save_filename='xctph.png', show=False, ylim=None):
         # Get some data. 
         self.get_phbands_data()
         self.get_xctph_data()
+        kpts = self.kpath.get_kpts()
         path_special_points = self.kpath.path_special_points
         path_segment_npoints = self.kpath.path_segment_npoints
+
+        # Save data. 
+        kpt_axis = np.tile(np.arange(kpts.shape[0]).reshape(-1, 1), reps=(self.phbands.shape[1], 1))
+        # Write: kpt, pheigs, xctph_interpolated. 
+        num_kpts = self.phbands.shape[0]
+        num_bands = self.phbands.shape[1]
+        num_xct_states = self.xctph_interpolated.shape[-1]
+        phbands = self.phbands.T.flatten()
+        xctph = np.transpose(self.xctph_interpolated, axes=(1, 0, 2)).reshape(-1, self.xctph_interpolated.shape[-1])
+        with open('plot_xctph.csv', 'w') as w:
+            for row in range(kpt_axis.shape[0]):
+                if row!=0 and row%num_kpts==0:
+                    w.write('\n')
+                w.write(f'{kpt_axis[row, 0]}, ')
+                for xct_state in range(num_xct_states):
+                    w.write(f'{xctph[row, xct_state]}, ')
+                w.write(f'{phbands[row]} ')
+                w.write('\n')
 
         plt.style.use('bmh')
         fig = plt.figure()
@@ -163,7 +215,7 @@ class XctphPlot:
         xaxis = np.arange(self.phbands.shape[0]).reshape(-1, 1)
         num_modes = self.phbands.shape[1]
         xaxis = np.repeat(xaxis, num_modes, axis=1)
-        ax.scatter(xaxis, self.phbands, s=self.xctph_interpolated, color='red')
+        ax.scatter(xaxis, self.phbands, s=self.xctph_interpolated[:, :, self.plot_xct_state], color='red')
         ax.yaxis.grid(False)  
         ax.set_xticks(
             ticks=np.arange(len(path_special_points))*path_segment_npoints,
@@ -171,7 +223,7 @@ class XctphPlot:
         )
 
         # Set some labels. 
-        ax.set_title(f'Phonon bands and xctph coupling for xct={self.xct_state} and Qpt={self.xct_Qpt_idx}')
+        ax.set_title(f'Phonon bands and xctph coupling for xct={self.plot_xct_state} and Qpt={self.xct_Qpt_idx}')
         ax.set_ylabel('Freq (cm-1)')
         if ylim: ax.set_ylim(bottom=ylim[0], top=ylim[1])
         fig.savefig(save_filename)

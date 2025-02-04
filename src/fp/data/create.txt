@@ -46,7 +46,7 @@ def main():
     list_of_steps = [
         RelaxJob,
         ScfJob,
-        AbacusJob,
+        # AbacusJob,
         # GpawJob,
         # PyscfJob,
         DfptJob,

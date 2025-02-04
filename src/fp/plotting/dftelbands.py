@@ -6,6 +6,7 @@ from fp.io.pkl import load_obj
 from fp.structure.kpath import KPath
 from fp.flows.fullgridflow import FullGridFlow
 from ase.units import Hartree, eV
+import h5py 
 #endregion
 
 #region: Variables.
@@ -45,10 +46,27 @@ class DftelbandsPlot:
 
         self.kpath = load_obj(self.bandpathpkl_filename)
 
-    def save_plot(self, save_filename='dftelbands.png', show=False, ylim=None):
+    def save_data(self):
         self.get_data()
+        kpts = self.kpath.get_kpts()
         path_special_points = self.kpath.path_special_points
         path_segment_npoints = self.kpath.path_segment_npoints
+
+        # Save the data. 
+        with h5py.File('plot_dftelbands.h5', 'w') as f:
+            f.create_dataset('kpts', data=kpts)
+            f.create_dataset('dft_eigs', data=self.dft_eigs)
+
+    def save_plot(self, save_filename='dftelbands.png', show=False, ylim=None):
+        self.get_data()
+        kpts = self.kpath.get_kpts()
+        path_special_points = self.kpath.path_special_points
+        path_segment_npoints = self.kpath.path_segment_npoints
+
+        # Save the data. 
+        with h5py.File('plot_dftelbands.h5', 'w') as f:
+            f.create_dataset('kpts', data=kpts)
+            f.create_dataset('dft_eigs', data=self.dft_eigs)
 
         plt.style.use('bmh')
         fig = plt.figure()
@@ -62,15 +80,6 @@ class DftelbandsPlot:
             ticks=np.arange(len(path_special_points))*path_segment_npoints,
             labels=path_special_points,
         )
-        # else:
-        #     xaxis, special_points, special_labels = self.kpath.bandpath.get_linear_kpoint_axis()    
-        #     ax.plot(xaxis, self.dft_eigs[:, 0], label='DFT', color='blue')
-        #     ax.plot(xaxis, self.dft_eigs, color='blue')
-        #     ax.yaxis.grid(False) 
-        #     ax.set_xticks(
-        #         ticks=special_points,
-        #         labels=special_labels,
-        #     )
 
         ax.set_title('DFT Bandstructure')
         ax.set_ylabel('Energy (eV)')

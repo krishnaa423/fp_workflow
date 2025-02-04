@@ -6,6 +6,7 @@ from fp.structure.kpath import KPath
 from fp.flows.fullgridflow import FullGridFlow
 from fp.inputs.input_main import Input
 import yaml 
+import h5py 
 #endregion
 
 #region: Variables.
@@ -27,6 +28,7 @@ class PhbandsPlot:
         self.num_bands: int = None 
         self.phbands: np.ndarray = None 
         self.kpath: KPath = None 
+        self.outdata_filename: str = 'plot_phbands.h5'
 
     def get_data(self):
         data = np.loadtxt(self.phbands_filename)
@@ -35,11 +37,25 @@ class PhbandsPlot:
         self.num_bands = self.phbands.shape[1]
         self.kpath = load_obj(self.bandpathpkl_filename)
         
+    def save_data(self):
+        # Get some data. 
+        self.get_data()
+        kpts = self.kpath.get_kpts()
+
+        with h5py.File(self.outdata_filename, 'w') as f:
+            f.create_dataset('kpts', data=kpts)
+            f.create_dataset('pheigs', data=self.phbands)
+
     def save_plot(self, save_filename='phbands.png', show=False, ylim=None):
         # Get some data. 
         self.get_data()
+        kpts = self.kpath.get_kpts()
         path_special_points = self.kpath.path_special_points
         path_segment_npoints = self.kpath.path_segment_npoints
+
+        with h5py.File(self.outdata_filename, 'w') as f:
+            f.create_dataset('kpts', data=kpts)
+            f.create_dataset('pheigs', data=self.phbands)
 
         plt.style.use('bmh')
         fig = plt.figure()
@@ -63,6 +79,7 @@ class PhbandsPlot:
 class PhonopyPlot(PhbandsPlot):
     def __init__(self, **kwargs):
         super().__init__(phbands_filename='band.yaml', **kwargs)
+        self.outdata_filename: str = 'plot_phonopy.h5'
 
     def get_data(self):
         with open(self.phbands_filename) as f: data = yaml.safe_load(f)

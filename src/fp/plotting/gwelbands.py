@@ -4,6 +4,7 @@ import numpy as np
 from fp.io.pkl import load_obj
 from fp.structure.kpath import KPath
 from fp.flows.fullgridflow import FullGridFlow
+import h5py 
 #endregion
 
 #region: Variables.
@@ -38,12 +39,32 @@ class GwelbandsPlot:
         self.eqp = eqp
         self.kpath = load_obj(self.bandpathpkl_filename)
 
+    def save_data(self):
+        # Get some data. 
+        self.get_data()
+        kpts = self.kpath.get_kpts()
+        path_special_points = self.kpath.path_special_points
+        path_segment_npoints = self.kpath.path_segment_npoints
+
+        # Save data. 
+        with h5py.File('plot_gwelbands.h5', 'w') as f:
+            f.create_dataset('kpts', data=kpts)
+            f.create_dataset('gw_eigs', data=self.eqp)
+            f.create_dataset('dft_eigs', data=self.emf)
+
     def save_plot(self, save_filename='gwelbands.png', show=False, ylim=None, offset=None):
         # Get some data. 
         self.get_data()
+        kpts = self.kpath.get_kpts()
         if offset  is not None: self.eqp += offset 
         path_special_points = self.kpath.path_special_points
         path_segment_npoints = self.kpath.path_segment_npoints
+
+        # Save data. 
+        with h5py.File('plot_gwelbands.h5', 'w') as f:
+            f.create_dataset('kpts', data=kpts)
+            f.create_dataset('gw_eigs', data=self.eqp)
+            f.create_dataset('dft_eigs', data=self.emf)
 
         plt.style.use('bmh')
         fig = plt.figure()

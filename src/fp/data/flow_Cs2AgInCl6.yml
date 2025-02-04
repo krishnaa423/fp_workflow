@@ -129,7 +129,8 @@ job_types:
     time: "01:45:00"
   para_epwk:
     nodes: 1
-    ntasks: 1
+    ntasks: 27
+    nk: 27
     time: "01:45:00"
 
 # atoms. 
@@ -149,7 +150,7 @@ atoms:
         - [1.0, 0.0, 0.0]
         - [0.0, 1.0, 0.0]
         - [0.0, 0.0, 1.0]
-      # file: 'relaxed_cell_parameters.txt'  # TODO: Read relaxed_cell_parameters with alat change under vcrelax.
+      file: 'relaxed_cell_parameters.txt'  # TODO: Read relaxed_cell_parameters with alat change under vcrelax.
     positions:
       units: 'crystal'  # Options are 'angstrom', 'bohr', 'crystal', 'alat'.
       vectors:
@@ -163,7 +164,7 @@ atoms:
         - ['Cl', 0.25, 0.75, 0.75]
         - ['Cl', 0.75, 0.25, 0.75]
         - ['Cl', 0.75, 0.75, 0.25]
-      # file: 'relaxed_atomic_positions.txt'
+      file: 'relaxed_atomic_positions.txt'
   pseudos:
     # doping:
     #   - mixing_atoms: ['Si', 'Ag']
@@ -184,13 +185,16 @@ path:
     # - 'L'
     # - 'K'
     # - 'G'
-  npoints_segment: 20
+  npoints_segment: 40
 
 # relax. 
 relax:
   type: 'vcrelax'  # Options are: relax, vcrelax, cdft-relax, cdft-vcrelax.  
   args_type: 'extra'  # Options are 'override' or 'extra'
   args:
+    namelists:
+      control:
+        forc_conv_thr: 1.0e-8
   job_info: 'para'
   update_files: # Update relax output to these files if they exist.
     - scf.in
@@ -204,12 +208,12 @@ relax:
 # scf. 
 scf:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   cutoff: 60.0
-  is_spinorbit: false
-  xc_type: 'lda'
+  is_spinorbit: true
+  xc_type: 'pbe'
   args_type: 'extra'
   args:
   job_info: 'para'
@@ -230,9 +234,9 @@ md_abacus:
 abacus:
   common:
     kdim:
-      - 2
-      - 2
-      - 2
+      - 3
+      - 3
+      - 3
     cutoff: 20.0
     scf_threshold: '1e-4'
     is_spinorbit: false
@@ -278,9 +282,9 @@ pyscf:
 # dfpt, phbands, phdos, phmodes. 
 dfpt:
   qdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   conv_threshold: '1.0d-16'
   args_type: 'extra'
   args:
@@ -310,10 +314,10 @@ phmodes:
 # dos, pdos.
 dos:
   kdim:
-    - 2
-    - 2
-    - 2
-  num_cond_bands: 4 
+    - 3
+    - 3
+    - 3
+  num_cond_bands: 10
   wfn_args_type: 'extra'
   wfn_args:
   args_type: 'extra'
@@ -339,21 +343,26 @@ kpdos:
   job_info: 'para'
 wannier:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
+  num_cond_bands: 10
+  num_val_bands: 4
   args_type: 'extra'
   args:
+    wfnwan:
+    wan:
+    pw2wan:
   job_info: 'para'
 
 # wfn. reates WFN_coo, WFN_parabands.h5.
 wfn:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 10
   num_parabands_cond_bands: 2001
   args_type: 'extra'            # Options are 'override' or 'extra'
   args:
@@ -373,6 +382,8 @@ epw:
   args_type: 'extra'  # Options are 'override' or 'extra'
   args: 
   job_info: 'para_epwk'
+elph:
+  job_info: 'single_task'
 
 # wfnq. Creates WFNq_coo, WFNq_coo.h5.
 wfnq:
@@ -381,11 +392,11 @@ wfnq:
     - 0.000
     - 0.001
   kdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 10
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'     # Options are 'override' or 'extra'
@@ -396,11 +407,11 @@ wfnq:
 # wfnfi. Creates WFN_fii, WFN_fii.h5.
 wfnfi:
   kdim:
-   - 2
-   - 2
-   - 2
+   - 3
+   - 3
+   - 3
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 10
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'     # Options are 'override' or 'extra'
@@ -411,11 +422,11 @@ wfnfi:
 # wfnqfi. Creates WFNq_fii, WFNq_fii.h5.
 wfnqfi:
   kdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   sym: false
-  num_cond_bands: 2
+  num_cond_bands: 10
   args_type: 'extra'
   args:
   pw2bgw_args_type: 'extra'     # Options are 'override' or 'extra'
@@ -457,6 +468,8 @@ inteqp:
 ker:
   args_type: 'extra' # Options are 'override' or 'extra'
   args:
+    maps:
+      dont_check_norms: ''
   job_info: 'para'
 abs:
   Qshift: [0.0, 0.0, 0.0]
@@ -473,6 +486,8 @@ abs:
   wfnqfi_link: 'WFN_parabands.h5'
   args_type: 'extra' # Options are 'override' or 'extra'
   args:
+    maps:
+      dont_check_norms: ''
   job_info: 'para'
 
 # plotxct. 
@@ -482,9 +497,9 @@ plotxct:
     - 0.25
     - 0.25
   supercell_size:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   xct_state: 1
   wfnfi_link: 'WFN_parabands.h5'
   wfnqfi_link: 'WFNq_coo.h5'
@@ -495,9 +510,9 @@ plotxct:
 # bseq. 
 bseq:
   Qdim:
-    - 2
-    - 2
-    - 2
+    - 3
+    - 3
+    - 3
   job_info: 'big_para'
 
 # xctph, xctpol, ste, esf, esd. 
@@ -505,10 +520,12 @@ xctph:
   num_evecs: 10
   job_info: 'single_task'
 xctpol:
+  temp: 300
   max_error: 0.1
   max_steps: 10
   job_info: 'single_task'
 ste:
+  temp: 300
   max_error: 0.1
   max_steps: 10
   job_info: 'single_task'

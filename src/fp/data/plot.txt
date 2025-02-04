@@ -13,7 +13,6 @@ import h5py
 
 #region: Functions.
 def plot_bse():
-    # Plot the bsespectrum. 
     abs = BseSpectrumPlot()
     abs.save_plot(show=True)
 
@@ -40,7 +39,7 @@ def plot_xctph():
 def main():
     # plot_dftelbands()
     plot_phbands()
-    plot_phonopy()
+    # plot_phonopy()
     # plot_gwelbands()
     # plot_bse()
     # plot_xctph()

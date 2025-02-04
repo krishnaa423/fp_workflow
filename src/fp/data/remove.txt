@@ -1,6 +1,7 @@
 #region modules
 from fp.flows.flow_manage import FlowManage
 from fp.io.pkl import load_obj
+import os 
 #endregion
 
 #region variables
@@ -14,6 +15,7 @@ def main():
         interactive=True, 
         fmt_files=True
     )
+    os.system('rm -rf plot*.h5')
 #endregion
 
 #region classes
