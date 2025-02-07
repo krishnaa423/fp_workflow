@@ -70,7 +70,7 @@ rm -rf xctph.out
 touch xctph.out
 exec &> xctph.out
 
-{self.scheduler.get_sched_mpi_infix(self.job_info)}python3 script_xctph.py &> script_xctph.py.out
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}python3 script_xctph.py &> script_xctph.py.out
 '''
 
         self.jobs = [

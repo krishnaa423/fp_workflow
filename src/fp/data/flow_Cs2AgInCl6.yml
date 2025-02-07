@@ -475,7 +475,7 @@ abs:
   Qshift: [0.0, 0.0, 0.0]
   num_val_bands: 4
   num_cond_bands: 10
-  num_evecs: 10
+  num_evecs: 50
   pol_dir:
     - 0.000
     - 0.000
@@ -517,8 +517,11 @@ bseq:
 
 # xctph, xctpol, ste, esf, esd. 
 xctph:
-  num_evecs: 10
-  job_info: 'single_task'
+  num_evecs: 50
+  job_info:
+    nodes: 40
+    ntasks: 2240
+    time: "01:45:00" 
 xctpol:
   temp: 300
   max_error: 0.1

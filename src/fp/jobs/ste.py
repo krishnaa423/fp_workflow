@@ -46,7 +46,7 @@ from xctpol.ste import Ste
 
 #region functions
 def main():
-    ste: Ste = Ste(temp={self.input_dict['ste']['temp']})
+    ste: Ste = Ste(temp={self.input_dict['ste']['temp']}, num_evecs={self.input_dict['ste']['num_evecs']})
     ste.run()
     ste.write()
 #endregion

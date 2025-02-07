@@ -15,7 +15,6 @@ def main():
         interactive=True, 
         fmt_files=True
     )
-    os.system('rm -rf plot*.h5')
 #endregion
 
 #region classes

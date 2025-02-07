@@ -14,35 +14,41 @@ import h5py
 #region: Functions.
 def plot_bse():
     abs = BseSpectrumPlot()
-    abs.save_plot(show=True)
+    # abs.save_plot(show=True)
+    abs.save_data()
 
 def plot_dftelbands():
     dftelbands = DftelbandsPlot()
-    dftelbands.save_plot(show=True)
+    # dftelbands.save_plot(show=True)
+    dftelbands.save_data()
 
 def plot_gwelbands():
     gwelbands = GwelbandsPlot()
-    gwelbands.save_plot(show=True)
+    # gwelbands.save_plot(show=True)
+    gwelbands.save_data()
 
 def plot_phbands():
     phbands = PhbandsPlot()
-    phbands.save_plot(show=True)
+    # phbands.save_plot(show=True)
+    phbands.save_data()
 
 def plot_phonopy():
     phbands = PhonopyPlot()
-    phbands.save_plot(show=True)
+    # phbands.save_plot(show=True)
+    phbands.save_data()
 
 def plot_xctph():
-    xctphplot = XctphPlot(xctph_mult_factor=2e3)
-    xctphplot.save_plot(show=True)
+    xctphplot = XctphPlot()
+    # xctphplot.save_plot(show=True)
+    xctphplot.save_data()
     
 def main():
-    # plot_dftelbands()
+    plot_dftelbands()
     plot_phbands()
-    # plot_phonopy()
-    # plot_gwelbands()
-    # plot_bse()
-    # plot_xctph()
+    plot_phonopy()
+    plot_gwelbands()
+    plot_bse()
+    plot_xctph()
 #endregion
 
 #region: Classes.

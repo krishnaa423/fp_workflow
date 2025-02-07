@@ -12,7 +12,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 setup(
     name='fp_workflow',
-    version='2.2.5',
+    version='2.2.6',
     description='First priciples workflow and utilities',
     long_description=long_description,
     long_description_content_type="text/markdown",
