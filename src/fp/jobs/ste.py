@@ -68,7 +68,7 @@ rm -rf ste.out
 touch ste.out
 exec &> ste.out
 
-{self.scheduler.get_sched_mpi_infix(self.job_info)}python3 script_ste.py &> script_ste.py.out
+{self.scheduler.get_sched_mpi_prefix(self.job_info)}python3 script_ste.py &> script_ste.py.out
 '''
 
         self.jobs = [
