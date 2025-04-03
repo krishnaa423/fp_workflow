@@ -40,21 +40,22 @@ class PhbandsPlot:
     def save_data(self):
         # Get some data. 
         self.get_data()
-        kpts = self.kpath.get_kpts()
+        # kpts = self.kpath.get_kpts()
 
         with h5py.File(self.outdata_filename, 'w') as f:
-            f.create_dataset('kpts', data=kpts)
+            # f.create_dataset('kpts', data=kpts)
             f.create_dataset('pheigs', data=self.phbands)
 
     def save_plot(self, save_filename='phbands.png', show=False, ylim=None):
         # Get some data. 
         self.get_data()
-        kpts = self.kpath.get_kpts()
+        # TODO: debug kpts assignment. 
+        # kpts = self.kpath.get_kpts()
         path_special_points = self.kpath.path_special_points
         path_segment_npoints = self.kpath.path_segment_npoints
 
         with h5py.File(self.outdata_filename, 'w') as f:
-            f.create_dataset('kpts', data=kpts)
+            # f.create_dataset('kpts', data=kpts)
             f.create_dataset('pheigs', data=self.phbands)
 
         plt.style.use('bmh')

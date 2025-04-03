@@ -140,7 +140,7 @@ class Scheduler:
                 if value is None:
                     file_contents += f' --{key} '
                 else:
-                    file_contents += f' --{key}=={value} '
+                    file_contents += f' --{key}={value} '
 
 
         if self.sched_dict.get('interactive', {}).get('extra_string') is not None:
